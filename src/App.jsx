@@ -602,8 +602,8 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
   const cardAcesso =
     visualizacao === "web"
       ? temaEscuro
-        ? "border border-white/10 bg-slate-900/88 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
-        : "border border-white/75 bg-white/88 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
+        ? "border border-white/10 bg-slate-950/78 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
+        : "border border-white/70 bg-white/86 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
       : temaEscuro
       ? "border border-white/5 bg-slate-950/12 text-white shadow-lg shadow-black/10 backdrop-blur-0"
       : "border border-white/40 bg-white/24 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
@@ -789,40 +789,42 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
   }
 
   return (
-    <div className="min-h-screen overflow-x-auto bg-slate-950">
-      <div className="relative min-h-screen min-w-[980px] overflow-hidden">
+    <div className="relative min-h-screen overflow-x-auto bg-slate-950">
+      <div className="fixed inset-0 z-0">
         <FundoLogin slideAtual={slideAtual} visualizacao="web" />
+      </div>
 
-        <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl grid-cols-[1.08fr_0.92fr] gap-6 px-8 py-6">
-          <div className="flex min-h-[calc(100vh-3rem)] flex-col rounded-[2.5rem] p-8 lg:p-10">
-            <div className="flex items-start justify-between">
-              <LogoBpm temaEscuro={temaEscuro} sobreImagem />
-              <div className="flex gap-2">
-                <BotaoVisualizacao
-                  visualizacao={visualizacao}
-                  alternarVisualizacao={alternarVisualizacao}
-                  temaEscuro={temaEscuro}
-                />
-                <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-              </div>
-            </div>
+      <div className="relative z-10 min-h-screen min-w-[1080px] px-10 py-8">
+        <div className="flex items-start justify-between">
+          <LogoBpm temaEscuro={temaEscuro} sobreImagem />
+          <div className="flex gap-2">
+            <BotaoVisualizacao
+              visualizacao={visualizacao}
+              alternarVisualizacao={alternarVisualizacao}
+              temaEscuro={temaEscuro}
+            />
+            <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+          </div>
+        </div>
 
-            <div className="mt-12 max-w-2xl">
-              <span className="inline-flex rounded-full border border-white/10 bg-slate-900/45 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
+        <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl grid-cols-[1.08fr_0.92fr] gap-10">
+          <div className="flex flex-col justify-between pb-8 pt-12">
+            <div className="max-w-3xl">
+              <span className="inline-flex rounded-full border border-white/10 bg-slate-950/35 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
                 Dispositivo: {CODIGO_DISPOSITIVO}
               </span>
 
-              <h1 className="mt-6 text-6xl font-black leading-tight text-white">
+              <h1 className="mt-6 text-7xl font-black leading-tight text-white drop-shadow-2xl">
                 Painel de BPM
               </h1>
 
-              <p className="mt-5 max-w-2xl text-xl leading-9 text-slate-100">
+              <p className="mt-5 max-w-3xl text-2xl leading-10 text-slate-100 drop-shadow-xl">
                 Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico
                 diário do paciente.
               </p>
             </div>
 
-            <div className="mt-auto">
+            <div>
               <div className="mb-5 grid grid-cols-5 gap-3">
                 {MEDICAL_SLIDES.map((slide, index) => (
                   <button
@@ -830,8 +832,8 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                     onClick={() => setSlideAtual(index)}
                     className={`h-24 overflow-hidden rounded-3xl border transition ${
                       index === slideAtual
-                        ? "border-rose-400 scale-[1.02]"
-                        : "border-white/10 opacity-75 hover:opacity-100"
+                        ? "border-rose-400 opacity-100 scale-[1.02]"
+                        : "border-white/10 opacity-70 hover:opacity-100"
                     }`}
                   >
                     <img
@@ -844,25 +846,25 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
               </div>
 
               <div className="grid gap-4 sm:grid-cols-4">
-                <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
+                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 backdrop-blur-md">
                   <p className="text-sm font-semibold uppercase tracking-wide text-white">Tempo real</p>
                   <p className="mt-3 text-sm leading-6 text-slate-300">
                     Consulta periódica do BPM atual.
                   </p>
                 </div>
-                <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
+                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 backdrop-blur-md">
                   <p className="text-sm font-semibold uppercase tracking-wide text-white">Histórico</p>
                   <p className="mt-3 text-sm leading-6 text-slate-300">
                     Registros por data e horário.
                   </p>
                 </div>
-                <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
+                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 backdrop-blur-md">
                   <p className="text-sm font-semibold uppercase tracking-wide text-white">Perfil</p>
                   <p className="mt-3 text-sm leading-6 text-slate-300">
                     Dados reais do paciente.
                   </p>
                 </div>
-                <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
+                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 backdrop-blur-md">
                   <p className="text-sm font-semibold uppercase tracking-wide text-white">Supabase</p>
                   <p className="mt-3 text-sm leading-6 text-slate-300">
                     Auth, banco e API REST.
@@ -872,8 +874,8 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
             </div>
           </div>
 
-          <div className="flex items-center">
-            <div className={`w-full rounded-[2rem] p-8 ${cardAcesso}`}>
+          <div className="flex items-center justify-center">
+            <div className={`w-full max-w-[500px] rounded-[2rem] p-8 ${cardAcesso}`}>
               <div className="mb-6 flex flex-col items-center text-center">
                 <IconeLogo />
                 <p className={`mt-4 text-xs font-bold uppercase tracking-[0.35em] ${ui.textoMuitoSuave}`}>
@@ -1769,3 +1771,4 @@ function App() {
 }
 
 export default App;
+

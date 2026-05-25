@@ -1317,3 +1317,16 @@ git push
 - Perfil exibindo dados reais;
 - Deploy publicado no Vercel;
 - Repositório disponível no GitHub.
+
+## Correção do fundo da versão web
+
+A versão web da tela inicial foi ajustada para usar as imagens como fundo da página inteira.
+
+Antes, a imagem podia parecer limitada a uma caixa lateral. Agora:
+
+- a imagem web fica aplicada no fundo completo da tela;
+- a área esquerda não possui mais uma caixa própria segurando a imagem;
+- o texto principal aparece sobre o fundo;
+- a caixa de login fica separada sobre o fundo;
+- as miniaturas abaixo permitem alternar as imagens web;
+- a versão mobile continua usando imagens verticais próprias.
