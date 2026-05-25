@@ -13,42 +13,41 @@ const MEDICAL_SLIDES = [
     desktop:
       "https://telemedicinamorsch.com.br/wp-content/uploads/2021/09/batidas-do-coracao-telemedicina-morsch.jpg",
     mobile: anatomiaCardiaca,
-    mobileClass: "scale-[0.98] object-[center_45%]",
+    mobileClass: "scale-100 object-[center_42%]",
     alt: "Imagem médica de anatomia cardíaca",
   },
   {
     desktop:
       "https://telemedicinamorsch.com.br/wp-content/uploads/2024/07/frequencia-cardiaca-telemedicina-morsch.jpg",
     mobile: coracaoMonitoramento,
-    mobileClass: "scale-[0.98] object-[center_48%]",
+    mobileClass: "scale-100 object-[center_48%]",
     alt: "Imagem de coração com gráfico cardíaco",
   },
   {
     desktop:
       "https://www.hospitalimigrantes.com.br/imgs/dXBsb2Fkcy9ub3RpY2lhcy8xNjY5NzUxMTkwLTEuanBn/800/500/N/crop",
     mobile: cuidadoCardiaco,
-    mobileClass: "scale-[1.02] object-[center_42%]",
+    mobileClass: "scale-[1.04] object-[center_40%]",
     alt: "Imagem médica com coração simbólico",
   },
   {
     desktop:
       "https://product-database.victorvision.com.br/uploads/thumb_heartbeat_8b13b2852b.png",
     mobile: consultaCardiologica,
-    mobileClass: "scale-[1.01] object-[center_45%]",
+    mobileClass: "scale-[1.03] object-[center_42%]",
     alt: "Paciente em consulta médica",
   },
   {
     desktop:
       "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
     mobile: anatomiaCardiaca,
-    mobileClass: "scale-[0.98] object-[center_45%]",
+    mobileClass: "scale-100 object-[center_42%]",
     alt: "Imagem complementar de frequência cardíaca",
   },
 ];
 
 function formatarDataHora(data) {
   if (!data) return "--";
-
   return new Date(data).toLocaleString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -61,17 +60,14 @@ function formatarDataHora(data) {
 
 function formatarHora(data) {
   if (!data) return "--:--";
-
   return new Date(data).toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
-    second: "2-digit",
   });
 }
 
 function formatarData(data) {
   if (!data) return "Sem data";
-
   return new Date(data).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -114,28 +110,21 @@ function obterClasses(temaEscuro) {
     pagina: temaEscuro
       ? "min-h-screen bg-slate-950 text-white"
       : "min-h-screen bg-slate-100 text-slate-950",
-
     painel: temaEscuro
       ? "border border-white/10 bg-slate-900/90 shadow-xl shadow-black/20"
       : "border border-slate-200 bg-white shadow-xl shadow-slate-200/70",
-
     painelForte: temaEscuro
       ? "border border-white/10 bg-slate-950/80"
       : "border border-slate-200 bg-slate-50",
-
     textoSuave: temaEscuro ? "text-slate-400" : "text-slate-500",
     textoMuitoSuave: temaEscuro ? "text-slate-500" : "text-slate-400",
-
     input: temaEscuro
-      ? "rounded-xl border border-white/10 bg-slate-950/90 px-3 py-2.5 text-sm text-white outline-none transition focus:border-rose-400 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base"
-      : "rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-950 outline-none transition focus:border-rose-500 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base",
-
+      ? "w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-rose-400 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base md:bg-slate-950/90"
+      : "w-full rounded-xl border border-slate-200/60 bg-white/60 px-3 py-2 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-rose-500 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base md:bg-white",
     botaoSecundario: temaEscuro
       ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
       : "rounded-2xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300",
-
     menuAtivo: "bg-rose-600 text-white shadow-lg shadow-rose-950/30",
-
     menuInativo: temaEscuro
       ? "text-slate-300 hover:bg-white/5"
       : "text-slate-600 hover:bg-slate-100",
@@ -144,30 +133,30 @@ function obterClasses(temaEscuro) {
 
 function IconeLogo() {
   return (
-    <svg viewBox="0 0 40 40" className="h-8 w-8">
-      <path
-        d="M6 21h6l3-8 6 16 4-10h9"
+    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-600 shadow-lg shadow-rose-900/25">
+      <svg
+        viewBox="0 0 24 24"
+        className="h-5 w-5 text-white"
         fill="none"
         stroke="currentColor"
-        strokeWidth="3.2"
+        strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-      />
-    </svg>
+      >
+        <path d="M3 12h4l2-4 3 8 2-4h7" />
+      </svg>
+    </div>
   );
 }
 
 function LogoBpm({ compacto = false }) {
   return (
-    <div className="flex items-center gap-4">
-      <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-rose-600 text-white shadow-xl shadow-rose-900/25">
-        <IconeLogo />
-      </div>
-
+    <div className="flex items-center gap-3">
+      <IconeLogo />
       {!compacto && (
         <div>
-          <h1 className="text-xl font-black sm:text-2xl">Monitor BPM</h1>
-          <p className="text-xs text-slate-400 sm:text-sm">Painel de acompanhamento</p>
+          <p className="text-lg font-bold leading-none">Monitor BPM</p>
+          <p className="text-xs text-slate-400">Painel de acompanhamento</p>
         </div>
       )}
     </div>
@@ -184,20 +173,32 @@ function BotaoTema({ temaEscuro, alternarTema }) {
   );
 }
 
+function BotaoVisualizacao({ visualizacao, alternarVisualizacao, temaEscuro }) {
+  const texto = visualizacao === "web" ? "Versão mobile" : "Versão web";
+  const classe = temaEscuro
+    ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+    : "rounded-2xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300";
+
+  return (
+    <button onClick={alternarVisualizacao} className={classe}>
+      {texto}
+    </button>
+  );
+}
+
 function BadgeStatus({ valor }) {
   const status = classificarBpm(valor);
-
   const classe =
     status === "Normal"
       ? "border-emerald-400/30 bg-emerald-500/15 text-emerald-300"
       : status === "Baixo"
-        ? "border-sky-400/30 bg-sky-500/15 text-sky-300"
-        : status === "Elevado"
-          ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
-          : "border-slate-400/30 bg-slate-500/15 text-slate-300";
+      ? "border-sky-400/30 bg-sky-500/15 text-sky-300"
+      : status === "Elevado"
+      ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
+      : "border-slate-400/30 bg-slate-500/15 text-slate-300";
 
   return (
-    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-bold ${classe}`}>
+    <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${classe}`}>
       {status}
     </span>
   );
@@ -207,19 +208,12 @@ function PageHeader({ titulo, subtitulo, temaEscuro, children }) {
   const ui = obterClasses(temaEscuro);
 
   return (
-    <div className={`rounded-3xl p-5 md:p-6 ${ui.painel}`}>
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div className="min-w-0">
-          <h1 className="break-words text-3xl font-black md:text-4xl">{titulo}</h1>
-          {subtitulo && (
-            <p className={`mt-2 max-w-3xl text-sm leading-6 ${ui.textoSuave}`}>
-              {subtitulo}
-            </p>
-          )}
-        </div>
-
-        {children && <div className="flex shrink-0 flex-wrap gap-3">{children}</div>}
+    <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      <div>
+        <h1 className="text-2xl font-bold md:text-3xl">{titulo}</h1>
+        {subtitulo && <p className={`mt-2 text-sm ${ui.textoSuave}`}>{subtitulo}</p>}
       </div>
+      {children && <div className="flex items-center gap-2">{children}</div>}
     </div>
   );
 }
@@ -230,8 +224,8 @@ function Card({ titulo, valor, subtitulo, temaEscuro }) {
   return (
     <div className={`rounded-3xl p-5 ${ui.painel}`}>
       <p className={`text-sm ${ui.textoSuave}`}>{titulo}</p>
-      <h3 className="mt-2 break-words text-2xl font-black">{valor}</h3>
-      {subtitulo && <p className={`mt-1 break-words text-sm ${ui.textoMuitoSuave}`}>{subtitulo}</p>}
+      <h3 className="mt-2 text-2xl font-bold">{valor}</h3>
+      {subtitulo && <p className={`mt-2 text-sm ${ui.textoSuave}`}>{subtitulo}</p>}
     </div>
   );
 }
@@ -257,8 +251,8 @@ function GraficoBpm({
   if (!pontosOriginais.length) {
     return (
       <div
-        className={`flex h-[300px] items-center justify-center rounded-3xl ${
-          temaEscuro ? "bg-slate-950/70 text-slate-500" : "bg-slate-50 text-slate-400"
+        className={`flex items-center justify-center rounded-3xl p-6 text-sm ${
+          temaEscuro ? "bg-white/5 text-slate-300" : "bg-slate-100 text-slate-600"
         }`}
       >
         Sem dados para o gráfico
@@ -268,22 +262,17 @@ function GraficoBpm({
 
   const valores = pontosOriginais.map((item) => item.valor);
   const valoresOrdenados = [...valores].sort((a, b) => a - b);
-
   const realMin = Math.min(...valores);
   const realMax = Math.max(...valores);
-
   const p05 = valoresOrdenados[Math.floor((valoresOrdenados.length - 1) * 0.05)];
   const p95 = valoresOrdenados[Math.ceil((valoresOrdenados.length - 1) * 0.95)];
-
   const margem = Math.max(6, Math.round((p95 - p05) * 0.25));
   const dominioMin = Math.max(0, p05 - margem);
   const dominioMax = p95 + margem;
   const faixa = Math.max(dominioMax - dominioMin, 1);
-
   const largura = forcarSlider
     ? Math.max(1700, pontosOriginais.length * 110)
-    : Math.max(1300, pontosOriginais.length * 55);
-
+    : Math.max(1200, pontosOriginais.length * 55);
   const paddingX = 52;
   const paddingY = 42;
 
@@ -304,7 +293,6 @@ function GraficoBpm({
   });
 
   const linha = pontos.map((ponto) => `${ponto.x},${ponto.y}`).join(" ");
-
   const corLinha = temaEscuro ? "#fb7185" : "#e11d48";
   const corGrade = temaEscuro ? "rgba(255,255,255,0.09)" : "rgba(15,23,42,0.13)";
   const corTexto = temaEscuro ? "#94a3b8" : "#64748b";
@@ -313,78 +301,88 @@ function GraficoBpm({
   const textoTooltip = temaEscuro ? "#ffffff" : "#0f172a";
 
   return (
-    <div className={`min-w-0 rounded-3xl p-5 ${temaEscuro ? "bg-slate-950/70" : "bg-slate-50"}`}>
+    <div className="relative">
       {hover && (
         <div
-          className="pointer-events-none fixed z-[9999] rounded-2xl px-3 py-2 text-xs shadow-lg"
+          className="pointer-events-none fixed z-50 rounded-2xl border px-3 py-2 text-xs shadow-2xl"
           style={{
-            left: `${hover.clientX}px`,
-            top: `${hover.clientY - 14}px`,
-            transform: "translate(-50%, -100%)",
+            top: hover.clientY - 62,
+            left: hover.clientX + 14,
             background: fundoTooltip,
+            borderColor: bordaTooltip,
             color: textoTooltip,
-            border: `1px solid ${bordaTooltip}`,
           }}
         >
-          <div className="font-black">{hover.valor} BPM</div>
-          <div className={temaEscuro ? "text-slate-300" : "text-slate-500"}>
-            {formatarHora(hover.data)}
-          </div>
+          <div className="font-semibold">{hover.valor} BPM</div>
+          <div>{formatarHora(hover.data)}</div>
         </div>
       )}
 
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
+          <h3 className="text-lg font-semibold">{titulo}</h3>
           <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
-            {titulo}
+            {pontosOriginais.length} leituras
           </p>
-          <p className="text-lg font-black">{pontosOriginais.length} leituras</p>
         </div>
-
-        <div className="w-fit rounded-2xl bg-rose-600 px-4 py-2 text-sm font-bold text-white">
+        <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
           {realMin} - {realMax} BPM
-        </div>
+        </p>
       </div>
 
       <div className="overflow-x-auto pb-2">
-        <svg viewBox={`0 0 ${largura} ${altura}`} className="h-72 min-w-[900px] sm:h-80 sm:min-w-[1300px]">
-          <line x1={paddingX} y1={paddingY} x2={largura - paddingX} y2={paddingY} stroke={corGrade} strokeWidth="1" />
-          <line x1={paddingX} y1={altura / 2} x2={largura - paddingX} y2={altura / 2} stroke={corGrade} strokeWidth="1" />
-          <line x1={paddingX} y1={altura - paddingY} x2={largura - paddingX} y2={altura - paddingY} stroke={corGrade} strokeWidth="1" />
+        <svg width={largura} height={altura} className="block min-w-full">
+          {[0, 1, 2, 3, 4].map((linhaGrade) => {
+            const y = paddingY + (linhaGrade * (altura - paddingY * 2)) / 4;
+            const valor =
+              Math.round((dominioMax - (linhaGrade * (dominioMax - dominioMin)) / 4) * 10) / 10;
 
-          <text x={paddingX} y={paddingY - 12} fill={corTexto} fontSize="12">{dominioMax}</text>
-          <text x={paddingX} y={altura - paddingY + 22} fill={corTexto} fontSize="12">{dominioMin}</text>
+            return (
+              <g key={linhaGrade}>
+                <line
+                  x1={paddingX}
+                  y1={y}
+                  x2={largura - paddingX}
+                  y2={y}
+                  stroke={corGrade}
+                  strokeDasharray="4 6"
+                />
+                <text x={12} y={y + 4} fill={corTexto} fontSize="12">
+                  {valor}
+                </text>
+              </g>
+            );
+          })}
 
           <polyline
-            points={linha}
             fill="none"
             stroke={corLinha}
             strokeWidth="4"
-            strokeLinecap="round"
             strokeLinejoin="round"
+            strokeLinecap="round"
+            points={linha}
           />
 
           {pontos.map((ponto) => (
-            <circle
-              key={ponto.id}
-              cx={ponto.x}
-              cy={ponto.y}
-              r="6"
-              fill={temaEscuro ? "#0f172a" : "#ffffff"}
-              stroke={corLinha}
-              strokeWidth="3"
-              onMouseMove={(e) =>
-                setHover({
-                  valor: ponto.valor,
-                  data: ponto.recebido_em,
-                  clientX: e.clientX,
-                  clientY: e.clientY,
-                })
-              }
-              onMouseLeave={() => setHover(null)}
-            >
-              <title>{`${ponto.valor} BPM - ${formatarHora(ponto.recebido_em)}`}</title>
-            </circle>
+            <g key={ponto.id}>
+              <circle
+                cx={ponto.x}
+                cy={ponto.y}
+                r="6"
+                fill={corLinha}
+                onMouseMove={(e) =>
+                  setHover({
+                    valor: ponto.valor,
+                    data: ponto.recebido_em,
+                    clientX: e.clientX,
+                    clientY: e.clientY,
+                  })
+                }
+                onMouseLeave={() => setHover(null)}
+              >
+                <title>{`${ponto.valor} BPM - ${formatarHora(ponto.recebido_em)}`}</title>
+              </circle>
+            </g>
           ))}
         </svg>
       </div>
@@ -394,11 +392,17 @@ function GraficoBpm({
 
 function GraficoBarrasBpm({ dados, temaEscuro }) {
   const dadosOrdenados = [...dados].reverse();
-  const valores = dadosOrdenados.map((item) => Number(item.valor_bpm || 0)).filter((valor) => valor > 0);
+  const valores = dadosOrdenados
+    .map((item) => Number(item.valor_bpm || 0))
+    .filter((valor) => valor > 0);
 
   if (!valores.length) {
     return (
-      <div className={`rounded-3xl p-6 text-sm ${temaEscuro ? "bg-slate-950/70 text-slate-500" : "bg-slate-50 text-slate-400"}`}>
+      <div
+        className={`flex items-center justify-center rounded-3xl p-6 text-sm ${
+          temaEscuro ? "bg-white/5 text-slate-300" : "bg-slate-100 text-slate-600"
+        }`}
+      >
         Sem dados para o gráfico deste dia.
       </div>
     );
@@ -408,37 +412,35 @@ function GraficoBarrasBpm({ dados, temaEscuro }) {
   const min = Math.min(...valores);
 
   return (
-    <div className={`rounded-3xl p-5 ${temaEscuro ? "bg-slate-950/70" : "bg-slate-50"}`}>
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <div>
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>Gráfico do dia</p>
-          <p className="text-lg font-black">{valores.length} leituras</p>
+          <h3 className="text-lg font-semibold">Gráfico do dia</h3>
+          <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
+            {valores.length} leituras
+          </p>
         </div>
-
-        <div className="w-fit rounded-2xl bg-rose-600 px-4 py-2 text-sm font-bold text-white">
+        <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
           {min} - {max} BPM
-        </div>
+        </p>
       </div>
 
-      <div className="overflow-x-auto pb-3">
-        <div className="flex h-56 min-w-max items-end gap-3 px-1">
+      <div className="overflow-x-auto pb-2">
+        <div className="flex min-w-max items-end gap-3">
           {dadosOrdenados.map((item) => {
             const valor = Number(item.valor_bpm || 0);
-            const altura = Math.max((valor / Math.max(max, 1)) * 100, 8);
+            const altura = Math.max((valor / Math.max(max, 1)) * 180, 18);
 
             return (
-              <div key={item.id} className="flex w-10 flex-col items-center gap-2">
-                <div className="flex h-44 w-full items-end">
-                  <div
-                    className="w-full rounded-t-xl bg-rose-600"
-                    style={{ height: `${altura}%` }}
-                    title={`${valor} BPM - ${formatarHora(item.recebido_em)}`}
-                  />
-                </div>
-
-                <span className={`text-[10px] ${temaEscuro ? "text-slate-500" : "text-slate-400"}`}>
+              <div key={item.id} className="flex w-12 flex-col items-center gap-2">
+                <div className="text-xs font-semibold">{valor}</div>
+                <div
+                  className="w-full rounded-t-2xl bg-rose-600"
+                  style={{ height: `${altura}px` }}
+                />
+                <div className={`text-[11px] ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
                   {formatarHora(item.recebido_em).slice(0, 5)}
-                </span>
+                </div>
               </div>
             );
           })}
@@ -448,14 +450,13 @@ function GraficoBarrasBpm({ dados, temaEscuro }) {
   );
 }
 
-function TelaLogin({ temaEscuro, alternarTema }) {
+function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizacao }) {
   const ui = obterClasses(temaEscuro);
-
+  const forcarWeb = visualizacao === "web";
   const [modoCadastro, setModoCadastro] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [slideAtual, setSlideAtual] = useState(0);
-
   const [form, setForm] = useState({
     nome: "",
     idade: "",
@@ -555,428 +556,535 @@ function TelaLogin({ temaEscuro, alternarTema }) {
   const textoHero = temaEscuro ? "text-white" : "text-slate-950";
   const textoSecundario = temaEscuro ? "text-slate-300" : "text-slate-700";
   const cardHero = temaEscuro
-    ? "border border-white/10 bg-slate-900/45 backdrop-blur-md"
-    : "border border-white/70 bg-white/75 backdrop-blur-md shadow-lg shadow-slate-200/60";
-  const cardAcesso = temaEscuro
+    ? "border border-white/10 bg-slate-900/35 backdrop-blur-sm"
+    : "border border-white/70 bg-white/60 backdrop-blur-sm shadow-lg shadow-slate-200/40";
+
+  const cardAcessoMobile = temaEscuro
+    ? "border border-white/5 bg-slate-950/24 text-white shadow-lg shadow-black/10 backdrop-blur-[1px]"
+    : "border border-white/50 bg-white/38 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-[1px]";
+
+  const cardAcessoWeb = temaEscuro
     ? "border border-white/10 bg-slate-900/88 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
     : "border border-white/80 bg-white/92 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl";
 
+  const containerClasse = forcarWeb
+    ? "mx-auto grid min-h-screen min-w-[980px] max-w-7xl grid-cols-[1.15fr_0.85fr] gap-6 px-8 py-6"
+    : "mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 md:grid md:grid-cols-[1.15fr_0.85fr] md:gap-6 lg:px-8";
+
   return (
-    <main className={`${ui.pagina} relative min-h-screen overflow-hidden transition-colors duration-300`}>
-      <div className="absolute inset-0">
-        {MEDICAL_SLIDES.map((slide, index) => (
-          <div
-            key={slide}
-            className={`absolute inset-0 bg-cover bg-center transition-opacity duration-1000 ${
-              slideAtual === index ? "opacity-100" : "opacity-0"
-            }`}
-            style={{ backgroundImage: `url("${slide}")` }}
-          />
-        ))}
-
-        <div
-          className={
-            temaEscuro
-              ? "absolute inset-0 bg-gradient-to-br from-slate-950/78 via-slate-950/58 to-rose-950/38"
-              : "absolute inset-0 bg-gradient-to-br from-white/68 via-white/42 to-rose-100/28"
-          }
-        />
-
-        <div
-          className={
-            temaEscuro
-              ? "absolute inset-0 bg-gradient-to-t from-slate-950/70 via-slate-950/15 to-slate-950/42"
-              : "absolute inset-0 bg-gradient-to-t from-white/48 via-white/10 to-white/24"
-          }
-        />
-      </div>
-
-      <div className="relative z-10 mx-auto min-h-screen max-w-7xl px-5 py-6">
-        <header className="flex items-center justify-between gap-4">
+    <div className={`min-h-screen overflow-x-auto ${ui.pagina}`}>
+      <div className={containerClasse}>
+        <div className={forcarWeb ? "hidden" : "mb-4 flex items-center justify-between md:hidden"}>
           <LogoBpm />
-          <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-        </header>
+          <div className="flex gap-2">
+            <BotaoVisualizacao
+              visualizacao={visualizacao}
+              alternarVisualizacao={alternarVisualizacao}
+              temaEscuro={temaEscuro}
+            />
+            <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+          </div>
+        </div>
 
-        <section className="grid min-h-[calc(100vh-100px)] items-center gap-6 py-6 sm:py-8 xl:grid-cols-[1.1fr_0.9fr]">
-          <div className="hidden xl:block">
-            <div
-              className={`inline-flex rounded-full px-5 py-3 text-sm font-semibold ${
-                temaEscuro
-                  ? "border border-white/10 bg-white/5 text-slate-200"
-                  : "border border-slate-200 bg-white/85 text-slate-700"
-              }`}
-            >
-              Dispositivo: {CODIGO_DISPOSITIVO}
-            </div>
-
-            <h2 className={`mt-8 max-w-3xl text-6xl font-black leading-[1.05] ${textoHero}`}>
-              Painel de BPM
-            </h2>
-
-            <p className={`mt-6 max-w-2xl text-xl leading-9 ${textoSecundario}`}>
-              Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico diário do paciente.
-            </p>
-
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              <div className={`rounded-3xl p-6 ${cardHero}`}>
-                <h3 className="text-3xl font-black">Tempo real</h3>
-                <p className={`mt-3 text-base leading-7 ${temaEscuro ? "text-slate-300" : "text-slate-600"}`}>
-                  BPM atual com gráfico responsivo.
-                </p>
+        {!forcarWeb && (
+          <div className="md:hidden">
+            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-black/20">
+              <img
+                src={MEDICAL_SLIDES[slideAtual].mobile}
+                alt={MEDICAL_SLIDES[slideAtual].alt}
+                className={`h-[285px] w-full object-cover transition-transform duration-500 ${MEDICAL_SLIDES[slideAtual].mobileClass}`}
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-slate-950/0 via-slate-950/0 to-slate-950/22" />
+              <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-between p-4">
+                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${cardHero} ${textoHero}`}>
+                  Dispositivo: {CODIGO_DISPOSITIVO}
+                </span>
               </div>
-
-              <div className={`rounded-3xl p-6 ${cardHero}`}>
-                <h3 className="text-3xl font-black">Histórico diário</h3>
-                <p className={`mt-3 text-base leading-7 ${temaEscuro ? "text-slate-300" : "text-slate-600"}`}>
-                  Datas clicáveis, gráficos e leituras.
-                </p>
-              </div>
-
-              <div className={`rounded-3xl p-6 ${cardHero}`}>
-                <h3 className="text-3xl font-black">Perfil</h3>
-                <p className={`mt-3 text-base leading-7 ${temaEscuro ? "text-slate-300" : "text-slate-600"}`}>
-                  Paciente vinculado ao dispositivo.
+              <div className="absolute inset-x-0 bottom-0 z-10 p-5">
+                <h1 className={`text-3xl font-bold ${textoHero}`}>Painel de BPM</h1>
+                <p className={`mt-2 text-sm leading-6 ${textoSecundario}`}>
+                  Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico
+                  diário do paciente.
                 </p>
               </div>
             </div>
           </div>
+        )}
 
-          <div className="flex justify-center xl:justify-center">
-            <div className={`w-full max-w-md rounded-[1.75rem] p-5 sm:max-w-xl sm:rounded-[2rem] sm:p-7 ${cardAcesso}`}>
-              <div className="mb-7 text-center">
-                <div className="mb-4 flex justify-center">
-                  <div className="flex h-20 w-20 items-center justify-center rounded-[1.75rem] bg-rose-600 text-white shadow-lg shadow-rose-900/30">
-                    <IconeLogo />
-                  </div>
+        <div
+          className={`relative overflow-hidden rounded-[2.5rem] ${
+            forcarWeb ? "block min-h-[calc(100vh-3rem)]" : "hidden md:block"
+          }`}
+        >
+          {MEDICAL_SLIDES.map((slide, index) => (
+            <img
+              key={slide.desktop}
+              src={slide.desktop}
+              alt={slide.alt}
+              className={`absolute inset-0 h-full w-full object-cover object-center transition-all duration-700 ${
+                index === slideAtual ? "scale-100 opacity-100" : "scale-105 opacity-0"
+              }`}
+            />
+          ))}
+
+          <div className="absolute inset-0 bg-gradient-to-br from-slate-950/25 via-rose-950/35 to-slate-950/80" />
+
+          <div className="relative z-10 flex h-full flex-col p-8 lg:p-10">
+            <div className="flex items-start justify-between">
+              <LogoBpm />
+              <div className="flex gap-2">
+                <BotaoVisualizacao
+                  visualizacao={visualizacao}
+                  alternarVisualizacao={alternarVisualizacao}
+                  temaEscuro={temaEscuro}
+                />
+                <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+              </div>
+            </div>
+
+            <div className="mt-auto max-w-xl">
+              <span className={`inline-flex rounded-full px-4 py-2 text-sm font-semibold ${cardHero} ${textoHero}`}>
+                Dispositivo: {CODIGO_DISPOSITIVO}
+              </span>
+
+              <h1 className={`mt-6 text-5xl font-black leading-tight ${textoHero}`}>Painel de BPM</h1>
+
+              <p className={`mt-4 max-w-xl text-base leading-7 ${textoSecundario}`}>
+                Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico
+                diário do paciente.
+              </p>
+
+              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+                <div className={`rounded-3xl p-4 ${cardHero}`}>
+                  <p className={`text-sm font-semibold uppercase tracking-wide ${textoHero}`}>Tempo real</p>
+                  <p className={`mt-3 text-sm leading-6 ${textoSecundario}`}>
+                    BPM atual com gráfico responsivo.
+                  </p>
                 </div>
-
-                <p className={`text-sm font-semibold uppercase tracking-[0.22em] ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
-                  Acesso
-                </p>
-
-                <h2 className="mt-4 text-3xl font-black sm:text-5xl">
-                  {modoCadastro ? "Cadastro" : "Entrar"}
-                </h2>
-
-                <p className={`mt-3 text-lg ${temaEscuro ? "text-slate-300" : "text-slate-600"}`}>
-                  {modoCadastro ? "Cadastre os dados do paciente." : "Entre com seu e-mail para acessar o painel."}
-                </p>
+                <div className={`rounded-3xl p-4 ${cardHero}`}>
+                  <p className={`text-sm font-semibold uppercase tracking-wide ${textoHero}`}>Histórico diário</p>
+                  <p className={`mt-3 text-sm leading-6 ${textoSecundario}`}>
+                    Datas clicáveis, gráficos e leituras.
+                  </p>
+                </div>
+                <div className={`rounded-3xl p-4 ${cardHero}`}>
+                  <p className={`text-sm font-semibold uppercase tracking-wide ${textoHero}`}>Perfil</p>
+                  <p className={`mt-3 text-sm leading-6 ${textoSecundario}`}>
+                    Paciente vinculado ao dispositivo.
+                  </p>
+                </div>
               </div>
+            </div>
+          </div>
+        </div>
 
-              <div className={`mb-6 grid grid-cols-2 rounded-2xl p-1 ${temaEscuro ? "bg-slate-950" : "bg-slate-100"}`}>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMensagem("");
-                    setModoCadastro(false);
-                  }}
-                  className={`rounded-xl px-3 py-2.5 text-xs font-bold transition sm:px-4 sm:py-3 sm:text-sm ${
-                    !modoCadastro
-                      ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
-                      : temaEscuro
-                        ? "text-slate-400"
-                        : "text-slate-600"
-                  }`}
-                >
-                  Login
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setMensagem("");
-                    setModoCadastro(true);
-                  }}
-                  className={`rounded-xl px-3 py-2.5 text-xs font-bold transition sm:px-4 sm:py-3 sm:text-sm ${
-                    modoCadastro
-                      ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
-                      : temaEscuro
-                        ? "text-slate-400"
-                        : "text-slate-600"
-                  }`}
-                >
-                  Cadastro
-                </button>
+        <div
+          className={
+            forcarWeb
+              ? "flex items-center"
+              : "mt-2 flex items-start justify-center md:mt-0 md:items-center"
+          }
+        >
+          <div
+            className={
+              forcarWeb
+                ? `w-full rounded-[2rem] p-8 ${cardAcessoWeb}`
+                : `w-full max-w-[258px] rounded-[1rem] p-2.5 sm:max-w-[340px] sm:rounded-[1.5rem] sm:p-4 md:max-w-none md:rounded-[2rem] md:p-8 ${cardAcessoMobile} md:${cardAcessoWeb}`
+            }
+          >
+            <div className="mb-2 flex flex-col items-center text-center sm:mb-4">
+              <div className="scale-[0.58] sm:scale-75 md:scale-100">
+                <IconeLogo />
               </div>
+              <p className={`mt-1 text-[9px] font-bold uppercase tracking-[0.26em] sm:mt-2 sm:text-[10px] md:mt-4 md:text-xs md:tracking-[0.35em] ${ui.textoMuitoSuave}`}>
+                Acesso
+              </p>
+              <h2 className="mt-1 text-xl font-black sm:mt-2 sm:text-2xl md:mt-3 md:text-3xl">
+                {modoCadastro ? "Cadastro" : "Entrar"}
+              </h2>
+              <p className={`mt-1 max-w-[210px] text-[11px] leading-4 sm:max-w-[250px] sm:text-xs sm:leading-5 md:max-w-sm md:text-sm ${ui.textoSuave}`}>
+                {modoCadastro
+                  ? "Cadastre os dados do paciente."
+                  : "Entre com seu e-mail para acessar o painel."}
+              </p>
+            </div>
 
-              <form onSubmit={modoCadastro ? cadastrar : entrar} className="flex flex-col gap-4">
-                {modoCadastro && (
-                  <>
+            <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 sm:mb-4 sm:rounded-2xl md:mb-6 ${temaEscuro ? "bg-slate-950/40 md:bg-white/5" : "bg-white/35 md:bg-slate-100"}`}>
+              <button
+                onClick={() => {
+                  setMensagem("");
+                  setModoCadastro(false);
+                }}
+                className={`rounded-lg px-3 py-2 text-xs font-bold transition sm:rounded-xl sm:py-2.5 sm:text-sm md:px-4 md:py-3 ${
+                  !modoCadastro
+                    ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
+                    : temaEscuro
+                    ? "text-slate-400"
+                    : "text-slate-600"
+                }`}
+              >
+                Login
+              </button>
+              <button
+                onClick={() => {
+                  setMensagem("");
+                  setModoCadastro(true);
+                }}
+                className={`rounded-lg px-3 py-2 text-xs font-bold transition sm:rounded-xl sm:py-2.5 sm:text-sm md:px-4 md:py-3 ${
+                  modoCadastro
+                    ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
+                    : temaEscuro
+                    ? "text-slate-400"
+                    : "text-slate-600"
+                }`}
+              >
+                Cadastro
+              </button>
+            </div>
+
+            <form onSubmit={modoCadastro ? cadastrar : entrar} className="space-y-2 sm:space-y-3 md:space-y-4">
+              {modoCadastro && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Nome completo"
+                    value={form.nome}
+                    onChange={(e) => atualizarCampo("nome", e.target.value)}
+                    className={ui.input}
+                  />
+
+                  <div className="grid gap-2 sm:grid-cols-2 sm:gap-4">
                     <input
+                      type="number"
+                      placeholder="Idade"
+                      value={form.idade}
+                      onChange={(e) => atualizarCampo("idade", e.target.value)}
                       className={ui.input}
-                      placeholder="Nome do paciente"
-                      value={form.nome}
-                      onChange={(e) => atualizarCampo("nome", e.target.value)}
                     />
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <input
-                        className={ui.input}
-                        placeholder="Idade"
-                        type="number"
-                        value={form.idade}
-                        onChange={(e) => atualizarCampo("idade", e.target.value)}
-                      />
-
-                      <select
-                        className={ui.input}
-                        value={form.sexo}
-                        onChange={(e) => atualizarCampo("sexo", e.target.value)}
-                      >
-                        <option value="masculino">Masculino</option>
-                        <option value="feminino">Feminino</option>
-                        <option value="outro">Outro</option>
-                      </select>
-                    </div>
-                  </>
-                )}
-
-                <input
-                  className={ui.input}
-                  placeholder="E-mail"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => atualizarCampo("email", e.target.value)}
-                />
-
-                <input
-                  className={ui.input}
-                  placeholder="Senha"
-                  type="password"
-                  value={form.senha}
-                  onChange={(e) => atualizarCampo("senha", e.target.value)}
-                />
-
-                {modoCadastro && (
-                  <input
-                    className={ui.input}
-                    placeholder="Confirmar senha"
-                    type="password"
-                    value={form.confirmarSenha}
-                    onChange={(e) => atualizarCampo("confirmarSenha", e.target.value)}
-                  />
-                )}
-
-                {mensagem && (
-                  <div
-                    className={`rounded-2xl px-4 py-3 text-sm ${
-                      temaEscuro
-                        ? "border border-white/10 bg-white/5 text-slate-200"
-                        : "border border-slate-200 bg-slate-50 text-slate-700"
-                    }`}
-                  >
-                    {mensagem}
+                    <select
+                      value={form.sexo}
+                      onChange={(e) => atualizarCampo("sexo", e.target.value)}
+                      className={ui.input}
+                    >
+                      <option value="masculino">Masculino</option>
+                      <option value="feminino">Feminino</option>
+                      <option value="outro">Outro</option>
+                    </select>
                   </div>
-                )}
+                </>
+              )}
 
-                <button
-                  disabled={carregando}
-                  className="mt-2 rounded-2xl bg-rose-600 px-4 py-4 text-base font-black text-white shadow-lg shadow-rose-900/20 transition hover:bg-rose-500 disabled:opacity-60 sm:text-lg"
+              <input
+                type="email"
+                placeholder="E-mail"
+                value={form.email}
+                onChange={(e) => atualizarCampo("email", e.target.value)}
+                className={ui.input}
+              />
+
+              <input
+                type="password"
+                placeholder="Senha"
+                value={form.senha}
+                onChange={(e) => atualizarCampo("senha", e.target.value)}
+                className={ui.input}
+              />
+
+              {modoCadastro && (
+                <input
+                  type="password"
+                  placeholder="Confirmar senha"
+                  value={form.confirmarSenha}
+                  onChange={(e) => atualizarCampo("confirmarSenha", e.target.value)}
+                  className={ui.input}
+                />
+              )}
+
+              {mensagem && (
+                <div
+                  className={`rounded-xl border px-3 py-2 text-xs sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm ${
+                    mensagem.toLowerCase().includes("erro")
+                      ? temaEscuro
+                        ? "border-red-400/20 bg-red-500/10 text-red-200"
+                        : "border-red-200 bg-red-50 text-red-700"
+                      : temaEscuro
+                      ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
+                      : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                  }`}
                 >
-                  {carregando ? "Aguarde..." : modoCadastro ? "Criar cadastro" : "Entrar no painel"}
-                </button>
-              </form>
-
-              <div className="mt-6 grid grid-cols-3 gap-3 text-center">
-                <div className={`rounded-2xl p-3 ${temaEscuro ? "border border-white/10 bg-slate-950/70" : "border border-slate-200 bg-slate-50"}`}>
-                  <p className={`text-xs ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>Tempo real</p>
-                  <p className="mt-1 text-sm font-black">BPM</p>
+                  {mensagem}
                 </div>
+              )}
 
-                <div className={`rounded-2xl p-3 ${temaEscuro ? "border border-white/10 bg-slate-950/70" : "border border-slate-200 bg-slate-50"}`}>
-                  <p className={`text-xs ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>Histórico</p>
-                  <p className="mt-1 text-sm font-black">Diário</p>
-                </div>
+              <button
+                type="submit"
+                disabled={carregando}
+                className="w-full rounded-xl bg-rose-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60 sm:py-2.5 md:rounded-2xl md:py-3 md:text-base"
+              >
+                {carregando
+                  ? "Aguarde..."
+                  : modoCadastro
+                  ? "Criar cadastro"
+                  : "Entrar no painel"}
+              </button>
+            </form>
 
-                <div className={`rounded-2xl p-3 ${temaEscuro ? "border border-white/10 bg-slate-950/70" : "border border-slate-200 bg-slate-50"}`}>
-                  <p className={`text-xs ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>Vínculo</p>
-                  <p className="mt-1 text-sm font-black">Auto</p>
-                </div>
+            <div className={`mt-4 hidden grid-cols-3 gap-2 md:grid ${temaEscuro ? "text-slate-400" : "text-slate-600"}`}>
+              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                <p className="text-[11px]">Tempo real</p>
+                <p className="mt-1 text-xs font-semibold">BPM</p>
+              </div>
+              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                <p className="text-[11px]">Histórico</p>
+                <p className="mt-1 text-xs font-semibold">Diário</p>
+              </div>
+              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                <p className="text-[11px]">Vínculo</p>
+                <p className="mt-1 text-xs font-semibold">Auto</p>
               </div>
             </div>
           </div>
-        </section>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
 
-function Dashboard({ sessao, perfil, temaEscuro }) {
+function Dashboard({ sessao, temaEscuro }) {
   const ui = obterClasses(temaEscuro);
-
+  const [bpmAtual, setBpmAtual] = useState(null);
+  const [ultima, setUltima] = useState(null);
   const [leiturasUsuario, setLeiturasUsuario] = useState([]);
   const [leiturasGerais, setLeiturasGerais] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
-  const [inicioGraficoAtual] = useState(() => new Date().toISOString());
 
-  async function carregarLeituras() {
+  async function carregarDashboard() {
     if (!sessao?.user?.id) return;
 
-    const { data, error } = await supabase
-      .from("bpm_leituras")
-      .select("id, perfil_id, valor_bpm, recebido_em")
-      .eq("perfil_id", sessao.user.id)
-      .order("recebido_em", { ascending: false })
-      .limit(30);
+    setCarregando(true);
 
-    if (error) {
-      setErro("Erro ao buscar leituras do usuário: " + error.message);
+    const { data: atual, error: erroAtual } = await supabase
+      .from("bpm_tempo_real")
+      .select("perfil_id, valor_bpm, recebido_em, atualizado_em")
+      .eq("perfil_id", sessao.user.id)
+      .maybeSingle();
+
+    const { data: historico, error: erroHistorico } = await supabase
+      .from("historico_bpm")
+      .select("id, perfil_id, valor_bpm, registrado_em")
+      .eq("perfil_id", sessao.user.id)
+      .order("registrado_em", { ascending: false })
+      .limit(40);
+
+    const { data: geral } = await supabase
+      .from("bpm_tempo_real")
+      .select("perfil_id, valor_bpm, recebido_em, atualizado_em")
+      .order("atualizado_em", { ascending: false })
+      .limit(1);
+
+    if (erroAtual && erroHistorico) {
+      setErro(`Erro ao carregar dashboard: ${erroAtual.message}`);
+      setBpmAtual(null);
+      setUltima(null);
       setLeiturasUsuario([]);
+      setLeiturasGerais([]);
       setCarregando(false);
       return;
     }
 
-    const { data: gerais } = await supabase
-      .from("bpm_leituras")
-      .select("id, perfil_id, valor_bpm, recebido_em")
-      .order("recebido_em", { ascending: false })
-      .limit(5);
+    const historicoNormalizado = (historico || []).map((item) => ({
+      id: item.id,
+      valor_bpm: item.valor_bpm,
+      recebido_em: item.registrado_em,
+      perfil_id: item.perfil_id,
+    }));
 
     setErro("");
-    setLeiturasUsuario(data || []);
-    setLeiturasGerais(gerais || []);
+    setBpmAtual(atual?.valor_bpm ?? historicoNormalizado[0]?.valor_bpm ?? null);
+    setUltima({
+      recebido_em: atual?.atualizado_em || atual?.recebido_em || historicoNormalizado[0]?.recebido_em,
+    });
+    setLeiturasUsuario(historicoNormalizado);
+    setLeiturasGerais(geral || []);
     setCarregando(false);
   }
 
   useEffect(() => {
-    carregarLeituras();
-
-    const intervalo = setInterval(() => {
-      carregarLeituras();
-    }, 5000);
-
+    carregarDashboard();
+    const intervalo = setInterval(carregarDashboard, 5000);
     return () => clearInterval(intervalo);
   }, [sessao?.user?.id]);
 
-  const ultima = leiturasUsuario[0] || null;
-  const bpmAtual = ultima?.valor_bpm || null;
-
-  const leiturasGraficoAtual = useMemo(() => {
-    return leiturasUsuario.filter((item) => {
-      if (!item.recebido_em) return false;
-      return new Date(item.recebido_em).getTime() >= new Date(inicioGraficoAtual).getTime();
-    });
-  }, [leiturasUsuario, inicioGraficoAtual]);
-
-  const media = calcularMedia(leiturasUsuario);
-  const menor = calcularMenor(leiturasUsuario);
-  const maior = calcularMaior(leiturasUsuario);
-
-  const nome =
-    perfil?.nome || sessao?.user?.user_metadata?.nome || sessao?.user?.email || "Paciente";
-
   const espEnviaParaOutroPerfil =
-    leiturasUsuario.length === 0 &&
+    !bpmAtual &&
     leiturasGerais.length > 0 &&
-    leiturasGerais[0]?.perfil_id !== sessao.user.id;
+    leiturasGerais[0]?.perfil_id &&
+    leiturasGerais[0]?.perfil_id !== sessao?.user?.id;
 
   return (
-    <section className="space-y-6">
+    <div>
       <PageHeader
         titulo="Início"
-        subtitulo="Resumo das leituras mais recentes enviadas pelo ESP32."
+        subtitulo="Acompanhamento em tempo real. O painel consulta os dados salvos no banco a cada 5 segundos."
         temaEscuro={temaEscuro}
-      >
-        <button onClick={carregarLeituras} className={ui.botaoSecundario}>
-          Atualizar
-        </button>
-      </PageHeader>
+      />
 
-      <div className={`grid gap-5 rounded-[2rem] p-5 ${ui.painel} xl:grid-cols-[0.85fr_1.15fr]`}>
-        <div className="rounded-[1.6rem] bg-gradient-to-br from-rose-600 via-red-700 to-slate-950 p-7 text-white">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-white/70">
-            BPM atual
-          </p>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card
+          titulo="BPM atual"
+          valor={carregando ? "..." : bpmAtual ? `${bpmAtual} BPM` : "Sem dados"}
+          subtitulo={`Última leitura recebida em ${formatarDataHora(ultima?.recebido_em)}.`}
+          temaEscuro={temaEscuro}
+        />
 
-          <h1 className="mt-4 text-6xl font-black tracking-tight md:text-7xl">
-            {carregando ? "..." : bpmAtual ? `${bpmAtual}` : "--"}
-            <span className="ml-2 text-2xl font-bold text-white/70">BPM</span>
-          </h1>
+        <Card
+          titulo="Classificação"
+          valor={classificarBpm(bpmAtual)}
+          subtitulo="Resultado com base no valor mais recente."
+          temaEscuro={temaEscuro}
+        />
 
-          <div className="mt-5">
-            <BadgeStatus valor={bpmAtual} />
-          </div>
-
-          <p className="mt-5 text-sm leading-6 text-white/80">
-            Última leitura recebida em {formatarDataHora(ultima?.recebido_em)}.
-          </p>
-        </div>
-
-        <div className="min-w-0">
-          <GraficoBpm
-            dados={leiturasGraficoAtual}
-            temaEscuro={temaEscuro}
-            titulo="Variação desde o login"
-            forcarSlider={true}
-          />
-        </div>
+        <Card
+          titulo="Leituras recentes"
+          valor={leiturasUsuario.length}
+          subtitulo="Registros usados no gráfico e na lista abaixo."
+          temaEscuro={temaEscuro}
+        />
       </div>
 
       {erro && (
-        <div className="rounded-2xl border border-red-400/30 bg-red-500/10 px-5 py-4 text-sm text-red-300">
+        <div className="mt-4 rounded-3xl border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-200">
           {erro}
         </div>
       )}
 
       {espEnviaParaOutroPerfil && (
-        <div className="rounded-2xl border border-yellow-400/30 bg-yellow-500/10 px-5 py-4 text-sm text-yellow-300">
+        <div className="mt-4 rounded-3xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-200">
           O ESP32 está enviando leituras, mas elas parecem estar vinculadas a outro perfil_id.
           <br />
-          ID do usuário logado: <span className="font-mono">{sessao.user.id}</span>
+          ID do usuário logado: {sessao.user.id}
           <br />
-          Último perfil_id recebido: <span className="font-mono">{leiturasGerais[0]?.perfil_id}</span>
+          Último perfil_id recebido: {leiturasGerais[0]?.perfil_id}
         </div>
       )}
 
-      <div className="grid gap-5 lg:grid-cols-4">
-        <Card temaEscuro={temaEscuro} titulo="Paciente" valor={nome} subtitulo={sessao.user.email} />
-        <Card temaEscuro={temaEscuro} titulo="Média recente" valor={media ? `${media} BPM` : "--"} subtitulo="últimas 30 leituras" />
-        <Card temaEscuro={temaEscuro} titulo="Menor recente" valor={menor ? `${menor} BPM` : "--"} subtitulo="últimas 30 leituras" />
-        <Card temaEscuro={temaEscuro} titulo="Maior recente" valor={maior ? `${maior} BPM` : "--"} subtitulo="últimas 30 leituras" />
+      <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
+        <GraficoBpm dados={leiturasUsuario} temaEscuro={temaEscuro} />
       </div>
 
-      <div className={`rounded-3xl p-5 ${ui.painel}`}>
-        <div className="flex flex-col justify-between gap-3 md:flex-row md:items-center">
-          <div>
-            <h2 className="text-xl font-black">Últimas leituras</h2>
-            <p className={`mt-1 text-sm ${ui.textoSuave}`}>
-              Dados recentes enviados pelo ESP32.
-            </p>
-          </div>
+      <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
+        <div className="mb-4">
+          <h2 className="text-xl font-bold">Últimas leituras</h2>
+          <p className={`mt-1 text-sm ${ui.textoSuave}`}>
+            Dados recentes enviados pelo ESP32.
+          </p>
         </div>
 
-        <div className={`mt-5 overflow-hidden rounded-2xl ${temaEscuro ? "border border-white/10" : "border border-slate-200"}`}>
-          {leiturasUsuario.length === 0 ? (
-            <div className={`p-5 text-sm ${ui.textoSuave}`}>
-              Nenhuma leitura encontrada para este usuário.
-            </div>
-          ) : (
-            <div className={temaEscuro ? "divide-y divide-white/10" : "divide-y divide-slate-200"}>
-              {leiturasUsuario.slice(0, 8).map((item) => (
-                <div
-                  key={item.id}
-                  className={`flex items-center justify-between gap-4 px-5 py-4 ${temaEscuro ? "hover:bg-white/5" : "hover:bg-slate-50"}`}
-                >
-                  <div>
-                    <p className="font-black">{item.valor_bpm} BPM</p>
-                    <p className={`text-sm ${ui.textoSuave}`}>{formatarDataHora(item.recebido_em)}</p>
-                  </div>
-
+        {leiturasUsuario.length === 0 ? (
+          <div
+            className={`rounded-3xl p-5 text-sm ${
+              temaEscuro ? "bg-white/5 text-slate-300" : "bg-slate-100 text-slate-600"
+            }`}
+          >
+            Nenhuma leitura encontrada para este usuário.
+          </div>
+        ) : (
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {leiturasUsuario.slice(0, 8).map((item) => (
+              <div
+                key={item.id}
+                className={`rounded-3xl p-4 ${temaEscuro ? "bg-white/5" : "bg-slate-50 border border-slate-200"}`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xl font-bold">{item.valor_bpm} BPM</p>
                   <BadgeStatus valor={item.valor_bpm} />
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
+                <p className={`mt-3 text-sm ${ui.textoSuave}`}>
+                  {formatarDataHora(item.recebido_em)}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
-    </section>
+    </div>
   );
+}
+
+function normalizarRegistroHistorico(item, index) {
+  const data =
+    item.registrado_em ||
+    item.recebido_em ||
+    item.atualizado_em ||
+    item.criado_em ||
+    item.data_hora ||
+    item.data_registro ||
+    item.minuto ||
+    item.dia ||
+    null;
+
+  const valor =
+    item.valor_bpm ??
+    item.bpm ??
+    item.bpm_atual ??
+    item.bpm_medio ??
+    item.media_bpm ??
+    item.bpm_media ??
+    null;
+
+  const minimo = item.bpm_minimo ?? item.minimo ?? item.bpm_min ?? null;
+  const maximo = item.bpm_maximo ?? item.maximo ?? item.bpm_max ?? null;
+
+  if (!data || valor === null || Number(valor) <= 0) {
+    return null;
+  }
+
+  return {
+    id: item.id ?? `${String(data)}-${index}`,
+    valor_bpm: Math.round(Number(valor)),
+    recebido_em: data,
+    minimo: minimo !== null ? Number(minimo) : null,
+    maximo: maximo !== null ? Number(maximo) : null,
+  };
+}
+
+async function buscarHistoricoPorFonte(sessao) {
+  const fontes = [
+    "vw_bpm_historico_minuto",
+    "v_bpm_historico_minuto",
+    "bpm_historico_minuto",
+    "historico_bpm",
+    "bpm_tempo_real",
+  ];
+
+  for (const fonte of fontes) {
+    const { data, error } = await supabase
+      .from(fonte)
+      .select("*")
+      .eq("perfil_id", sessao.user.id)
+      .limit(500);
+
+    if (error || !data || data.length === 0) {
+      continue;
+    }
+
+    const normalizados = data
+      .map((item, index) => normalizarRegistroHistorico(item, index))
+      .filter(Boolean)
+      .sort((a, b) => new Date(b.recebido_em) - new Date(a.recebido_em));
+
+    if (normalizados.length > 0) {
+      return normalizados;
+    }
+  }
+
+  return [];
 }
 
 function Historico({ sessao, temaEscuro }) {
   const ui = obterClasses(temaEscuro);
-
   const [leituras, setLeituras] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -985,32 +1093,25 @@ function Historico({ sessao, temaEscuro }) {
   async function carregarHistorico() {
     if (!sessao?.user?.id) return;
 
-    const { data, error } = await supabase
-      .from("bpm_leituras")
-      .select("id, perfil_id, valor_bpm, recebido_em")
-      .eq("perfil_id", sessao.user.id)
-      .order("recebido_em", { ascending: false })
-      .limit(500);
+    setCarregando(true);
 
-    if (error) {
-      setErro("Erro ao carregar histórico: " + error.message);
+    const dados = await buscarHistoricoPorFonte(sessao);
+
+    if (!dados.length) {
+      setErro("");
       setLeituras([]);
       setCarregando(false);
       return;
     }
 
     setErro("");
-    setLeituras(data || []);
+    setLeituras(dados);
     setCarregando(false);
   }
 
   useEffect(() => {
     carregarHistorico();
-
-    const intervalo = setInterval(() => {
-      carregarHistorico();
-    }, 10000);
-
+    const intervalo = setInterval(carregarHistorico, 10000);
     return () => clearInterval(intervalo);
   }, [sessao?.user?.id]);
 
@@ -1040,137 +1141,127 @@ function Historico({ sessao, temaEscuro }) {
 
   if (grupoSelecionado) {
     return (
-      <section className="space-y-6">
+      <div>
         <PageHeader
           titulo={grupoSelecionado.data}
-          subtitulo={`${grupoSelecionado.itens.length} leituras registradas neste dia.`}
+          subtitulo={`${grupoSelecionado.itens.length} leituras registradas`}
           temaEscuro={temaEscuro}
         >
-          <button
-            onClick={carregarHistorico}
-            className="rounded-2xl bg-rose-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-rose-500"
-          >
-            Atualizar
-          </button>
-
-          <button
-            onClick={() => setDataAberta(null)}
-            className={ui.botaoSecundario}
-          >
+          <button onClick={() => setDataAberta(null)} className={ui.botaoSecundario}>
             Voltar para histórico
           </button>
         </PageHeader>
 
-        <div className={`rounded-3xl p-5 ${ui.painel}`}>
-          <GraficoBpm
-            dados={grupoSelecionado.itens}
+        <div className="grid gap-4 md:grid-cols-3">
+          <Card
+            titulo="Média"
+            valor={grupoSelecionado.media ?? "--"}
+            subtitulo="BPM médio do dia selecionado."
             temaEscuro={temaEscuro}
-            altura={320}
-            titulo="Variação do dia"
-            forcarSlider={true}
+          />
+          <Card
+            titulo="Mín"
+            valor={grupoSelecionado.menor ?? "--"}
+            subtitulo="Menor valor de BPM."
+            temaEscuro={temaEscuro}
+          />
+          <Card
+            titulo="Máx"
+            valor={grupoSelecionado.maior ?? "--"}
+            subtitulo="Maior valor de BPM."
+            temaEscuro={temaEscuro}
           />
         </div>
 
-        <div className={`rounded-3xl p-5 ${ui.painel}`}>
+        <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
           <GraficoBarrasBpm dados={grupoSelecionado.itens} temaEscuro={temaEscuro} />
         </div>
 
-        <div className={`rounded-3xl ${ui.painel}`}>
-          <div className={`grid grid-cols-3 gap-3 border-b p-5 text-sm font-bold ${temaEscuro ? "border-white/10 text-slate-300" : "border-slate-200 text-slate-600"}`}>
-            <span>BPM</span>
-            <span>Status</span>
-            <span className="text-right">Horário</span>
-          </div>
-
-          <div className={temaEscuro ? "divide-y divide-white/10" : "divide-y divide-slate-200"}>
+        <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
+          <h2 className="text-xl font-bold">Leituras do dia</h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {grupoSelecionado.itens.map((item) => (
-              <div key={item.id} className="grid grid-cols-3 items-center gap-3 px-5 py-4">
-                <p className="font-black">{item.valor_bpm} BPM</p>
-                <BadgeStatus valor={item.valor_bpm} />
-                <p className={`text-right text-sm font-semibold ${ui.textoSuave}`}>
+              <div
+                key={item.id}
+                className={`rounded-3xl p-4 ${
+                  temaEscuro ? "bg-white/5" : "bg-slate-50 border border-slate-200"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-xl font-bold">{item.valor_bpm} BPM</p>
+                  <BadgeStatus valor={item.valor_bpm} />
+                </div>
+                <p className={`mt-3 text-sm ${ui.textoSuave}`}>
                   {formatarHora(item.recebido_em)}
                 </p>
               </div>
             ))}
           </div>
         </div>
-      </section>
+      </div>
     );
   }
 
   return (
-    <section className="space-y-6">
+    <div>
       <PageHeader
-        titulo="Histórico diário"
-        subtitulo="Clique em uma data para visualizar as leituras e os gráficos do dia."
+        titulo="Histórico"
+        subtitulo="Selecione uma data para visualizar os valores registrados e o gráfico do dia."
         temaEscuro={temaEscuro}
       >
-        <button
-          onClick={carregarHistorico}
-          className="rounded-2xl bg-rose-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-rose-500"
-        >
+        <button onClick={carregarHistorico} className={ui.botaoSecundario}>
           Atualizar
         </button>
       </PageHeader>
 
       {erro && (
-        <div className="rounded-2xl border border-red-400/30 bg-red-500/10 px-5 py-4 text-sm text-red-300">
+        <div className="mb-4 rounded-3xl border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-200">
           {erro}
         </div>
       )}
 
       {carregando ? (
-        <div className={`rounded-3xl p-6 ${ui.painel} ${ui.textoSuave}`}>
-          Carregando histórico...
-        </div>
+        <div className={`rounded-[2rem] p-6 ${ui.painel}`}>Carregando histórico...</div>
       ) : grupos.length === 0 ? (
-        <div className={`rounded-3xl p-6 ${ui.painel} ${ui.textoSuave}`}>
-          Nenhuma leitura encontrada para este usuário.
+        <div className={`rounded-[2rem] p-6 ${ui.painel}`}>
+          Nenhuma leitura encontrada no histórico.
         </div>
       ) : (
-        <div className="grid gap-4 xl:grid-cols-2">
+        <div className="grid gap-4">
           {grupos.map((grupo) => (
             <button
               key={grupo.data}
               onClick={() => setDataAberta(grupo.data)}
-              className={`rounded-3xl p-5 text-left transition ${ui.painel} ${
-                temaEscuro ? "hover:bg-slate-800" : "hover:bg-slate-50"
-              }`}
+              className={`rounded-[2rem] p-5 text-left transition hover:scale-[1.01] ${ui.painel}`}
             >
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
                 <div>
-                  <h2 className="text-2xl font-black">{grupo.data}</h2>
+                  <h2 className="text-xl font-bold">{grupo.data}</h2>
                   <p className={`mt-1 text-sm ${ui.textoSuave}`}>
                     {grupo.itens.length} leituras registradas
                   </p>
                 </div>
 
-                <span className="rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white">
-                  Ver
-                </span>
-              </div>
-
-              <div className="mt-5 grid grid-cols-3 gap-2 text-center text-sm">
-                <div className={temaEscuro ? "rounded-2xl bg-white/10 p-3" : "rounded-2xl bg-slate-100 p-3"}>
-                  <p className={ui.textoSuave}>Média</p>
-                  <p className="mt-1 font-black">{grupo.media}</p>
-                </div>
-
-                <div className={temaEscuro ? "rounded-2xl bg-white/10 p-3" : "rounded-2xl bg-slate-100 p-3"}>
-                  <p className={ui.textoSuave}>Mín</p>
-                  <p className="mt-1 font-black">{grupo.menor}</p>
-                </div>
-
-                <div className={temaEscuro ? "rounded-2xl bg-white/10 p-3" : "rounded-2xl bg-slate-100 p-3"}>
-                  <p className={ui.textoSuave}>Máx</p>
-                  <p className="mt-1 font-black">{grupo.maior}</p>
+                <div className="grid grid-cols-3 gap-3 sm:w-auto">
+                  <div className={`rounded-2xl px-4 py-3 ${ui.painelForte}`}>
+                    <p className={`text-xs ${ui.textoSuave}`}>Média</p>
+                    <p className="mt-1 text-lg font-bold">{grupo.media ?? "--"}</p>
+                  </div>
+                  <div className={`rounded-2xl px-4 py-3 ${ui.painelForte}`}>
+                    <p className={`text-xs ${ui.textoSuave}`}>Mín</p>
+                    <p className="mt-1 text-lg font-bold">{grupo.menor ?? "--"}</p>
+                  </div>
+                  <div className={`rounded-2xl px-4 py-3 ${ui.painelForte}`}>
+                    <p className={`text-xs ${ui.textoSuave}`}>Máx</p>
+                    <p className="mt-1 text-lg font-bold">{grupo.maior ?? "--"}</p>
+                  </div>
                 </div>
               </div>
             </button>
           ))}
         </div>
       )}
-    </section>
+    </div>
   );
 }
 
@@ -1178,39 +1269,57 @@ function Perfil({ sessao, perfil, temaEscuro }) {
   const ui = obterClasses(temaEscuro);
 
   return (
-    <section className="space-y-6">
+    <div>
       <PageHeader
         titulo="Perfil"
-        subtitulo="Dados do paciente logado e informações de vínculo do dispositivo."
+        subtitulo="Informações reais do usuário autenticado."
         temaEscuro={temaEscuro}
       />
 
-      <div className="grid gap-5 lg:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         <Card
-          temaEscuro={temaEscuro}
           titulo="Nome"
           valor={perfil?.nome || sessao?.user?.user_metadata?.nome || "Não informado"}
+          subtitulo="Nome cadastrado do paciente."
+          temaEscuro={temaEscuro}
         />
-
-        <Card temaEscuro={temaEscuro} titulo="E-mail" valor={sessao?.user?.email} />
-        <Card temaEscuro={temaEscuro} titulo="Idade" valor={perfil?.idade ?? "Não informado"} />
-        <Card temaEscuro={temaEscuro} titulo="Sexo" value={perfil?.sexo || "Não informado"} valor={perfil?.sexo || "Não informado"} />
-
-        <div className={`rounded-3xl p-5 lg:col-span-2 ${ui.painel}`}>
-          <p className={`text-sm ${ui.textoSuave}`}>ID do usuário logado</p>
-          <p className="mt-2 break-all font-mono text-sm">
-            {sessao?.user?.id}
-          </p>
-        </div>
-
-        <div className={`rounded-3xl p-5 lg:col-span-2 ${ui.painel}`}>
-          <p className={`text-sm ${ui.textoSuave}`}>Código do dispositivo</p>
-          <p className="mt-2 break-all font-mono text-sm">
-            {CODIGO_DISPOSITIVO}
-          </p>
-        </div>
+        <Card
+          titulo="E-mail"
+          valor={sessao?.user?.email || "Não informado"}
+          subtitulo="Conta utilizada no login."
+          temaEscuro={temaEscuro}
+        />
+        <Card
+          titulo="Idade"
+          valor={perfil?.idade ?? "Não informada"}
+          subtitulo="Idade cadastrada no perfil."
+          temaEscuro={temaEscuro}
+        />
+        <Card
+          titulo="Sexo"
+          valor={perfil?.sexo || "Não informado"}
+          subtitulo="Sexo informado no cadastro."
+          temaEscuro={temaEscuro}
+        />
+        <Card
+          titulo="Criado em"
+          valor={formatarDataHora(perfil?.criado_em)}
+          subtitulo="Data de criação do perfil."
+          temaEscuro={temaEscuro}
+        />
+        <Card
+          titulo="Código do dispositivo"
+          valor={CODIGO_DISPOSITIVO}
+          subtitulo="Identificador exibido no painel."
+          temaEscuro={temaEscuro}
+        />
       </div>
-    </section>
+
+      <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
+        <h2 className="text-xl font-bold">ID do usuário logado</h2>
+        <p className={`mt-3 break-all text-sm ${ui.textoSuave}`}>{sessao?.user?.id}</p>
+      </div>
+    </div>
   );
 }
 
@@ -1220,8 +1329,12 @@ function App() {
   const [carregandoSessao, setCarregandoSessao] = useState(true);
   const [abaAtiva, setAbaAtiva] = useState("inicio");
   const [tema, setTema] = useState(() => localStorage.getItem("tema-bpm") || "escuro");
+  const [visualizacao, setVisualizacao] = useState(
+    () => localStorage.getItem("visualizacao-bpm") || "mobile"
+  );
 
   const temaEscuro = tema === "escuro";
+  const forcarWeb = visualizacao === "web";
   const ui = obterClasses(temaEscuro);
 
   function alternarTema() {
@@ -1232,15 +1345,12 @@ function App() {
     });
   }
 
-  async function vincularDispositivoAutomaticamente() {
-    const { data, error } = await supabase.rpc("vincular_dispositivo_principal");
-
-    if (error) {
-      console.error("Erro ao vincular dispositivo automaticamente:", error);
-      return null;
-    }
-
-    return data;
+  function alternarVisualizacao() {
+    setVisualizacao((atual) => {
+      const novaVisualizacao = atual === "web" ? "mobile" : "web";
+      localStorage.setItem("visualizacao-bpm", novaVisualizacao);
+      return novaVisualizacao;
+    });
   }
 
   async function carregarPerfil(sessaoAtual) {
@@ -1249,7 +1359,11 @@ function App() {
       return;
     }
 
-    await vincularDispositivoAutomaticamente();
+    try {
+      await supabase.rpc("vincular_dispositivo_principal");
+    } catch {
+      console.error("Não foi possível vincular o dispositivo automaticamente.");
+    }
 
     const { data, error } = await supabase
       .from("perfis")
@@ -1258,7 +1372,6 @@ function App() {
       .maybeSingle();
 
     if (error) {
-      console.error("Erro ao carregar perfil:", error);
       setPerfil(null);
       return;
     }
@@ -1293,123 +1406,168 @@ function App() {
 
   if (carregandoSessao) {
     return (
-      <main className={`flex min-h-screen items-center justify-center ${temaEscuro ? "bg-slate-950 text-white" : "bg-slate-100 text-slate-950"}`}>
-        <div className={`rounded-3xl px-8 py-6 ${ui.painel}`}>
-          Carregando...
-        </div>
-      </main>
+      <div className={`flex min-h-screen items-center justify-center ${ui.pagina}`}>
+        Carregando...
+      </div>
     );
   }
 
   if (!sessao) {
-    return <TelaLogin temaEscuro={temaEscuro} alternarTema={alternarTema} />;
+    return (
+      <TelaLogin
+        temaEscuro={temaEscuro}
+        alternarTema={alternarTema}
+        visualizacao={visualizacao}
+        alternarVisualizacao={alternarVisualizacao}
+      />
+    );
   }
 
   const nome =
-    perfil?.nome || sessao?.user?.user_metadata?.nome || sessao?.user?.email || "Paciente";
+    perfil?.nome ||
+    sessao?.user?.user_metadata?.nome ||
+    sessao?.user?.email ||
+    "Paciente";
+
+  const containerLogado = forcarWeb
+    ? "mx-auto flex min-h-screen min-w-[1080px] max-w-7xl flex-row"
+    : "mx-auto flex min-h-screen max-w-7xl flex-col md:flex-row";
 
   return (
-    <main className={`${ui.pagina} transition-colors duration-300`}>
-      <div className="mx-auto flex w-full max-w-[1700px]">
-        <aside className={`sticky top-0 hidden h-screen w-80 shrink-0 border-r p-6 lg:flex lg:flex-col lg:justify-between ${temaEscuro ? "border-white/10 bg-slate-900" : "border-slate-200 bg-white"}`}>
-          <div>
+    <div className={`overflow-x-auto ${ui.pagina}`}>
+      <div className={containerLogado}>
+        <aside
+          className={`${
+            forcarWeb ? "flex" : "hidden md:flex"
+          } w-72 shrink-0 flex-col border-r p-6 ${
+            temaEscuro ? "border-white/10 bg-slate-950/70" : "border-slate-200 bg-white"
+          }`}
+        >
+          <div className="flex items-center justify-between">
             <LogoBpm />
-
-            <div className={`mt-8 rounded-3xl p-5 ${ui.painelForte}`}>
-              <p className={`text-sm ${ui.textoSuave}`}>Bem-vindo</p>
-              <p className="mt-2 break-words text-xl font-black">{nome}</p>
-              <p className={`mt-1 break-all text-sm ${ui.textoMuitoSuave}`}>{sessao.user.email}</p>
-            </div>
-
-            <nav className="mt-8 flex flex-col gap-3">
-              <button
-                onClick={() => setAbaAtiva("inicio")}
-                className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
-                  abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo
-                }`}
-              >
-                Início
-              </button>
-
-              <button
-                onClick={() => setAbaAtiva("historico")}
-                className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
-                  abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo
-                }`}
-              >
-                Histórico
-              </button>
-
-              <button
-                onClick={() => setAbaAtiva("perfil")}
-                className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
-                  abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo
-                }`}
-              >
-                Perfil
-              </button>
-            </nav>
           </div>
 
-          <div className="space-y-3">
+          <div className="mt-4 flex flex-col gap-2">
+            <BotaoVisualizacao
+              visualizacao={visualizacao}
+              alternarVisualizacao={alternarVisualizacao}
+              temaEscuro={temaEscuro}
+            />
             <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+          </div>
 
-            <button onClick={sair} className={ui.botaoSecundario + " w-full"}>
+          <div className="mt-8 rounded-[2rem] border border-white/10 bg-rose-600/10 p-5">
+            <p className="text-sm text-slate-400">Bem-vindo</p>
+            <p className="mt-2 text-lg font-bold">{nome}</p>
+            <p className="mt-1 break-all text-sm text-slate-400">{sessao.user.email}</p>
+          </div>
+
+          <nav className="mt-8 flex flex-col gap-2">
+            <button
+              onClick={() => setAbaAtiva("inicio")}
+              className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
+                abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo
+              }`}
+            >
+              Início
+            </button>
+            <button
+              onClick={() => setAbaAtiva("historico")}
+              className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
+                abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo
+              }`}
+            >
+              Histórico
+            </button>
+            <button
+              onClick={() => setAbaAtiva("perfil")}
+              className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
+                abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo
+              }`}
+            >
+              Perfil
+            </button>
+          </nav>
+
+          <button
+            onClick={sair}
+            className="mt-auto rounded-2xl bg-white/10 px-4 py-3 font-semibold text-white transition hover:bg-white/20"
+          >
+            Sair
+          </button>
+        </aside>
+
+        <main className="flex-1 p-4 pb-24 sm:p-6 md:p-8">
+          <div className={`${forcarWeb ? "hidden" : "mb-6 flex items-center justify-between md:hidden"}`}>
+            <LogoBpm />
+            <div className="flex gap-2">
+              <BotaoVisualizacao
+                visualizacao={visualizacao}
+                alternarVisualizacao={alternarVisualizacao}
+                temaEscuro={temaEscuro}
+              />
+              <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+            </div>
+          </div>
+
+          <div className={`${forcarWeb ? "hidden" : "mb-6 md:hidden"}`}>
+            <div className={`rounded-[2rem] p-4 ${ui.painel}`}>
+              <p className="text-sm text-slate-400">Bem-vindo</p>
+              <p className="mt-1 text-lg font-bold">{nome}</p>
+              <p className="mt-1 break-all text-sm text-slate-400">{sessao.user.email}</p>
+            </div>
+          </div>
+
+          {abaAtiva === "inicio" && <Dashboard sessao={sessao} temaEscuro={temaEscuro} />}
+          {abaAtiva === "historico" && <Historico sessao={sessao} temaEscuro={temaEscuro} />}
+          {abaAtiva === "perfil" && (
+            <Perfil sessao={sessao} perfil={perfil} temaEscuro={temaEscuro} />
+          )}
+        </main>
+
+        <div
+          className={`${
+            forcarWeb ? "hidden" : "fixed"
+          } inset-x-0 bottom-0 z-40 border-t p-3 md:hidden ${
+            temaEscuro ? "border-white/10 bg-slate-950/95" : "border-slate-200 bg-white/95"
+          } backdrop-blur-xl`}
+        >
+          <div className="mx-auto grid max-w-md grid-cols-4 gap-2">
+            <button
+              onClick={() => setAbaAtiva("inicio")}
+              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+                abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo
+              }`}
+            >
+              Início
+            </button>
+            <button
+              onClick={() => setAbaAtiva("historico")}
+              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+                abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo
+              }`}
+            >
+              Histórico
+            </button>
+            <button
+              onClick={() => setAbaAtiva("perfil")}
+              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+                abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo
+              }`}
+            >
+              Perfil
+            </button>
+            <button
+              onClick={sair}
+              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${ui.menuInativo}`}
+            >
               Sair
             </button>
           </div>
-        </aside>
-
-        <section className="w-full min-w-0 px-4 pb-28 pt-4 sm:px-5 sm:pt-6 lg:px-8 lg:pb-10">
-          <header className={`mb-5 flex items-center justify-between gap-3 rounded-3xl p-4 sm:p-5 lg:hidden ${ui.painel}`}>
-            <LogoBpm compacto />
-
-            <div className="flex gap-2">
-              <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-              <button onClick={sair} className={ui.botaoSecundario}>Sair</button>
-            </div>
-          </header>
-
-          {abaAtiva === "inicio" && <Dashboard sessao={sessao} perfil={perfil} temaEscuro={temaEscuro} />}
-          {abaAtiva === "historico" && <Historico sessao={sessao} temaEscuro={temaEscuro} />}
-          {abaAtiva === "perfil" && <Perfil sessao={sessao} perfil={perfil} temaEscuro={temaEscuro} />}
-        </section>
-
-        <nav className={`fixed bottom-0 left-0 right-0 z-50 grid grid-cols-3 border-t p-2 sm:p-3 lg:hidden ${temaEscuro ? "border-white/10 bg-slate-900" : "border-slate-200 bg-white"}`}>
-          <button
-            onClick={() => setAbaAtiva("inicio")}
-            className={`rounded-2xl py-3 text-sm font-bold ${
-              abaAtiva === "inicio" ? "bg-rose-600 text-white" : ui.textoSuave
-            }`}
-          >
-            Início
-          </button>
-
-          <button
-            onClick={() => setAbaAtiva("historico")}
-            className={`rounded-2xl py-3 text-sm font-bold ${
-              abaAtiva === "historico" ? "bg-rose-600 text-white" : ui.textoSuave
-            }`}
-          >
-            Histórico
-          </button>
-
-          <button
-            onClick={() => setAbaAtiva("perfil")}
-            className={`rounded-2xl py-3 text-sm font-bold ${
-              abaAtiva === "perfil" ? "bg-rose-600 text-white" : ui.textoSuave
-            }`}
-          >
-            Perfil
-          </button>
-        </nav>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }
 
 export default App;
-
-
-
-
