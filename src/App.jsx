@@ -10,36 +10,31 @@ const CODIGO_DISPOSITIVO = "ESP32_PRINCIPAL";
 
 const MEDICAL_SLIDES = [
   {
-    desktop:
-      "https://telemedicinamorsch.com.br/wp-content/uploads/2021/09/batidas-do-coracao-telemedicina-morsch.jpg",
+    desktop: "https://telemedicinamorsch.com.br/wp-content/uploads/2021/09/batidas-do-coracao-telemedicina-morsch.jpg",
     mobile: anatomiaCardiaca,
     mobileClass: "scale-100 object-[center_42%]",
     alt: "Imagem médica de anatomia cardíaca",
   },
   {
-    desktop:
-      "https://telemedicinamorsch.com.br/wp-content/uploads/2024/07/frequencia-cardiaca-telemedicina-morsch.jpg",
+    desktop: "https://telemedicinamorsch.com.br/wp-content/uploads/2024/07/frequencia-cardiaca-telemedicina-morsch.jpg",
     mobile: coracaoMonitoramento,
     mobileClass: "scale-100 object-[center_48%]",
     alt: "Imagem de coração com gráfico cardíaco",
   },
   {
-    desktop:
-      "https://www.hospitalimigrantes.com.br/imgs/dXBsb2Fkcy9ub3RpY2lhcy8xNjY5NzUxMTkwLTEuanBn/800/500/N/crop",
+    desktop: "https://www.hospitalimigrantes.com.br/imgs/dXBsb2Fkcy9ub3RpY2lhcy8xNjY5NzUxMTkwLTEuanBn/800/500/N/crop",
     mobile: cuidadoCardiaco,
     mobileClass: "scale-[1.04] object-[center_40%]",
     alt: "Imagem médica com coração simbólico",
   },
   {
-    desktop:
-      "https://product-database.victorvision.com.br/uploads/thumb_heartbeat_8b13b2852b.png",
+    desktop: "https://product-database.victorvision.com.br/uploads/thumb_heartbeat_8b13b2852b.png",
     mobile: consultaCardiologica,
     mobileClass: "scale-[1.03] object-[center_42%]",
     alt: "Paciente em consulta médica",
   },
   {
-    desktop:
-      "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
+    desktop: "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
     mobile: anatomiaCardiaca,
     mobileClass: "scale-100 object-[center_42%]",
     alt: "Imagem complementar de frequência cardíaca",
@@ -118,9 +113,12 @@ function obterClasses(temaEscuro) {
       : "border border-slate-200 bg-slate-50",
     textoSuave: temaEscuro ? "text-slate-400" : "text-slate-500",
     textoMuitoSuave: temaEscuro ? "text-slate-500" : "text-slate-400",
-    input: temaEscuro
-      ? "w-full rounded-xl border border-white/10 bg-slate-950/55 px-3 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-rose-400 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base md:bg-slate-950/90"
-      : "w-full rounded-xl border border-slate-200/60 bg-white/60 px-3 py-2 text-sm text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-rose-500 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base md:bg-white",
+    inputWeb: temaEscuro
+      ? "w-full rounded-2xl border border-white/10 bg-slate-950/90 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-rose-400"
+      : "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-rose-500",
+    inputMobile: temaEscuro
+      ? "w-full rounded-xl border border-white/10 bg-slate-950/48 px-3 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-rose-400"
+      : "w-full rounded-xl border border-white/50 bg-white/50 px-3 py-2 text-sm text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-rose-500",
     botaoSecundario: temaEscuro
       ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
       : "rounded-2xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300",
@@ -156,7 +154,7 @@ function LogoBpm({ compacto = false }) {
       {!compacto && (
         <div>
           <p className="text-lg font-bold leading-none">Monitor BPM</p>
-          <p className="text-xs text-slate-400">Painel de acompanhamento</p>
+          <p className="text-xs text-slate-300">Painel de acompanhamento</p>
         </div>
       )}
     </div>
@@ -174,14 +172,13 @@ function BotaoTema({ temaEscuro, alternarTema }) {
 }
 
 function BotaoVisualizacao({ visualizacao, alternarVisualizacao, temaEscuro }) {
-  const texto = visualizacao === "web" ? "Versão mobile" : "Versão web";
   const classe = temaEscuro
     ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
     : "rounded-2xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300";
 
   return (
     <button onClick={alternarVisualizacao} className={classe}>
-      {texto}
+      {visualizacao === "web" ? "Versão mobile" : "Versão web"}
     </button>
   );
 }
@@ -230,15 +227,8 @@ function Card({ titulo, valor, subtitulo, temaEscuro }) {
   );
 }
 
-function GraficoBpm({
-  dados,
-  temaEscuro,
-  titulo = "Variação recente",
-  altura = 300,
-  forcarSlider = false,
-}) {
+function GraficoBpm({ dados, temaEscuro, titulo = "Variação recente", altura = 300 }) {
   const [hover, setHover] = useState(null);
-
   const dadosOrdenados = [...dados].reverse();
   const pontosOriginais = dadosOrdenados
     .map((item) => ({
@@ -270,9 +260,7 @@ function GraficoBpm({
   const dominioMin = Math.max(0, p05 - margem);
   const dominioMax = p95 + margem;
   const faixa = Math.max(dominioMax - dominioMin, 1);
-  const largura = forcarSlider
-    ? Math.max(1700, pontosOriginais.length * 110)
-    : Math.max(1200, pontosOriginais.length * 55);
+  const largura = Math.max(1200, pontosOriginais.length * 55);
   const paddingX = 52;
   const paddingY = 42;
 
@@ -285,11 +273,7 @@ function GraficoBpm({
     const valorLimitado = Math.min(Math.max(item.valor, dominioMin), dominioMax);
     const y = paddingY + ((dominioMax - valorLimitado) * (altura - paddingY * 2)) / faixa;
 
-    return {
-      ...item,
-      x,
-      y,
-    };
+    return { ...item, x, y };
   });
 
   const linha = pontos.map((ponto) => `${ponto.x},${ponto.y}`).join(" ");
@@ -450,9 +434,36 @@ function GraficoBarrasBpm({ dados, temaEscuro }) {
   );
 }
 
+function FundoLogin({ slideAtual, visualizacao }) {
+  const slide = MEDICAL_SLIDES[slideAtual];
+
+  if (visualizacao === "web") {
+    return (
+      <>
+        <img
+          src={slide.desktop}
+          alt={slide.alt}
+          className="absolute inset-0 h-full w-full object-cover object-center transition-all duration-700"
+        />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/65 via-slate-950/45 to-slate-950/85" />
+      </>
+    );
+  }
+
+  return (
+    <>
+      <img
+        src={slide.mobile}
+        alt={slide.alt}
+        className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${slide.mobileClass}`}
+      />
+      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/5 via-slate-950/0 to-slate-950/16" />
+    </>
+  );
+}
+
 function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizacao }) {
   const ui = obterClasses(temaEscuro);
-  const forcarWeb = visualizacao === "web";
   const [modoCadastro, setModoCadastro] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
@@ -553,83 +564,204 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
     setModoCadastro(false);
   }
 
-  const textoHero = temaEscuro ? "text-white" : "text-slate-950";
-  const textoSecundario = temaEscuro ? "text-slate-300" : "text-slate-700";
-  const cardHero = temaEscuro
-    ? "border border-white/10 bg-slate-900/35 backdrop-blur-sm"
-    : "border border-white/70 bg-white/60 backdrop-blur-sm shadow-lg shadow-slate-200/40";
+  const inputClasse = visualizacao === "web" ? ui.inputWeb : ui.inputMobile;
 
-  const cardAcessoMobile = temaEscuro
-    ? "border border-white/5 bg-slate-950/24 text-white shadow-lg shadow-black/10 backdrop-blur-[1px]"
-    : "border border-white/50 bg-white/38 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-[1px]";
+  const cardAcesso =
+    visualizacao === "web"
+      ? temaEscuro
+        ? "border border-white/10 bg-slate-900/88 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
+        : "border border-white/80 bg-white/92 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
+      : temaEscuro
+      ? "border border-white/5 bg-slate-950/12 text-white shadow-lg shadow-black/10 backdrop-blur-0"
+      : "border border-white/40 bg-white/24 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
 
-  const cardAcessoWeb = temaEscuro
-    ? "border border-white/10 bg-slate-900/88 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
-    : "border border-white/80 bg-white/92 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl";
+  if (visualizacao === "mobile") {
+    return (
+      <div className="min-h-screen overflow-x-auto bg-slate-950">
+        <div className="mx-auto min-h-screen max-w-[430px] bg-slate-950">
+          <div className="relative min-h-screen overflow-hidden">
+            <FundoLogin slideAtual={slideAtual} visualizacao="mobile" />
 
-  const containerClasse = forcarWeb
-    ? "mx-auto grid min-h-screen min-w-[980px] max-w-7xl grid-cols-[1.15fr_0.85fr] gap-6 px-8 py-6"
-    : "mx-auto flex min-h-screen max-w-7xl flex-col px-4 py-4 sm:px-6 sm:py-6 md:grid md:grid-cols-[1.15fr_0.85fr] md:gap-6 lg:px-8";
+            <div className="relative z-10 flex min-h-screen flex-col px-4 py-4">
+              <div className="flex items-center justify-between gap-2">
+                <LogoBpm compacto />
+                <div className="flex gap-2">
+                  <BotaoVisualizacao
+                    visualizacao={visualizacao}
+                    alternarVisualizacao={alternarVisualizacao}
+                    temaEscuro={temaEscuro}
+                  />
+                  <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+                </div>
+              </div>
 
-  return (
-    <div className={`min-h-screen overflow-x-auto ${ui.pagina}`}>
-      <div className={containerClasse}>
-        <div className={forcarWeb ? "hidden" : "mb-4 flex items-center justify-between md:hidden"}>
-          <LogoBpm />
-          <div className="flex gap-2">
-            <BotaoVisualizacao
-              visualizacao={visualizacao}
-              alternarVisualizacao={alternarVisualizacao}
-              temaEscuro={temaEscuro}
-            />
-            <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-          </div>
-        </div>
-
-        {!forcarWeb && (
-          <div className="md:hidden">
-            <div className="relative overflow-hidden rounded-[2rem] border border-white/10 shadow-2xl shadow-black/20">
-              <img
-                src={MEDICAL_SLIDES[slideAtual].mobile}
-                alt={MEDICAL_SLIDES[slideAtual].alt}
-                className={`h-[285px] w-full object-cover transition-transform duration-500 ${MEDICAL_SLIDES[slideAtual].mobileClass}`}
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-slate-950/0 via-slate-950/0 to-slate-950/22" />
-              <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-between p-4">
-                <span className={`rounded-full px-3 py-1 text-xs font-semibold ${cardHero} ${textoHero}`}>
+              <div className="mt-7">
+                <span className="inline-flex rounded-full border border-white/10 bg-slate-950/20 px-3 py-1 text-xs font-semibold text-white">
                   Dispositivo: {CODIGO_DISPOSITIVO}
                 </span>
-              </div>
-              <div className="absolute inset-x-0 bottom-0 z-10 p-5">
-                <h1 className={`text-3xl font-bold ${textoHero}`}>Painel de BPM</h1>
-                <p className={`mt-2 text-sm leading-6 ${textoSecundario}`}>
-                  Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico
-                  diário do paciente.
+
+                <h1 className="mt-4 text-4xl font-black leading-tight text-white drop-shadow-lg">
+                  Painel de BPM
+                </h1>
+
+                <p className="mt-2 max-w-[290px] text-sm leading-6 text-slate-100 drop-shadow">
+                  Acompanhe as leituras do ESP32 e consulte o histórico diário do paciente.
                 </p>
+              </div>
+
+              <div className="mt-auto pb-4">
+                <div className={`mx-auto w-full max-w-[230px] rounded-[0.9rem] p-2 ${cardAcesso}`}>
+                  <div className="mb-2 flex flex-col items-center text-center">
+                    <div className="scale-[0.55]">
+                      <IconeLogo />
+                    </div>
+                    <p className={`mt-1 text-[9px] font-bold uppercase tracking-[0.24em] ${ui.textoMuitoSuave}`}>
+                      Acesso
+                    </p>
+                    <h2 className="mt-1 text-xl font-black">
+                      {modoCadastro ? "Cadastro" : "Entrar"}
+                    </h2>
+                    <p className={`mt-1 max-w-[200px] text-[11px] leading-4 ${ui.textoSuave}`}>
+                      {modoCadastro
+                        ? "Cadastre os dados do paciente."
+                        : "Entre com seu e-mail para acessar."}
+                    </p>
+                  </div>
+
+                  <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 ${temaEscuro ? "bg-slate-950/35" : "bg-white/30"}`}>
+                    <button
+                      onClick={() => {
+                        setMensagem("");
+                        setModoCadastro(false);
+                      }}
+                      className={`rounded-lg px-2 py-2 text-xs font-bold transition ${
+                        !modoCadastro
+                          ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
+                          : temaEscuro
+                          ? "text-slate-400"
+                          : "text-slate-600"
+                      }`}
+                    >
+                      Login
+                    </button>
+                    <button
+                      onClick={() => {
+                        setMensagem("");
+                        setModoCadastro(true);
+                      }}
+                      className={`rounded-lg px-2 py-2 text-xs font-bold transition ${
+                        modoCadastro
+                          ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
+                          : temaEscuro
+                          ? "text-slate-400"
+                          : "text-slate-600"
+                      }`}
+                    >
+                      Cadastro
+                    </button>
+                  </div>
+
+                  <form onSubmit={modoCadastro ? cadastrar : entrar} className="space-y-2">
+                    {modoCadastro && (
+                      <>
+                        <input
+                          type="text"
+                          placeholder="Nome completo"
+                          value={form.nome}
+                          onChange={(e) => atualizarCampo("nome", e.target.value)}
+                          className={inputClasse}
+                        />
+
+                        <input
+                          type="number"
+                          placeholder="Idade"
+                          value={form.idade}
+                          onChange={(e) => atualizarCampo("idade", e.target.value)}
+                          className={inputClasse}
+                        />
+
+                        <select
+                          value={form.sexo}
+                          onChange={(e) => atualizarCampo("sexo", e.target.value)}
+                          className={inputClasse}
+                        >
+                          <option value="masculino">Masculino</option>
+                          <option value="feminino">Feminino</option>
+                          <option value="outro">Outro</option>
+                        </select>
+                      </>
+                    )}
+
+                    <input
+                      type="email"
+                      placeholder="E-mail"
+                      value={form.email}
+                      onChange={(e) => atualizarCampo("email", e.target.value)}
+                      className={inputClasse}
+                    />
+
+                    <input
+                      type="password"
+                      placeholder="Senha"
+                      value={form.senha}
+                      onChange={(e) => atualizarCampo("senha", e.target.value)}
+                      className={inputClasse}
+                    />
+
+                    {modoCadastro && (
+                      <input
+                        type="password"
+                        placeholder="Confirmar senha"
+                        value={form.confirmarSenha}
+                        onChange={(e) => atualizarCampo("confirmarSenha", e.target.value)}
+                        className={inputClasse}
+                      />
+                    )}
+
+                    {mensagem && (
+                      <div
+                        className={`rounded-xl border px-3 py-2 text-xs ${
+                          mensagem.toLowerCase().includes("erro")
+                            ? temaEscuro
+                              ? "border-red-400/20 bg-red-500/10 text-red-200"
+                              : "border-red-200 bg-red-50 text-red-700"
+                            : temaEscuro
+                            ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
+                            : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                        }`}
+                      >
+                        {mensagem}
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={carregando}
+                      className="w-full rounded-xl bg-rose-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {carregando
+                        ? "Aguarde..."
+                        : modoCadastro
+                        ? "Criar cadastro"
+                        : "Entrar"}
+                    </button>
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        )}
+        </div>
+      </div>
+    );
+  }
 
-        <div
-          className={`relative overflow-hidden rounded-[2.5rem] ${
-            forcarWeb ? "block min-h-[calc(100vh-3rem)]" : "hidden md:block"
-          }`}
-        >
-          {MEDICAL_SLIDES.map((slide, index) => (
-            <img
-              key={slide.desktop}
-              src={slide.desktop}
-              alt={slide.alt}
-              className={`absolute inset-0 h-full w-full object-cover object-center transition-all duration-700 ${
-                index === slideAtual ? "scale-100 opacity-100" : "scale-105 opacity-0"
-              }`}
-            />
-          ))}
+  return (
+    <div className="min-h-screen overflow-x-auto bg-slate-950">
+      <div className="relative min-h-screen min-w-[980px] overflow-hidden">
+        <FundoLogin slideAtual={slideAtual} visualizacao="web" />
 
-          <div className="absolute inset-0 bg-gradient-to-br from-slate-950/25 via-rose-950/35 to-slate-950/80" />
-
-          <div className="relative z-10 flex h-full flex-col p-8 lg:p-10">
+        <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl grid-cols-[1.15fr_0.85fr] gap-6 px-8 py-6">
+          <div className="flex min-h-[calc(100vh-3rem)] flex-col rounded-[2.5rem] p-8 lg:p-10">
             <div className="flex items-start justify-between">
               <LogoBpm />
               <div className="flex gap-2">
@@ -643,205 +775,193 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
             </div>
 
             <div className="mt-auto max-w-xl">
-              <span className={`inline-flex rounded-full px-4 py-2 text-sm font-semibold ${cardHero} ${textoHero}`}>
+              <span className="inline-flex rounded-full border border-white/10 bg-slate-900/45 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
                 Dispositivo: {CODIGO_DISPOSITIVO}
               </span>
 
-              <h1 className={`mt-6 text-5xl font-black leading-tight ${textoHero}`}>Painel de BPM</h1>
+              <h1 className="mt-6 text-5xl font-black leading-tight text-white">
+                Painel de BPM
+              </h1>
 
-              <p className={`mt-4 max-w-xl text-base leading-7 ${textoSecundario}`}>
+              <p className="mt-4 max-w-xl text-base leading-7 text-slate-200">
                 Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico
                 diário do paciente.
               </p>
 
               <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                <div className={`rounded-3xl p-4 ${cardHero}`}>
-                  <p className={`text-sm font-semibold uppercase tracking-wide ${textoHero}`}>Tempo real</p>
-                  <p className={`mt-3 text-sm leading-6 ${textoSecundario}`}>
+                <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Tempo real</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">
                     BPM atual com gráfico responsivo.
                   </p>
                 </div>
-                <div className={`rounded-3xl p-4 ${cardHero}`}>
-                  <p className={`text-sm font-semibold uppercase tracking-wide ${textoHero}`}>Histórico diário</p>
-                  <p className={`mt-3 text-sm leading-6 ${textoSecundario}`}>
+                <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Histórico diário</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">
                     Datas clicáveis, gráficos e leituras.
                   </p>
                 </div>
-                <div className={`rounded-3xl p-4 ${cardHero}`}>
-                  <p className={`text-sm font-semibold uppercase tracking-wide ${textoHero}`}>Perfil</p>
-                  <p className={`mt-3 text-sm leading-6 ${textoSecundario}`}>
+                <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Perfil</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">
                     Paciente vinculado ao dispositivo.
                   </p>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div
-          className={
-            forcarWeb
-              ? "flex items-center"
-              : "mt-2 flex items-start justify-center md:mt-0 md:items-center"
-          }
-        >
-          <div
-            className={
-              forcarWeb
-                ? `w-full rounded-[2rem] p-8 ${cardAcessoWeb}`
-                : `w-full max-w-[258px] rounded-[1rem] p-2.5 sm:max-w-[340px] sm:rounded-[1.5rem] sm:p-4 md:max-w-none md:rounded-[2rem] md:p-8 ${cardAcessoMobile} md:${cardAcessoWeb}`
-            }
-          >
-            <div className="mb-2 flex flex-col items-center text-center sm:mb-4">
-              <div className="scale-[0.58] sm:scale-75 md:scale-100">
+          <div className="flex items-center">
+            <div className={`w-full rounded-[2rem] p-8 ${cardAcesso}`}>
+              <div className="mb-6 flex flex-col items-center text-center">
                 <IconeLogo />
+                <p className={`mt-4 text-xs font-bold uppercase tracking-[0.35em] ${ui.textoMuitoSuave}`}>
+                  Acesso
+                </p>
+                <h2 className="mt-3 text-3xl font-black">
+                  {modoCadastro ? "Cadastro" : "Entrar"}
+                </h2>
+                <p className={`mt-2 max-w-sm text-sm ${ui.textoSuave}`}>
+                  {modoCadastro
+                    ? "Cadastre os dados do paciente."
+                    : "Entre com seu e-mail para acessar o painel."}
+                </p>
               </div>
-              <p className={`mt-1 text-[9px] font-bold uppercase tracking-[0.26em] sm:mt-2 sm:text-[10px] md:mt-4 md:text-xs md:tracking-[0.35em] ${ui.textoMuitoSuave}`}>
-                Acesso
-              </p>
-              <h2 className="mt-1 text-xl font-black sm:mt-2 sm:text-2xl md:mt-3 md:text-3xl">
-                {modoCadastro ? "Cadastro" : "Entrar"}
-              </h2>
-              <p className={`mt-1 max-w-[210px] text-[11px] leading-4 sm:max-w-[250px] sm:text-xs sm:leading-5 md:max-w-sm md:text-sm ${ui.textoSuave}`}>
-                {modoCadastro
-                  ? "Cadastre os dados do paciente."
-                  : "Entre com seu e-mail para acessar o painel."}
-              </p>
-            </div>
 
-            <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 sm:mb-4 sm:rounded-2xl md:mb-6 ${temaEscuro ? "bg-slate-950/40 md:bg-white/5" : "bg-white/35 md:bg-slate-100"}`}>
-              <button
-                onClick={() => {
-                  setMensagem("");
-                  setModoCadastro(false);
-                }}
-                className={`rounded-lg px-3 py-2 text-xs font-bold transition sm:rounded-xl sm:py-2.5 sm:text-sm md:px-4 md:py-3 ${
-                  !modoCadastro
-                    ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
-                    : temaEscuro
-                    ? "text-slate-400"
-                    : "text-slate-600"
-                }`}
-              >
-                Login
-              </button>
-              <button
-                onClick={() => {
-                  setMensagem("");
-                  setModoCadastro(true);
-                }}
-                className={`rounded-lg px-3 py-2 text-xs font-bold transition sm:rounded-xl sm:py-2.5 sm:text-sm md:px-4 md:py-3 ${
-                  modoCadastro
-                    ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
-                    : temaEscuro
-                    ? "text-slate-400"
-                    : "text-slate-600"
-                }`}
-              >
-                Cadastro
-              </button>
-            </div>
-
-            <form onSubmit={modoCadastro ? cadastrar : entrar} className="space-y-2 sm:space-y-3 md:space-y-4">
-              {modoCadastro && (
-                <>
-                  <input
-                    type="text"
-                    placeholder="Nome completo"
-                    value={form.nome}
-                    onChange={(e) => atualizarCampo("nome", e.target.value)}
-                    className={ui.input}
-                  />
-
-                  <div className="grid gap-2 sm:grid-cols-2 sm:gap-4">
-                    <input
-                      type="number"
-                      placeholder="Idade"
-                      value={form.idade}
-                      onChange={(e) => atualizarCampo("idade", e.target.value)}
-                      className={ui.input}
-                    />
-
-                    <select
-                      value={form.sexo}
-                      onChange={(e) => atualizarCampo("sexo", e.target.value)}
-                      className={ui.input}
-                    >
-                      <option value="masculino">Masculino</option>
-                      <option value="feminino">Feminino</option>
-                      <option value="outro">Outro</option>
-                    </select>
-                  </div>
-                </>
-              )}
-
-              <input
-                type="email"
-                placeholder="E-mail"
-                value={form.email}
-                onChange={(e) => atualizarCampo("email", e.target.value)}
-                className={ui.input}
-              />
-
-              <input
-                type="password"
-                placeholder="Senha"
-                value={form.senha}
-                onChange={(e) => atualizarCampo("senha", e.target.value)}
-                className={ui.input}
-              />
-
-              {modoCadastro && (
-                <input
-                  type="password"
-                  placeholder="Confirmar senha"
-                  value={form.confirmarSenha}
-                  onChange={(e) => atualizarCampo("confirmarSenha", e.target.value)}
-                  className={ui.input}
-                />
-              )}
-
-              {mensagem && (
-                <div
-                  className={`rounded-xl border px-3 py-2 text-xs sm:rounded-2xl sm:px-4 sm:py-3 sm:text-sm ${
-                    mensagem.toLowerCase().includes("erro")
-                      ? temaEscuro
-                        ? "border-red-400/20 bg-red-500/10 text-red-200"
-                        : "border-red-200 bg-red-50 text-red-700"
+              <div className={`mb-6 grid grid-cols-2 rounded-2xl p-1 ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                <button
+                  onClick={() => {
+                    setMensagem("");
+                    setModoCadastro(false);
+                  }}
+                  className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                    !modoCadastro
+                      ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
                       : temaEscuro
-                      ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
-                      : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                      ? "text-slate-400"
+                      : "text-slate-600"
                   }`}
                 >
-                  {mensagem}
+                  Login
+                </button>
+                <button
+                  onClick={() => {
+                    setMensagem("");
+                    setModoCadastro(true);
+                  }}
+                  className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                    modoCadastro
+                      ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
+                      : temaEscuro
+                      ? "text-slate-400"
+                      : "text-slate-600"
+                  }`}
+                >
+                  Cadastro
+                </button>
+              </div>
+
+              <form onSubmit={modoCadastro ? cadastrar : entrar} className="space-y-4">
+                {modoCadastro && (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Nome completo"
+                      value={form.nome}
+                      onChange={(e) => atualizarCampo("nome", e.target.value)}
+                      className={inputClasse}
+                    />
+
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      <input
+                        type="number"
+                        placeholder="Idade"
+                        value={form.idade}
+                        onChange={(e) => atualizarCampo("idade", e.target.value)}
+                        className={inputClasse}
+                      />
+
+                      <select
+                        value={form.sexo}
+                        onChange={(e) => atualizarCampo("sexo", e.target.value)}
+                        className={inputClasse}
+                      >
+                        <option value="masculino">Masculino</option>
+                        <option value="feminino">Feminino</option>
+                        <option value="outro">Outro</option>
+                      </select>
+                    </div>
+                  </>
+                )}
+
+                <input
+                  type="email"
+                  placeholder="E-mail"
+                  value={form.email}
+                  onChange={(e) => atualizarCampo("email", e.target.value)}
+                  className={inputClasse}
+                />
+
+                <input
+                  type="password"
+                  placeholder="Senha"
+                  value={form.senha}
+                  onChange={(e) => atualizarCampo("senha", e.target.value)}
+                  className={inputClasse}
+                />
+
+                {modoCadastro && (
+                  <input
+                    type="password"
+                    placeholder="Confirmar senha"
+                    value={form.confirmarSenha}
+                    onChange={(e) => atualizarCampo("confirmarSenha", e.target.value)}
+                    className={inputClasse}
+                  />
+                )}
+
+                {mensagem && (
+                  <div
+                    className={`rounded-2xl border px-4 py-3 text-sm ${
+                      mensagem.toLowerCase().includes("erro")
+                        ? temaEscuro
+                          ? "border-red-400/20 bg-red-500/10 text-red-200"
+                          : "border-red-200 bg-red-50 text-red-700"
+                        : temaEscuro
+                        ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
+                        : "border-emerald-200 bg-emerald-50 text-emerald-700"
+                    }`}
+                  >
+                    {mensagem}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={carregando}
+                  className="w-full rounded-2xl bg-rose-600 px-4 py-3 font-bold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {carregando
+                    ? "Aguarde..."
+                    : modoCadastro
+                    ? "Criar cadastro"
+                    : "Entrar no painel"}
+                </button>
+              </form>
+
+              <div className={`mt-6 grid grid-cols-3 gap-2 ${temaEscuro ? "text-slate-400" : "text-slate-600"}`}>
+                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                  <p className="text-[11px]">Tempo real</p>
+                  <p className="mt-1 text-xs font-semibold">BPM</p>
                 </div>
-              )}
-
-              <button
-                type="submit"
-                disabled={carregando}
-                className="w-full rounded-xl bg-rose-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60 sm:py-2.5 md:rounded-2xl md:py-3 md:text-base"
-              >
-                {carregando
-                  ? "Aguarde..."
-                  : modoCadastro
-                  ? "Criar cadastro"
-                  : "Entrar no painel"}
-              </button>
-            </form>
-
-            <div className={`mt-4 hidden grid-cols-3 gap-2 md:grid ${temaEscuro ? "text-slate-400" : "text-slate-600"}`}>
-              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
-                <p className="text-[11px]">Tempo real</p>
-                <p className="mt-1 text-xs font-semibold">BPM</p>
-              </div>
-              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
-                <p className="text-[11px]">Histórico</p>
-                <p className="mt-1 text-xs font-semibold">Diário</p>
-              </div>
-              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
-                <p className="text-[11px]">Vínculo</p>
-                <p className="mt-1 text-xs font-semibold">Auto</p>
+                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                  <p className="text-[11px]">Histórico</p>
+                  <p className="mt-1 text-xs font-semibold">Diário</p>
+                </div>
+                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                  <p className="text-[11px]">Vínculo</p>
+                  <p className="mt-1 text-xs font-semibold">Auto</p>
+                </div>
               </div>
             </div>
           </div>
@@ -1323,18 +1443,21 @@ function Perfil({ sessao, perfil, temaEscuro }) {
   );
 }
 
+function obterVisualizacaoInicial() {
+  const salva = localStorage.getItem("visualizacao-bpm");
+  if (salva === "web" || salva === "mobile") return salva;
+  return window.innerWidth >= 768 ? "web" : "mobile";
+}
+
 function App() {
   const [sessao, setSessao] = useState(null);
   const [perfil, setPerfil] = useState(null);
   const [carregandoSessao, setCarregandoSessao] = useState(true);
   const [abaAtiva, setAbaAtiva] = useState("inicio");
   const [tema, setTema] = useState(() => localStorage.getItem("tema-bpm") || "escuro");
-  const [visualizacao, setVisualizacao] = useState(
-    () => localStorage.getItem("visualizacao-bpm") || "mobile"
-  );
+  const [visualizacao, setVisualizacao] = useState(obterVisualizacaoInicial);
 
   const temaEscuro = tema === "escuro";
-  const forcarWeb = visualizacao === "web";
   const ui = obterClasses(temaEscuro);
 
   function alternarTema() {
@@ -1429,23 +1552,90 @@ function App() {
     sessao?.user?.email ||
     "Paciente";
 
-  const containerLogado = forcarWeb
-    ? "mx-auto flex min-h-screen min-w-[1080px] max-w-7xl flex-row"
-    : "mx-auto flex min-h-screen max-w-7xl flex-col md:flex-row";
+  if (visualizacao === "mobile") {
+    return (
+      <div className={`min-h-screen overflow-x-auto ${ui.pagina}`}>
+        <div className="mx-auto min-h-screen max-w-[430px]">
+          <main className="p-4 pb-24">
+            <div className="mb-6 flex items-center justify-between">
+              <LogoBpm />
+              <div className="flex gap-2">
+                <BotaoVisualizacao
+                  visualizacao={visualizacao}
+                  alternarVisualizacao={alternarVisualizacao}
+                  temaEscuro={temaEscuro}
+                />
+                <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+              </div>
+            </div>
+
+            <div className="mb-6">
+              <div className={`rounded-[2rem] p-4 ${ui.painel}`}>
+                <p className="text-sm text-slate-400">Bem-vindo</p>
+                <p className="mt-1 text-lg font-bold">{nome}</p>
+                <p className="mt-1 break-all text-sm text-slate-400">{sessao.user.email}</p>
+              </div>
+            </div>
+
+            {abaAtiva === "inicio" && <Dashboard sessao={sessao} temaEscuro={temaEscuro} />}
+            {abaAtiva === "historico" && <Historico sessao={sessao} temaEscuro={temaEscuro} />}
+            {abaAtiva === "perfil" && (
+              <Perfil sessao={sessao} perfil={perfil} temaEscuro={temaEscuro} />
+            )}
+          </main>
+
+          <div
+            className={`fixed inset-x-0 bottom-0 z-40 border-t p-3 ${
+              temaEscuro ? "border-white/10 bg-slate-950/95" : "border-slate-200 bg-white/95"
+            } backdrop-blur-xl`}
+          >
+            <div className="mx-auto grid max-w-[430px] grid-cols-4 gap-2">
+              <button
+                onClick={() => setAbaAtiva("inicio")}
+                className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+                  abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo
+                }`}
+              >
+                Início
+              </button>
+              <button
+                onClick={() => setAbaAtiva("historico")}
+                className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+                  abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo
+                }`}
+              >
+                Histórico
+              </button>
+              <button
+                onClick={() => setAbaAtiva("perfil")}
+                className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
+                  abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo
+                }`}
+              >
+                Perfil
+              </button>
+              <button
+                onClick={sair}
+                className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${ui.menuInativo}`}
+              >
+                Sair
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={`overflow-x-auto ${ui.pagina}`}>
-      <div className={containerLogado}>
+      <div className="mx-auto flex min-h-screen min-w-[1080px] max-w-7xl flex-row">
         <aside
-          className={`${
-            forcarWeb ? "flex" : "hidden md:flex"
-          } w-72 shrink-0 flex-col border-r p-6 ${
+          className={`flex w-72 shrink-0 flex-col border-r p-6 ${
             temaEscuro ? "border-white/10 bg-slate-950/70" : "border-slate-200 bg-white"
           }`}
         >
-          <div className="flex items-center justify-between">
-            <LogoBpm />
-          </div>
+          <LogoBpm />
 
           <div className="mt-4 flex flex-col gap-2">
             <BotaoVisualizacao
@@ -1497,74 +1687,13 @@ function App() {
           </button>
         </aside>
 
-        <main className="flex-1 p-4 pb-24 sm:p-6 md:p-8">
-          <div className={`${forcarWeb ? "hidden" : "mb-6 flex items-center justify-between md:hidden"}`}>
-            <LogoBpm />
-            <div className="flex gap-2">
-              <BotaoVisualizacao
-                visualizacao={visualizacao}
-                alternarVisualizacao={alternarVisualizacao}
-                temaEscuro={temaEscuro}
-              />
-              <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-            </div>
-          </div>
-
-          <div className={`${forcarWeb ? "hidden" : "mb-6 md:hidden"}`}>
-            <div className={`rounded-[2rem] p-4 ${ui.painel}`}>
-              <p className="text-sm text-slate-400">Bem-vindo</p>
-              <p className="mt-1 text-lg font-bold">{nome}</p>
-              <p className="mt-1 break-all text-sm text-slate-400">{sessao.user.email}</p>
-            </div>
-          </div>
-
+        <main className="flex-1 p-8">
           {abaAtiva === "inicio" && <Dashboard sessao={sessao} temaEscuro={temaEscuro} />}
           {abaAtiva === "historico" && <Historico sessao={sessao} temaEscuro={temaEscuro} />}
           {abaAtiva === "perfil" && (
             <Perfil sessao={sessao} perfil={perfil} temaEscuro={temaEscuro} />
           )}
         </main>
-
-        <div
-          className={`${
-            forcarWeb ? "hidden" : "fixed"
-          } inset-x-0 bottom-0 z-40 border-t p-3 md:hidden ${
-            temaEscuro ? "border-white/10 bg-slate-950/95" : "border-slate-200 bg-white/95"
-          } backdrop-blur-xl`}
-        >
-          <div className="mx-auto grid max-w-md grid-cols-4 gap-2">
-            <button
-              onClick={() => setAbaAtiva("inicio")}
-              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
-                abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo
-              }`}
-            >
-              Início
-            </button>
-            <button
-              onClick={() => setAbaAtiva("historico")}
-              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
-                abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo
-              }`}
-            >
-              Histórico
-            </button>
-            <button
-              onClick={() => setAbaAtiva("perfil")}
-              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
-                abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo
-              }`}
-            >
-              Perfil
-            </button>
-            <button
-              onClick={sair}
-              className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${ui.menuInativo}`}
-            >
-              Sair
-            </button>
-          </div>
-        </div>
       </div>
     </div>
   );
