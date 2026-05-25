@@ -723,7 +723,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
 
             <div className="relative z-10 flex min-h-screen flex-col px-4 py-4">
               <div className="flex items-center justify-between gap-2">
-                <LogoBpm compacto temaEscuro={temaEscuro} sobreImagem />
+                <LogoBpm temaEscuro={temaEscuro} sobreImagem />
                 <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
               </div>
 
@@ -742,12 +742,12 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                   Painel de BPM
                 </h1>
 
-                <p className={`mt-2 max-w-[290px] text-sm leading-6 drop-shadow ${temaEscuro ? "text-slate-100" : "text-slate-950"}`}>
-                  Acompanhe as leituras do ESP32 e consulte o histórico diário do paciente.
+                <p className={`mt-2 max-w-[300px] text-sm leading-6 drop-shadow ${temaEscuro ? "text-white" : "text-slate-950"}`}>
+                  Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico diário do paciente.
                 </p>
               </div>
 
-              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              <div className="mt-5 grid gap-3">
                 <CardSimbolo
                   temaEscuro={temaEscuro}
                   icone={<IconeCardiograma temaEscuro={temaEscuro} />}
@@ -774,7 +774,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                 />
               </div>
 
-              <div className="mt-3">
+              <div className="mt-4 text-center">
                 <BotaoVisualizacao
                   visualizacao={visualizacao}
                   alternarVisualizacao={alternarVisualizacao}
@@ -782,7 +782,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                 />
               </div>
 
-              <div className="mt-auto pb-4">
+              <div className="mt-6 pb-4">
                 <div className={`mx-auto w-full max-w-[230px] rounded-[0.9rem] p-2 ${cardAcesso}`}>
                   <div className="mb-2 flex flex-col items-center text-center">
                     <div className="scale-[0.55]">
@@ -1901,3 +1901,4 @@ function App() {
 }
 
 export default App;
+
