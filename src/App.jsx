@@ -13,35 +13,35 @@ const MEDICAL_SLIDES = [
     desktop:
       "https://telemedicinamorsch.com.br/wp-content/uploads/2021/09/batidas-do-coracao-telemedicina-morsch.jpg",
     mobile: anatomiaCardiaca,
-    mobileClass: "scale-[1.03] object-[center_42%]",
+    mobileClass: "scale-[0.98] object-[center_45%]",
     alt: "Imagem médica de anatomia cardíaca",
   },
   {
     desktop:
       "https://telemedicinamorsch.com.br/wp-content/uploads/2024/07/frequencia-cardiaca-telemedicina-morsch.jpg",
     mobile: coracaoMonitoramento,
-    mobileClass: "scale-[1.04] object-[center_46%]",
+    mobileClass: "scale-[0.98] object-[center_48%]",
     alt: "Imagem de coração com gráfico cardíaco",
   },
   {
     desktop:
       "https://www.hospitalimigrantes.com.br/imgs/dXBsb2Fkcy9ub3RpY2lhcy8xNjY5NzUxMTkwLTEuanBn/800/500/N/crop",
     mobile: cuidadoCardiaco,
-    mobileClass: "scale-[1.08] object-[center_38%]",
+    mobileClass: "scale-[1.02] object-[center_42%]",
     alt: "Imagem médica com coração simbólico",
   },
   {
     desktop:
       "https://product-database.victorvision.com.br/uploads/thumb_heartbeat_8b13b2852b.png",
     mobile: consultaCardiologica,
-    mobileClass: "scale-[1.06] object-[center_44%]",
+    mobileClass: "scale-[1.01] object-[center_45%]",
     alt: "Paciente em consulta médica",
   },
   {
     desktop:
       "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
     mobile: anatomiaCardiaca,
-    mobileClass: "scale-[1.03] object-[center_42%]",
+    mobileClass: "scale-[0.98] object-[center_45%]",
     alt: "Imagem complementar de frequência cardíaca",
   },
 ];
@@ -1409,6 +1409,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
