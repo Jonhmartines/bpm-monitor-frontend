@@ -1,14 +1,49 @@
 ﻿import { useEffect, useMemo, useState } from "react";
 import { supabase } from "./supabaseClient";
 
+import anatomiaCardiaca from "./assets/mobile/anatomia-cardiaca.jpg";
+import coracaoMonitoramento from "./assets/mobile/coracao-monitoramento.jpg";
+import cuidadoCardiaco from "./assets/mobile/cuidado-cardiaco.jpg";
+import consultaCardiologica from "./assets/mobile/consulta-cardiologica.jpg";
+
 const CODIGO_DISPOSITIVO = "ESP32_PRINCIPAL";
 
 const MEDICAL_SLIDES = [
-  "https://telemedicinamorsch.com.br/wp-content/uploads/2021/09/batidas-do-coracao-telemedicina-morsch.jpg",
-  "https://telemedicinamorsch.com.br/wp-content/uploads/2024/07/frequencia-cardiaca-telemedicina-morsch.jpg",
-  "https://www.hospitalimigrantes.com.br/imgs/dXBsb2Fkcy9ub3RpY2lhcy8xNjY5NzUxMTkwLTEuanBn/800/500/N/crop",
-  "https://product-database.victorvision.com.br/uploads/thumb_heartbeat_8b13b2852b.png",
-  "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg"
+  {
+    desktop:
+      "https://telemedicinamorsch.com.br/wp-content/uploads/2021/09/batidas-do-coracao-telemedicina-morsch.jpg",
+    mobile: anatomiaCardiaca,
+    mobileClass: "scale-[1.03] object-[center_42%]",
+    alt: "Imagem médica de anatomia cardíaca",
+  },
+  {
+    desktop:
+      "https://telemedicinamorsch.com.br/wp-content/uploads/2024/07/frequencia-cardiaca-telemedicina-morsch.jpg",
+    mobile: coracaoMonitoramento,
+    mobileClass: "scale-[1.04] object-[center_46%]",
+    alt: "Imagem de coração com gráfico cardíaco",
+  },
+  {
+    desktop:
+      "https://www.hospitalimigrantes.com.br/imgs/dXBsb2Fkcy9ub3RpY2lhcy8xNjY5NzUxMTkwLTEuanBn/800/500/N/crop",
+    mobile: cuidadoCardiaco,
+    mobileClass: "scale-[1.08] object-[center_38%]",
+    alt: "Imagem médica com coração simbólico",
+  },
+  {
+    desktop:
+      "https://product-database.victorvision.com.br/uploads/thumb_heartbeat_8b13b2852b.png",
+    mobile: consultaCardiologica,
+    mobileClass: "scale-[1.06] object-[center_44%]",
+    alt: "Paciente em consulta médica",
+  },
+  {
+    desktop:
+      "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
+    mobile: anatomiaCardiaca,
+    mobileClass: "scale-[1.03] object-[center_42%]",
+    alt: "Imagem complementar de frequência cardíaca",
+  },
 ];
 
 function formatarDataHora(data) {
@@ -92,8 +127,8 @@ function obterClasses(temaEscuro) {
     textoMuitoSuave: temaEscuro ? "text-slate-500" : "text-slate-400",
 
     input: temaEscuro
-      ? "rounded-2xl border border-white/10 bg-slate-950/90 px-4 py-3 text-white outline-none transition focus:border-rose-400"
-      : "rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-rose-500",
+      ? "rounded-xl border border-white/10 bg-slate-950/90 px-3 py-2.5 text-sm text-white outline-none transition focus:border-rose-400 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base"
+      : "rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-950 outline-none transition focus:border-rose-500 sm:rounded-2xl sm:px-4 sm:py-3 sm:text-base",
 
     botaoSecundario: temaEscuro
       ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
@@ -635,7 +670,7 @@ function TelaLogin({ temaEscuro, alternarTema }) {
                     setMensagem("");
                     setModoCadastro(false);
                   }}
-                  className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                  className={`rounded-xl px-3 py-2.5 text-xs font-bold transition sm:px-4 sm:py-3 sm:text-sm ${
                     !modoCadastro
                       ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
                       : temaEscuro
@@ -652,7 +687,7 @@ function TelaLogin({ temaEscuro, alternarTema }) {
                     setMensagem("");
                     setModoCadastro(true);
                   }}
-                  className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                  className={`rounded-xl px-3 py-2.5 text-xs font-bold transition sm:px-4 sm:py-3 sm:text-sm ${
                     modoCadastro
                       ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
                       : temaEscuro
@@ -1374,5 +1409,6 @@ function App() {
 }
 
 export default App;
+
 
 
