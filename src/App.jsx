@@ -10,31 +10,36 @@ const CODIGO_DISPOSITIVO = "ESP32_PRINCIPAL";
 
 const MEDICAL_SLIDES = [
   {
-    desktop: "https://telemedicinamorsch.com.br/wp-content/uploads/2021/09/batidas-do-coracao-telemedicina-morsch.jpg",
+    desktop:
+      "https://telemedicinamorsch.com.br/wp-content/uploads/2021/09/batidas-do-coracao-telemedicina-morsch.jpg",
     mobile: anatomiaCardiaca,
     mobileClass: "scale-100 object-[center_42%]",
     alt: "Imagem médica de anatomia cardíaca",
   },
   {
-    desktop: "https://telemedicinamorsch.com.br/wp-content/uploads/2024/07/frequencia-cardiaca-telemedicina-morsch.jpg",
+    desktop:
+      "https://telemedicinamorsch.com.br/wp-content/uploads/2024/07/frequencia-cardiaca-telemedicina-morsch.jpg",
     mobile: coracaoMonitoramento,
     mobileClass: "scale-100 object-[center_48%]",
     alt: "Imagem de coração com gráfico cardíaco",
   },
   {
-    desktop: "https://www.hospitalimigrantes.com.br/imgs/dXBsb2Fkcy9ub3RpY2lhcy8xNjY5NzUxMTkwLTEuanBn/800/500/N/crop",
+    desktop:
+      "https://www.hospitalimigrantes.com.br/imgs/dXBsb2Fkcy9ub3RpY2lhcy8xNjY5NzUxMTkwLTEuanBn/800/500/N/crop",
     mobile: cuidadoCardiaco,
     mobileClass: "scale-[1.04] object-[center_40%]",
     alt: "Imagem médica com coração simbólico",
   },
   {
-    desktop: "https://product-database.victorvision.com.br/uploads/thumb_heartbeat_8b13b2852b.png",
+    desktop:
+      "https://product-database.victorvision.com.br/uploads/thumb_heartbeat_8b13b2852b.png",
     mobile: consultaCardiologica,
     mobileClass: "scale-[1.03] object-[center_42%]",
     alt: "Paciente em consulta médica",
   },
   {
-    desktop: "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
+    desktop:
+      "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
     mobile: anatomiaCardiaca,
     mobileClass: "scale-100 object-[center_42%]",
     alt: "Imagem complementar de frequência cardíaca",
@@ -43,6 +48,7 @@ const MEDICAL_SLIDES = [
 
 function formatarDataHora(data) {
   if (!data) return "--";
+
   return new Date(data).toLocaleString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -55,6 +61,7 @@ function formatarDataHora(data) {
 
 function formatarHora(data) {
   if (!data) return "--:--";
+
   return new Date(data).toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
@@ -63,6 +70,7 @@ function formatarHora(data) {
 
 function formatarData(data) {
   if (!data) return "Sem data";
+
   return new Date(data).toLocaleDateString("pt-BR", {
     day: "2-digit",
     month: "2-digit",
@@ -72,8 +80,10 @@ function formatarData(data) {
 
 function normalizarSexo(valor) {
   const sexo = String(valor || "").toLowerCase();
+
   if (sexo === "masculino") return "masculino";
   if (sexo === "feminino") return "feminino";
+
   return "outro";
 }
 
@@ -81,22 +91,27 @@ function classificarBpm(valor) {
   if (!valor) return "Sem dados";
   if (valor < 60) return "Baixo";
   if (valor <= 100) return "Normal";
+
   return "Elevado";
 }
 
 function calcularMedia(lista) {
   if (!lista.length) return null;
+
   const soma = lista.reduce((total, item) => total + Number(item.valor_bpm || 0), 0);
+
   return Math.round(soma / lista.length);
 }
 
 function calcularMenor(lista) {
   if (!lista.length) return null;
+
   return Math.min(...lista.map((item) => Number(item.valor_bpm || 0)));
 }
 
 function calcularMaior(lista) {
   if (!lista.length) return null;
+
   return Math.max(...lista.map((item) => Number(item.valor_bpm || 0)));
 }
 
@@ -121,7 +136,7 @@ function obterClasses(temaEscuro) {
       : "w-full rounded-xl border border-white/50 bg-white/50 px-3 py-2 text-sm text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-rose-500",
     botaoSecundario: temaEscuro
       ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
-      : "rounded-2xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300",
+      : "rounded-2xl bg-white/25 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/35",
     menuAtivo: "bg-rose-600 text-white shadow-lg shadow-rose-950/30",
     menuInativo: temaEscuro
       ? "text-slate-300 hover:bg-white/5"
@@ -147,14 +162,30 @@ function IconeLogo() {
   );
 }
 
-function LogoBpm({ compacto = false }) {
+function LogoBpm({ compacto = false, temaEscuro = true, sobreImagem = false }) {
+  const tituloClasse = sobreImagem
+    ? temaEscuro
+      ? "text-black"
+      : "text-white"
+    : temaEscuro
+    ? "text-white"
+    : "text-slate-950";
+
+  const subtituloClasse = sobreImagem
+    ? temaEscuro
+      ? "text-black/75"
+      : "text-white/85"
+    : temaEscuro
+    ? "text-slate-400"
+    : "text-slate-600";
+
   return (
     <div className="flex items-center gap-3">
       <IconeLogo />
       {!compacto && (
         <div>
-          <p className="text-lg font-bold leading-none">Monitor BPM</p>
-          <p className="text-xs text-slate-300">Painel de acompanhamento</p>
+          <p className={`text-lg font-bold leading-none ${tituloClasse}`}>Monitor BPM</p>
+          <p className={`text-xs ${subtituloClasse}`}>Painel de acompanhamento</p>
         </div>
       )}
     </div>
@@ -174,7 +205,7 @@ function BotaoTema({ temaEscuro, alternarTema }) {
 function BotaoVisualizacao({ visualizacao, alternarVisualizacao, temaEscuro }) {
   const classe = temaEscuro
     ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
-    : "rounded-2xl bg-slate-200 px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-slate-300";
+    : "rounded-2xl bg-white/25 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/35";
 
   return (
     <button onClick={alternarVisualizacao} className={classe}>
@@ -185,6 +216,7 @@ function BotaoVisualizacao({ visualizacao, alternarVisualizacao, temaEscuro }) {
 
 function BadgeStatus({ valor }) {
   const status = classificarBpm(valor);
+
   const classe =
     status === "Normal"
       ? "border-emerald-400/30 bg-emerald-500/15 text-emerald-300"
@@ -229,6 +261,7 @@ function Card({ titulo, valor, subtitulo, temaEscuro }) {
 
 function GraficoBpm({ dados, temaEscuro, titulo = "Variação recente", altura = 300 }) {
   const [hover, setHover] = useState(null);
+
   const dadosOrdenados = [...dados].reverse();
   const pontosOriginais = dadosOrdenados
     .map((item) => ({
@@ -445,7 +478,7 @@ function FundoLogin({ slideAtual, visualizacao }) {
           alt={slide.alt}
           className="absolute inset-0 h-full w-full object-cover object-center transition-all duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/65 via-slate-950/45 to-slate-950/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/66 via-slate-950/42 to-slate-950/82" />
       </>
     );
   }
@@ -570,7 +603,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
     visualizacao === "web"
       ? temaEscuro
         ? "border border-white/10 bg-slate-900/88 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
-        : "border border-white/80 bg-white/92 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
+        : "border border-white/75 bg-white/88 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
       : temaEscuro
       ? "border border-white/5 bg-slate-950/12 text-white shadow-lg shadow-black/10 backdrop-blur-0"
       : "border border-white/40 bg-white/24 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
@@ -584,7 +617,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
 
             <div className="relative z-10 flex min-h-screen flex-col px-4 py-4">
               <div className="flex items-center justify-between gap-2">
-                <LogoBpm compacto />
+                <LogoBpm compacto temaEscuro={temaEscuro} sobreImagem />
                 <div className="flex gap-2">
                   <BotaoVisualizacao
                     visualizacao={visualizacao}
@@ -760,10 +793,10 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
       <div className="relative min-h-screen min-w-[980px] overflow-hidden">
         <FundoLogin slideAtual={slideAtual} visualizacao="web" />
 
-        <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl grid-cols-[1.15fr_0.85fr] gap-6 px-8 py-6">
+        <div className="relative z-10 mx-auto grid min-h-screen max-w-7xl grid-cols-[1.08fr_0.92fr] gap-6 px-8 py-6">
           <div className="flex min-h-[calc(100vh-3rem)] flex-col rounded-[2.5rem] p-8 lg:p-10">
             <div className="flex items-start justify-between">
-              <LogoBpm />
+              <LogoBpm temaEscuro={temaEscuro} sobreImagem />
               <div className="flex gap-2">
                 <BotaoVisualizacao
                   visualizacao={visualizacao}
@@ -774,37 +807,65 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
               </div>
             </div>
 
-            <div className="mt-auto max-w-xl">
+            <div className="mt-12 max-w-2xl">
               <span className="inline-flex rounded-full border border-white/10 bg-slate-900/45 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
                 Dispositivo: {CODIGO_DISPOSITIVO}
               </span>
 
-              <h1 className="mt-6 text-5xl font-black leading-tight text-white">
+              <h1 className="mt-6 text-6xl font-black leading-tight text-white">
                 Painel de BPM
               </h1>
 
-              <p className="mt-4 max-w-xl text-base leading-7 text-slate-200">
+              <p className="mt-5 max-w-2xl text-xl leading-9 text-slate-100">
                 Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico
                 diário do paciente.
               </p>
+            </div>
 
-              <div className="mt-8 grid gap-4 sm:grid-cols-3">
+            <div className="mt-auto">
+              <div className="mb-5 grid grid-cols-5 gap-3">
+                {MEDICAL_SLIDES.map((slide, index) => (
+                  <button
+                    key={slide.desktop}
+                    onClick={() => setSlideAtual(index)}
+                    className={`h-24 overflow-hidden rounded-3xl border transition ${
+                      index === slideAtual
+                        ? "border-rose-400 scale-[1.02]"
+                        : "border-white/10 opacity-75 hover:opacity-100"
+                    }`}
+                  >
+                    <img
+                      src={slide.desktop}
+                      alt={slide.alt}
+                      className="h-full w-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-4">
                 <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
                   <p className="text-sm font-semibold uppercase tracking-wide text-white">Tempo real</p>
                   <p className="mt-3 text-sm leading-6 text-slate-300">
-                    BPM atual com gráfico responsivo.
+                    Consulta periódica do BPM atual.
                   </p>
                 </div>
                 <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Histórico diário</p>
+                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Histórico</p>
                   <p className="mt-3 text-sm leading-6 text-slate-300">
-                    Datas clicáveis, gráficos e leituras.
+                    Registros por data e horário.
                   </p>
                 </div>
                 <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
                   <p className="text-sm font-semibold uppercase tracking-wide text-white">Perfil</p>
                   <p className="mt-3 text-sm leading-6 text-slate-300">
-                    Paciente vinculado ao dispositivo.
+                    Dados reais do paciente.
+                  </p>
+                </div>
+                <div className="rounded-3xl border border-white/10 bg-slate-900/45 p-4 backdrop-blur-md">
+                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Supabase</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-300">
+                    Auth, banco e API REST.
                   </p>
                 </div>
               </div>
@@ -1034,6 +1095,7 @@ function Dashboard({ sessao, temaEscuro }) {
   useEffect(() => {
     carregarDashboard();
     const intervalo = setInterval(carregarDashboard, 5000);
+
     return () => clearInterval(intervalo);
   }, [sessao?.user?.id]);
 
@@ -1115,7 +1177,9 @@ function Dashboard({ sessao, temaEscuro }) {
             {leiturasUsuario.slice(0, 8).map((item) => (
               <div
                 key={item.id}
-                className={`rounded-3xl p-4 ${temaEscuro ? "bg-white/5" : "bg-slate-50 border border-slate-200"}`}
+                className={`rounded-3xl p-4 ${
+                  temaEscuro ? "bg-white/5" : "bg-slate-50 border border-slate-200"
+                }`}
               >
                 <div className="flex items-center justify-between gap-3">
                   <p className="text-xl font-bold">{item.valor_bpm} BPM</p>
@@ -1232,6 +1296,7 @@ function Historico({ sessao, temaEscuro }) {
   useEffect(() => {
     carregarHistorico();
     const intervalo = setInterval(carregarHistorico, 10000);
+
     return () => clearInterval(intervalo);
   }, [sessao?.user?.id]);
 
@@ -1445,7 +1510,11 @@ function Perfil({ sessao, perfil, temaEscuro }) {
 
 function obterVisualizacaoInicial() {
   const salva = localStorage.getItem("visualizacao-bpm");
-  if (salva === "web" || salva === "mobile") return salva;
+
+  if (salva === "web" || salva === "mobile") {
+    return salva;
+  }
+
   return window.innerWidth >= 768 ? "web" : "mobile";
 }
 
@@ -1558,7 +1627,7 @@ function App() {
         <div className="mx-auto min-h-screen max-w-[430px]">
           <main className="p-4 pb-24">
             <div className="mb-6 flex items-center justify-between">
-              <LogoBpm />
+              <LogoBpm temaEscuro={temaEscuro} />
               <div className="flex gap-2">
                 <BotaoVisualizacao
                   visualizacao={visualizacao}
@@ -1635,7 +1704,7 @@ function App() {
             temaEscuro ? "border-white/10 bg-slate-950/70" : "border-slate-200 bg-white"
           }`}
         >
-          <LogoBpm />
+          <LogoBpm temaEscuro={temaEscuro} />
 
           <div className="mt-4 flex flex-col gap-2">
             <BotaoVisualizacao
