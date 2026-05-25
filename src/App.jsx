@@ -204,8 +204,8 @@ function BotaoTema({ temaEscuro, alternarTema }) {
 
 function BotaoVisualizacao({ visualizacao, alternarVisualizacao, temaEscuro }) {
   const classe = temaEscuro
-    ? "rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
-    : "rounded-2xl border border-slate-300/70 bg-white/75 px-4 py-2 text-sm font-semibold text-slate-950 backdrop-blur-md transition hover:bg-white";
+    ? "text-sm font-semibold text-white/90 transition hover:text-white"
+    : "text-sm font-semibold text-slate-950/80 transition hover:text-slate-950";
 
   return (
     <button onClick={alternarVisualizacao} className={classe}>
@@ -467,35 +467,67 @@ function GraficoBarrasBpm({ dados, temaEscuro }) {
   );
 }
 
-function IconeCardiograma() {
+function IconeCardiograma({ temaEscuro }) {
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 text-rose-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 24 24"
+      className={`h-6 w-6 ${temaEscuro ? "text-rose-400" : "text-rose-700"}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M3 12h4l2-4 3 8 2-4h7" />
     </svg>
   );
 }
 
-function IconeHistorico() {
+function IconeHistorico({ temaEscuro }) {
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 text-sky-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 24 24"
+      className={`h-6 w-6 ${temaEscuro ? "text-sky-400" : "text-sky-700"}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M3 3v18h18" />
       <path d="M7 14l3-3 3 2 4-5" />
     </svg>
   );
 }
 
-function IconePerfil() {
+function IconePerfil({ temaEscuro }) {
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 24 24"
+      className={`h-6 w-6 ${temaEscuro ? "text-emerald-400" : "text-emerald-700"}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M20 21a8 8 0 0 0-16 0" />
       <circle cx="12" cy="7" r="4" />
     </svg>
   );
 }
 
-function IconeNuvem() {
+function IconeNuvem({ temaEscuro }) {
   return (
-    <svg viewBox="0 0 24 24" className="h-6 w-6 text-amber-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <svg
+      viewBox="0 0 24 24"
+      className={`h-6 w-6 ${temaEscuro ? "text-amber-400" : "text-amber-700"}`}
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
       <path d="M20 17.5A4.5 4.5 0 0 0 18 9h-1A7 7 0 0 0 4 11.5" />
       <path d="M8 17h8" />
       <path d="M12 13v8" />
@@ -509,10 +541,14 @@ function CardSimbolo({ icone, titulo, texto, temaEscuro }) {
       className={`rounded-3xl border p-4 backdrop-blur-md ${
         temaEscuro
           ? "border-white/10 bg-slate-950/42 text-white"
-          : "border-white/60 bg-white/55 text-slate-950"
+          : "border-white/70 bg-white/55 text-slate-950"
       }`}
     >
-      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-black/10">
+      <div
+        className={`mb-3 flex h-12 w-12 items-center justify-center rounded-2xl ${
+          temaEscuro ? "bg-white/5" : "bg-white/65"
+        }`}
+      >
         {icone}
       </div>
       <p className="text-sm font-semibold uppercase tracking-wide">{titulo}</p>
@@ -557,9 +593,9 @@ function FundoLogin({ slideAtual, visualizacao, temaEscuro }) {
         className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${slide.mobileClass}`}
       />
       {temaEscuro ? (
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/8 via-slate-950/0 to-slate-950/18" />
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-slate-950/0 to-slate-950/20" />
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-b from-white/16 via-white/0 to-white/18" />
+        <div className="absolute inset-0 bg-gradient-to-b from-white/18 via-white/0 to-white/22" />
       )}
     </>
   );
@@ -688,14 +724,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
             <div className="relative z-10 flex min-h-screen flex-col px-4 py-4">
               <div className="flex items-center justify-between gap-2">
                 <LogoBpm compacto temaEscuro={temaEscuro} sobreImagem />
-                <div className="flex gap-2">
-                  <BotaoVisualizacao
-                    visualizacao={visualizacao}
-                    alternarVisualizacao={alternarVisualizacao}
-                    temaEscuro={temaEscuro}
-                  />
-                  <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-                </div>
+                <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
               </div>
 
               <div className="mt-7">
@@ -716,6 +745,41 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                 <p className={`mt-2 max-w-[290px] text-sm leading-6 drop-shadow ${temaEscuro ? "text-slate-100" : "text-slate-950"}`}>
                   Acompanhe as leituras do ESP32 e consulte o histórico diário do paciente.
                 </p>
+              </div>
+
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <CardSimbolo
+                  temaEscuro={temaEscuro}
+                  icone={<IconeCardiograma temaEscuro={temaEscuro} />}
+                  titulo="Tempo real"
+                  texto="Consulta periódica do BPM atual com leitura visível no painel."
+                />
+                <CardSimbolo
+                  temaEscuro={temaEscuro}
+                  icone={<IconeHistorico temaEscuro={temaEscuro} />}
+                  titulo="Histórico diário"
+                  texto="Registros por data, horário, média, mínimo e máximo."
+                />
+                <CardSimbolo
+                  temaEscuro={temaEscuro}
+                  icone={<IconePerfil temaEscuro={temaEscuro} />}
+                  titulo="Perfil"
+                  texto="Dados reais do paciente vinculados à autenticação."
+                />
+                <CardSimbolo
+                  temaEscuro={temaEscuro}
+                  icone={<IconeNuvem temaEscuro={temaEscuro} />}
+                  titulo="Integração"
+                  texto="ESP32, Supabase Auth, banco de dados e atualização contínua."
+                />
+              </div>
+
+              <div className="mt-3">
+                <BotaoVisualizacao
+                  visualizacao={visualizacao}
+                  alternarVisualizacao={alternarVisualizacao}
+                  temaEscuro={temaEscuro}
+                />
               </div>
 
               <div className="mt-auto pb-4">
@@ -873,14 +937,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
       <div className="relative z-10 min-h-screen min-w-[1080px] px-10 py-8">
         <div className="flex items-start justify-between">
           <LogoBpm temaEscuro={temaEscuro} sobreImagem />
-          <div className="flex gap-2">
-            <BotaoVisualizacao
-              visualizacao={visualizacao}
-              alternarVisualizacao={alternarVisualizacao}
-              temaEscuro={temaEscuro}
-            />
-            <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-          </div>
+          <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
         </div>
 
         <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl grid-cols-[1.08fr_0.92fr] gap-10">
@@ -906,31 +963,41 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
               </p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-4">
-              <CardSimbolo
-                temaEscuro={temaEscuro}
-                icone={<IconeCardiograma />}
-                titulo="Tempo real"
-                texto="Consulta periódica do BPM atual com leitura visível no painel."
-              />
-              <CardSimbolo
-                temaEscuro={temaEscuro}
-                icone={<IconeHistorico />}
-                titulo="Histórico diário"
-                texto="Registros por data, horário, média, mínimo e máximo."
-              />
-              <CardSimbolo
-                temaEscuro={temaEscuro}
-                icone={<IconePerfil />}
-                titulo="Perfil"
-                texto="Dados reais do paciente vinculados à autenticação."
-              />
-              <CardSimbolo
-                temaEscuro={temaEscuro}
-                icone={<IconeNuvem />}
-                titulo="Integração"
-                texto="ESP32, Supabase Auth, banco de dados e atualização contínua."
-              />
+            <div>
+              <div className="grid gap-4 sm:grid-cols-4">
+                <CardSimbolo
+                  temaEscuro={temaEscuro}
+                  icone={<IconeCardiograma temaEscuro={temaEscuro} />}
+                  titulo="Tempo real"
+                  texto="Consulta periódica do BPM atual com leitura visível no painel."
+                />
+                <CardSimbolo
+                  temaEscuro={temaEscuro}
+                  icone={<IconeHistorico temaEscuro={temaEscuro} />}
+                  titulo="Histórico diário"
+                  texto="Registros por data, horário, média, mínimo e máximo."
+                />
+                <CardSimbolo
+                  temaEscuro={temaEscuro}
+                  icone={<IconePerfil temaEscuro={temaEscuro} />}
+                  titulo="Perfil"
+                  texto="Dados reais do paciente vinculados à autenticação."
+                />
+                <CardSimbolo
+                  temaEscuro={temaEscuro}
+                  icone={<IconeNuvem temaEscuro={temaEscuro} />}
+                  titulo="Integração"
+                  texto="ESP32, Supabase Auth, banco de dados e atualização contínua."
+                />
+              </div>
+
+              <div className="mt-5">
+                <BotaoVisualizacao
+                  visualizacao={visualizacao}
+                  alternarVisualizacao={alternarVisualizacao}
+                  temaEscuro={temaEscuro}
+                />
+              </div>
             </div>
           </div>
 
