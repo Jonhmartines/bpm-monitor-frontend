@@ -591,11 +591,16 @@ function FundoLogin({ slideAtual, visualizacao, temaEscuro }) {
         src={slide.mobile}
         alt={slide.alt}
         className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${slide.mobileClass}`}
-      />
-      {temaEscuro ? (
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/10 via-slate-950/0 to-slate-950/20" />
+      />      {temaEscuro ? (
+        <>
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/18 via-rose-950/10 to-slate-950/28" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-rose-900/20 via-transparent to-sky-900/12" />
+        </>
       ) : (
-        <div className="absolute inset-0 bg-gradient-to-b from-white/18 via-white/0 to-white/22" />
+        <>
+          <div className="absolute inset-0 bg-gradient-to-b from-white/22 via-rose-100/24 to-sky-100/20" />
+          <div className="absolute inset-0 bg-gradient-to-tr from-rose-300/24 via-transparent to-sky-300/18" />
+        </>
       )}
     </>
   );
@@ -711,8 +716,8 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
         ? "border border-white/10 bg-slate-950/76 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
         : "border border-white/70 bg-white/84 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
       : temaEscuro
-      ? "border border-white/5 bg-slate-950/12 text-white shadow-lg shadow-black/10 backdrop-blur-0"
-      : "border border-white/40 bg-white/28 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
+      ? "border border-white/5 bg-slate-950/16 text-white shadow-lg shadow-black/10 backdrop-blur-0"
+      : "border border-white/40 bg-white/34 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
 
   if (visualizacao === "mobile") {
     return (
@@ -747,34 +752,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                 </p>
               </div>
 
-              <div className="mt-5 grid gap-3">
-                <CardSimbolo
-                  temaEscuro={temaEscuro}
-                  icone={<IconeCardiograma temaEscuro={temaEscuro} />}
-                  titulo="Tempo real"
-                  texto="Consulta periódica do BPM atual com leitura visível no painel."
-                />
-                <CardSimbolo
-                  temaEscuro={temaEscuro}
-                  icone={<IconeHistorico temaEscuro={temaEscuro} />}
-                  titulo="Histórico diário"
-                  texto="Registros por data, horário, média, mínimo e máximo."
-                />
-                <CardSimbolo
-                  temaEscuro={temaEscuro}
-                  icone={<IconePerfil temaEscuro={temaEscuro} />}
-                  titulo="Perfil"
-                  texto="Dados reais do paciente vinculados à autenticação."
-                />
-                <CardSimbolo
-                  temaEscuro={temaEscuro}
-                  icone={<IconeNuvem temaEscuro={temaEscuro} />}
-                  titulo="Integração"
-                  texto="ESP32, Supabase Auth, banco de dados e atualização contínua."
-                />
-              </div>
-
-              <div className="mt-4 text-center">
+              <div className="mt-5 text-left">
                 <BotaoVisualizacao
                   visualizacao={visualizacao}
                   alternarVisualizacao={alternarVisualizacao}
@@ -782,7 +760,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                 />
               </div>
 
-              <div className="mt-6 pb-4">
+              <div className="mt-5 pb-4">
                 <div className={`mx-auto w-full max-w-[230px] rounded-[0.9rem] p-2 ${cardAcesso}`}>
                   <div className="mb-2 flex flex-col items-center text-center">
                     <div className="scale-[0.55]">
@@ -1901,4 +1879,5 @@ function App() {
 }
 
 export default App;
+
 
