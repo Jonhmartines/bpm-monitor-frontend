@@ -559,7 +559,7 @@ function CardSimbolo({ icone, titulo, texto, temaEscuro }) {
   );
 }
 
-function FundoLogin({ slideAtual, visualizacao, temaEscuro }) {
+function FundoLogin({ slideAtual, visualizacao, temaEscuro = true }) {
   const slide = MEDICAL_SLIDES[slideAtual];
 
   if (visualizacao === "web") {
@@ -591,15 +591,16 @@ function FundoLogin({ slideAtual, visualizacao, temaEscuro }) {
         src={slide.mobile}
         alt={slide.alt}
         className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${slide.mobileClass}`}
-      />      {temaEscuro ? (
+      />
+      {temaEscuro ? (
         <>
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/18 via-rose-950/10 to-slate-950/28" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-rose-900/20 via-transparent to-sky-900/12" />
+          <div className="absolute inset-0 bg-blue-950/42" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/25 via-blue-950/18 to-slate-950/42" />
         </>
       ) : (
         <>
-          <div className="absolute inset-0 bg-gradient-to-b from-white/22 via-rose-100/24 to-sky-100/20" />
-          <div className="absolute inset-0 bg-gradient-to-tr from-rose-300/24 via-transparent to-sky-300/18" />
+          <div className="absolute inset-0 bg-white/24" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/24 via-sky-100/18 to-rose-100/18" />
         </>
       )}
     </>
@@ -1879,5 +1880,6 @@ function App() {
 }
 
 export default App;
+
 
 
