@@ -126,17 +126,17 @@ function obterClasses(temaEscuro) {
     painelForte: temaEscuro
       ? "border border-white/10 bg-slate-950/80"
       : "border border-slate-200 bg-slate-50",
-    textoSuave: temaEscuro ? "text-slate-400" : "text-slate-500",
-    textoMuitoSuave: temaEscuro ? "text-slate-500" : "text-slate-400",
+    textoSuave: temaEscuro ? "text-slate-300" : "text-slate-600",
+    textoMuitoSuave: temaEscuro ? "text-slate-400" : "text-slate-500",
     inputWeb: temaEscuro
       ? "w-full rounded-2xl border border-white/10 bg-slate-950/90 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-rose-400"
-      : "w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-rose-500",
+      : "w-full rounded-2xl border border-slate-200 bg-white/96 px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-rose-500",
     inputMobile: temaEscuro
       ? "w-full rounded-xl border border-white/10 bg-slate-950/48 px-3 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-rose-400"
-      : "w-full rounded-xl border border-white/50 bg-white/50 px-3 py-2 text-sm text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-rose-500",
+      : "w-full rounded-xl border border-white/50 bg-white/60 px-3 py-2 text-sm text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-rose-500",
     botaoSecundario: temaEscuro
-      ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
-      : "rounded-2xl bg-white/25 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/35",
+      ? "rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+      : "rounded-2xl border border-slate-300/70 bg-white/75 px-4 py-2 text-sm font-semibold text-slate-950 backdrop-blur-md transition hover:bg-white",
     menuAtivo: "bg-rose-600 text-white shadow-lg shadow-rose-950/30",
     menuInativo: temaEscuro
       ? "text-slate-300 hover:bg-white/5"
@@ -165,16 +165,16 @@ function IconeLogo() {
 function LogoBpm({ compacto = false, temaEscuro = true, sobreImagem = false }) {
   const tituloClasse = sobreImagem
     ? temaEscuro
-      ? "text-black"
-      : "text-white"
+      ? "text-white"
+      : "text-slate-950"
     : temaEscuro
     ? "text-white"
     : "text-slate-950";
 
   const subtituloClasse = sobreImagem
     ? temaEscuro
-      ? "text-black/75"
-      : "text-white/85"
+      ? "text-white/80"
+      : "text-slate-950/70"
     : temaEscuro
     ? "text-slate-400"
     : "text-slate-600";
@@ -204,8 +204,8 @@ function BotaoTema({ temaEscuro, alternarTema }) {
 
 function BotaoVisualizacao({ visualizacao, alternarVisualizacao, temaEscuro }) {
   const classe = temaEscuro
-    ? "rounded-2xl bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
-    : "rounded-2xl bg-white/25 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md transition hover:bg-white/35";
+    ? "rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
+    : "rounded-2xl border border-slate-300/70 bg-white/75 px-4 py-2 text-sm font-semibold text-slate-950 backdrop-blur-md transition hover:bg-white";
 
   return (
     <button onClick={alternarVisualizacao} className={classe}>
@@ -467,7 +467,63 @@ function GraficoBarrasBpm({ dados, temaEscuro }) {
   );
 }
 
-function FundoLogin({ slideAtual, visualizacao }) {
+function IconeCardiograma() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-rose-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 12h4l2-4 3 8 2-4h7" />
+    </svg>
+  );
+}
+
+function IconeHistorico() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-sky-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 3v18h18" />
+      <path d="M7 14l3-3 3 2 4-5" />
+    </svg>
+  );
+}
+
+function IconePerfil() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-emerald-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 21a8 8 0 0 0-16 0" />
+      <circle cx="12" cy="7" r="4" />
+    </svg>
+  );
+}
+
+function IconeNuvem() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-6 w-6 text-amber-400" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M20 17.5A4.5 4.5 0 0 0 18 9h-1A7 7 0 0 0 4 11.5" />
+      <path d="M8 17h8" />
+      <path d="M12 13v8" />
+    </svg>
+  );
+}
+
+function CardSimbolo({ icone, titulo, texto, temaEscuro }) {
+  return (
+    <div
+      className={`rounded-3xl border p-4 backdrop-blur-md ${
+        temaEscuro
+          ? "border-white/10 bg-slate-950/42 text-white"
+          : "border-white/60 bg-white/55 text-slate-950"
+      }`}
+    >
+      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-black/10">
+        {icone}
+      </div>
+      <p className="text-sm font-semibold uppercase tracking-wide">{titulo}</p>
+      <p className={`mt-2 text-sm leading-6 ${temaEscuro ? "text-slate-300" : "text-slate-700"}`}>
+        {texto}
+      </p>
+    </div>
+  );
+}
+
+function FundoLogin({ slideAtual, visualizacao, temaEscuro }) {
   const slide = MEDICAL_SLIDES[slideAtual];
 
   if (visualizacao === "web") {
@@ -478,7 +534,17 @@ function FundoLogin({ slideAtual, visualizacao }) {
           alt={slide.alt}
           className="absolute inset-0 h-full w-full object-cover object-center transition-all duration-700"
         />
-        <div className="absolute inset-0 bg-gradient-to-br from-slate-950/66 via-slate-950/42 to-slate-950/82" />
+        {temaEscuro ? (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-950/82 via-slate-950/52 to-rose-950/58" />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/48 via-transparent to-slate-900/28" />
+          </>
+        ) : (
+          <>
+            <div className="absolute inset-0 bg-gradient-to-br from-white/78 via-sky-100/42 to-rose-100/45" />
+            <div className="absolute inset-0 bg-gradient-to-t from-white/34 via-transparent to-white/22" />
+          </>
+        )}
       </>
     );
   }
@@ -490,7 +556,11 @@ function FundoLogin({ slideAtual, visualizacao }) {
         alt={slide.alt}
         className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${slide.mobileClass}`}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950/5 via-slate-950/0 to-slate-950/16" />
+      {temaEscuro ? (
+        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/8 via-slate-950/0 to-slate-950/18" />
+      ) : (
+        <div className="absolute inset-0 bg-gradient-to-b from-white/16 via-white/0 to-white/18" />
+      )}
     </>
   );
 }
@@ -602,18 +672,18 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
   const cardAcesso =
     visualizacao === "web"
       ? temaEscuro
-        ? "border border-white/10 bg-slate-950/78 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
-        : "border border-white/70 bg-white/86 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
+        ? "border border-white/10 bg-slate-950/76 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
+        : "border border-white/70 bg-white/84 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
       : temaEscuro
       ? "border border-white/5 bg-slate-950/12 text-white shadow-lg shadow-black/10 backdrop-blur-0"
-      : "border border-white/40 bg-white/24 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
+      : "border border-white/40 bg-white/28 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
 
   if (visualizacao === "mobile") {
     return (
-      <div className="min-h-screen overflow-x-auto bg-slate-950">
-        <div className="mx-auto min-h-screen max-w-[430px] bg-slate-950">
+      <div className={`min-h-screen overflow-x-auto ${temaEscuro ? "bg-slate-950" : "bg-slate-100"}`}>
+        <div className={`mx-auto min-h-screen max-w-[430px] ${temaEscuro ? "bg-slate-950" : "bg-slate-100"}`}>
           <div className="relative min-h-screen overflow-hidden">
-            <FundoLogin slideAtual={slideAtual} visualizacao="mobile" />
+            <FundoLogin slideAtual={slideAtual} visualizacao="mobile" temaEscuro={temaEscuro} />
 
             <div className="relative z-10 flex min-h-screen flex-col px-4 py-4">
               <div className="flex items-center justify-between gap-2">
@@ -629,15 +699,21 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
               </div>
 
               <div className="mt-7">
-                <span className="inline-flex rounded-full border border-white/10 bg-slate-950/20 px-3 py-1 text-xs font-semibold text-white">
+                <span
+                  className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-md ${
+                    temaEscuro
+                      ? "border-white/10 bg-slate-950/20 text-white"
+                      : "border-white/60 bg-white/55 text-slate-950"
+                  }`}
+                >
                   Dispositivo: {CODIGO_DISPOSITIVO}
                 </span>
 
-                <h1 className="mt-4 text-4xl font-black leading-tight text-white drop-shadow-lg">
+                <h1 className={`mt-4 text-4xl font-black leading-tight drop-shadow-lg ${temaEscuro ? "text-white" : "text-slate-950"}`}>
                   Painel de BPM
                 </h1>
 
-                <p className="mt-2 max-w-[290px] text-sm leading-6 text-slate-100 drop-shadow">
+                <p className={`mt-2 max-w-[290px] text-sm leading-6 drop-shadow ${temaEscuro ? "text-slate-100" : "text-slate-950"}`}>
                   Acompanhe as leituras do ESP32 e consulte o histórico diário do paciente.
                 </p>
               </div>
@@ -661,7 +737,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                     </p>
                   </div>
 
-                  <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 ${temaEscuro ? "bg-slate-950/35" : "bg-white/30"}`}>
+                  <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 ${temaEscuro ? "bg-slate-950/35" : "bg-white/40"}`}>
                     <button
                       onClick={() => {
                         setMensagem("");
@@ -672,7 +748,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                           ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
                           : temaEscuro
                           ? "text-slate-400"
-                          : "text-slate-600"
+                          : "text-slate-700"
                       }`}
                     >
                       Login
@@ -687,7 +763,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                           ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
                           : temaEscuro
                           ? "text-slate-400"
-                          : "text-slate-600"
+                          : "text-slate-700"
                       }`}
                     >
                       Cadastro
@@ -789,9 +865,9 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
   }
 
   return (
-    <div className="relative min-h-screen overflow-x-auto bg-slate-950">
+    <div className={`relative min-h-screen overflow-x-auto ${temaEscuro ? "bg-slate-950" : "bg-slate-100"}`}>
       <div className="fixed inset-0 z-0">
-        <FundoLogin slideAtual={slideAtual} visualizacao="web" />
+        <FundoLogin slideAtual={slideAtual} visualizacao="web" temaEscuro={temaEscuro} />
       </div>
 
       <div className="relative z-10 min-h-screen min-w-[1080px] px-10 py-8">
@@ -810,67 +886,51 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
         <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl grid-cols-[1.08fr_0.92fr] gap-10">
           <div className="flex flex-col justify-between pb-8 pt-12">
             <div className="max-w-3xl">
-              <span className="inline-flex rounded-full border border-white/10 bg-slate-950/35 px-4 py-2 text-sm font-semibold text-white backdrop-blur-md">
+              <span
+                className={`inline-flex rounded-full border px-4 py-2 text-sm font-semibold backdrop-blur-md ${
+                  temaEscuro
+                    ? "border-white/10 bg-slate-950/35 text-white"
+                    : "border-white/70 bg-white/60 text-slate-950"
+                }`}
+              >
                 Dispositivo: {CODIGO_DISPOSITIVO}
               </span>
 
-              <h1 className="mt-6 text-7xl font-black leading-tight text-white drop-shadow-2xl">
+              <h1 className={`mt-6 text-7xl font-black leading-tight drop-shadow-2xl ${temaEscuro ? "text-white" : "text-slate-950"}`}>
                 Painel de BPM
               </h1>
 
-              <p className="mt-5 max-w-3xl text-2xl leading-10 text-slate-100 drop-shadow-xl">
+              <p className={`mt-5 max-w-3xl text-2xl leading-10 drop-shadow-xl ${temaEscuro ? "text-white" : "text-slate-950"}`}>
                 Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico
                 diário do paciente.
               </p>
             </div>
 
-            <div>
-              <div className="mb-5 grid grid-cols-5 gap-3">
-                {MEDICAL_SLIDES.map((slide, index) => (
-                  <button
-                    key={slide.desktop}
-                    onClick={() => setSlideAtual(index)}
-                    className={`h-24 overflow-hidden rounded-3xl border transition ${
-                      index === slideAtual
-                        ? "border-rose-400 opacity-100 scale-[1.02]"
-                        : "border-white/10 opacity-70 hover:opacity-100"
-                    }`}
-                  >
-                    <img
-                      src={slide.desktop}
-                      alt={slide.alt}
-                      className="h-full w-full object-cover"
-                    />
-                  </button>
-                ))}
-              </div>
-
-              <div className="grid gap-4 sm:grid-cols-4">
-                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 backdrop-blur-md">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Tempo real</p>
-                  <p className="mt-3 text-sm leading-6 text-slate-300">
-                    Consulta periódica do BPM atual.
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 backdrop-blur-md">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Histórico</p>
-                  <p className="mt-3 text-sm leading-6 text-slate-300">
-                    Registros por data e horário.
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 backdrop-blur-md">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Perfil</p>
-                  <p className="mt-3 text-sm leading-6 text-slate-300">
-                    Dados reais do paciente.
-                  </p>
-                </div>
-                <div className="rounded-3xl border border-white/10 bg-slate-950/45 p-4 backdrop-blur-md">
-                  <p className="text-sm font-semibold uppercase tracking-wide text-white">Supabase</p>
-                  <p className="mt-3 text-sm leading-6 text-slate-300">
-                    Auth, banco e API REST.
-                  </p>
-                </div>
-              </div>
+            <div className="grid gap-4 sm:grid-cols-4">
+              <CardSimbolo
+                temaEscuro={temaEscuro}
+                icone={<IconeCardiograma />}
+                titulo="Tempo real"
+                texto="Consulta periódica do BPM atual com leitura visível no painel."
+              />
+              <CardSimbolo
+                temaEscuro={temaEscuro}
+                icone={<IconeHistorico />}
+                titulo="Histórico diário"
+                texto="Registros por data, horário, média, mínimo e máximo."
+              />
+              <CardSimbolo
+                temaEscuro={temaEscuro}
+                icone={<IconePerfil />}
+                titulo="Perfil"
+                texto="Dados reais do paciente vinculados à autenticação."
+              />
+              <CardSimbolo
+                temaEscuro={temaEscuro}
+                icone={<IconeNuvem />}
+                titulo="Integração"
+                texto="ESP32, Supabase Auth, banco de dados e atualização contínua."
+              />
             </div>
           </div>
 
@@ -891,7 +951,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                 </p>
               </div>
 
-              <div className={`mb-6 grid grid-cols-2 rounded-2xl p-1 ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+              <div className={`mb-6 grid grid-cols-2 rounded-2xl p-1 ${temaEscuro ? "bg-white/5" : "bg-slate-100/80"}`}>
                 <button
                   onClick={() => {
                     setMensagem("");
@@ -902,7 +962,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                       ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
                       : temaEscuro
                       ? "text-slate-400"
-                      : "text-slate-600"
+                      : "text-slate-700"
                   }`}
                 >
                   Login
@@ -917,7 +977,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                       ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
                       : temaEscuro
                       ? "text-slate-400"
-                      : "text-slate-600"
+                      : "text-slate-700"
                   }`}
                 >
                   Cadastro
@@ -1012,16 +1072,16 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                 </button>
               </form>
 
-              <div className={`mt-6 grid grid-cols-3 gap-2 ${temaEscuro ? "text-slate-400" : "text-slate-600"}`}>
-                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+              <div className={`mt-6 grid grid-cols-3 gap-2 ${temaEscuro ? "text-slate-400" : "text-slate-700"}`}>
+                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100/80"}`}>
                   <p className="text-[11px]">Tempo real</p>
                   <p className="mt-1 text-xs font-semibold">BPM</p>
                 </div>
-                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100/80"}`}>
                   <p className="text-[11px]">Histórico</p>
                   <p className="mt-1 text-xs font-semibold">Diário</p>
                 </div>
-                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100"}`}>
+                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100/80"}`}>
                   <p className="text-[11px]">Vínculo</p>
                   <p className="mt-1 text-xs font-semibold">Auto</p>
                 </div>
@@ -1087,7 +1147,10 @@ function Dashboard({ sessao, temaEscuro }) {
     setErro("");
     setBpmAtual(atual?.valor_bpm ?? historicoNormalizado[0]?.valor_bpm ?? null);
     setUltima({
-      recebido_em: atual?.atualizado_em || atual?.recebido_em || historicoNormalizado[0]?.recebido_em,
+      recebido_em:
+        atual?.atualizado_em ||
+        atual?.recebido_em ||
+        historicoNormalizado[0]?.recebido_em,
     });
     setLeiturasUsuario(historicoNormalizado);
     setLeiturasGerais(geral || []);
@@ -1771,4 +1834,3 @@ function App() {
 }
 
 export default App;
-
