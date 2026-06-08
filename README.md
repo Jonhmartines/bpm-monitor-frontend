@@ -6,7 +6,6 @@ Aplicação acadêmica para acompanhamento de batimentos cardíacos usando **ESP
 
 ## Acesso
 
-- **Site:** [Monitor BPM](https://bpm-monitor-frontend-y6k8.vercel.app)
 - **Repositório:** [Jonhmartines/bpm-monitor-frontend](https://github.com/Jonhmartines/bpm-monitor-frontend)
 
 ## Visão geral
@@ -104,7 +103,6 @@ Usuário
 - Tailwind CSS;
 - Supabase JS;
 - Lucide React;
-- Vercel.
 
 ## Ligações do AD8232
 
@@ -208,7 +206,6 @@ O firmware envia:
 ```
 
 A função localiza o perfil vinculado ao dispositivo, atualiza `bpm_tempo_real` e, quando solicitado, grava em `historico_bpm`.
-
 
 ## Configuração completa do Supabase
 
@@ -844,6 +841,132 @@ Erro de RLS ao consultar:
 - confirme que `perfil_id` é igual a `auth.uid()`;
 - recrie as políticas descritas no script.
 
+## Acesso local pelo computador e pelo celular
+
+O projeto pode ser executado localmente com o servidor de desenvolvimento do Vite.
+
+### Acesso no próprio computador
+
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+npm install
+npm run dev -- --host 0.0.0.0
+```
+
+No computador, acesse:
+
+```text
+http://localhost:5173
+```
+
+### Acesso pelo celular
+
+`localhost` funciona somente no próprio computador. No celular, é necessário usar o endereço IPv4 do computador.
+
+Descubra o IPv4 no PowerShell:
+
+```powershell
+Get-NetIPAddress -AddressFamily IPv4 |
+Where-Object {
+    $_.IPAddress -notlike "127.*" -and
+    $_.IPAddress -notlike "169.254*"
+} |
+Select-Object InterfaceAlias, IPAddress
+```
+
+Escolha o endereço da rede Wi-Fi ou Ethernet. Exemplo:
+
+```text
+192.168.1.25
+```
+
+Com o servidor iniciado por:
+
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+npm run dev -- --host 0.0.0.0
+```
+
+abra no celular:
+
+```text
+http://192.168.1.25:5173
+```
+
+O computador e o celular precisam estar conectados à mesma rede local.
+
+### Criar o QR Code do endereço local
+
+Na pasta do projeto, execute:
+
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+
+$IP = (
+    Get-NetIPAddress -AddressFamily IPv4 |
+    Where-Object {
+        $_.IPAddress -notlike "127.*" -and
+        $_.IPAddress -notlike "169.254*" -and
+        $_.InterfaceAlias -notmatch "vEthernet|Loopback"
+    } |
+    Sort-Object InterfaceMetric |
+    Select-Object -First 1 -ExpandProperty IPAddress
+)
+
+$URL = "http://${IP}:5173"
+
+npx --yes qrcode -o ".\qrcode-monitor-bpm.png" $URL
+
+Write-Host "Endereço local: $URL"
+Write-Host "QR Code criado em: qrcode-monitor-bpm.png"
+```
+
+O arquivo será criado em:
+
+```text
+C:\Users\joao-\bpm-monitor-frontend\qrcode-monitor-bpm.png
+```
+
+Escaneie a imagem pelo celular enquanto o servidor estiver em execução.
+
+### Script automático
+
+O repositório pode incluir o arquivo:
+
+```text
+gerar_qrcode_local.ps1
+```
+
+Execute:
+
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+powershell -ExecutionPolicy Bypass -File ".\gerar_qrcode_local.ps1"
+```
+
+O script identifica o IPv4, inicia o site em uma nova janela e cria o QR Code automaticamente.
+
+### Liberação no Firewall do Windows
+
+Se o celular não abrir o endereço, permita o Node.js no Firewall do Windows para redes privadas.
+
+Também é possível liberar a porta 5173 pelo PowerShell aberto como administrador:
+
+```powershell
+New-NetFirewallRule `
+  -DisplayName "Monitor BPM Vite 5173" `
+  -Direction Inbound `
+  -Protocol TCP `
+  -LocalPort 5173 `
+  -Action Allow `
+  -Profile Private
+```
+
+Para remover essa regra:
+
+```powershell
+Remove-NetFirewallRule -DisplayName "Monitor BPM Vite 5173"
+```
 
 ## Configuração do frontend
 
@@ -1002,27 +1125,6 @@ O resultado será criado em:
 dist/
 ```
 
-## Deploy na Vercel
-
-Configuração do projeto:
-
-```text
-Framework Preset: Vite
-Root Directory: ./
-Install Command: npm install
-Build Command: npm run build
-Output Directory: dist
-```
-
-Variáveis de ambiente:
-
-```text
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
-```
-
-Depois que o repositório estiver conectado à Vercel, novos commits enviados à branch `main` geram um novo deploy automaticamente.
-
 ## Atualização do GitHub
 
 ```powershell
@@ -1033,18 +1135,6 @@ git add .
 git commit -m "Publica nova versão do Monitor BPM"
 git push origin main
 ```
-
-## Atualização manual na Vercel
-
-```powershell
-cd "C:\Users\joao-\bpm-monitor-frontend"
-
-npm install -g vercel
-vercel login
-vercel --prod
-```
-
-Ao final, a Vercel informa o endereço de produção.
 
 ## Estado atual
 
@@ -1060,7 +1150,7 @@ Ao final, a Vercel informa o endereço de produção.
 - Leitura do AD8232 funcionando;
 - Envio ao Supabase por HTTPS;
 - Troca do perfil por vínculo do dispositivo;
-- Deploy preparado para Vercel.
+- Execução local preparada para computador e celular na mesma rede Wi-Fi.
 
 ## Aviso
 
