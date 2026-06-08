@@ -1,0 +1,390 @@
+-- =========================================================
+-- MONITOR BPM - CONFIGURAÇÃO COMPLETA DO SUPABASE
+-- Execute no SQL Editor de um projeto novo.
+-- O bloco de limpeza apaga as estruturas antigas.
+-- =========================================================
+
+create extension if not exists pgcrypto;
+
+-- =========================================================
+-- 1. LIMPEZA OPCIONAL
+-- =========================================================
+
+drop trigger if exists on_auth_user_created on auth.users;
+
+drop function if exists public.handle_new_user();
+drop function if exists public.registrar_bpm_dispositivo(text, integer, boolean);
+drop function if exists public.vincular_dispositivo_ao_usuario(text);
+
+drop view if exists public.vw_bpm_historico_minuto;
+
+drop table if exists public.historico_bpm cascade;
+drop table if exists public.bpm_tempo_real cascade;
+drop table if exists public.dispositivos cascade;
+drop table if exists public.perfis cascade;
+
+-- =========================================================
+-- 2. PERFIS
+-- =========================================================
+
+create table public.perfis (
+    id uuid primary key references auth.users(id) on delete cascade,
+    nome text not null,
+    idade integer not null check (idade between 0 and 130),
+    sexo text not null check (sexo in ('masculino', 'feminino', 'outro')),
+    criado_em timestamptz not null default now()
+);
+
+alter table public.perfis enable row level security;
+
+create policy "usuario_le_proprio_perfil"
+on public.perfis
+for select
+to authenticated
+using (id = auth.uid());
+
+create policy "usuario_atualiza_proprio_perfil"
+on public.perfis
+for update
+to authenticated
+using (id = auth.uid())
+with check (id = auth.uid());
+
+-- =========================================================
+-- 3. CRIAÇÃO AUTOMÁTICA DO PERFIL APÓS O CADASTRO
+-- =========================================================
+
+create or replace function public.handle_new_user()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    v_nome text;
+    v_idade integer;
+    v_sexo text;
+    v_idade_texto text;
+begin
+    v_nome := coalesce(
+        nullif(trim(new.raw_user_meta_data ->> 'nome'), ''),
+        nullif(trim(new.raw_user_meta_data ->> 'full_name'), ''),
+        split_part(new.email, '@', 1),
+        'Usuário'
+    );
+
+    v_idade_texto := new.raw_user_meta_data ->> 'idade';
+
+    if v_idade_texto ~ '^[0-9]{1,3}$' then
+        v_idade := v_idade_texto::integer;
+    else
+        v_idade := 0;
+    end if;
+
+    if v_idade < 0 or v_idade > 130 then
+        v_idade := 0;
+    end if;
+
+    v_sexo := lower(
+        coalesce(
+            nullif(trim(new.raw_user_meta_data ->> 'sexo'), ''),
+            'outro'
+        )
+    );
+
+    if v_sexo not in ('masculino', 'feminino', 'outro') then
+        v_sexo := 'outro';
+    end if;
+
+    insert into public.perfis (
+        id,
+        nome,
+        idade,
+        sexo
+    )
+    values (
+        new.id,
+        v_nome,
+        v_idade,
+        v_sexo
+    )
+    on conflict (id) do update
+    set
+        nome = excluded.nome,
+        idade = excluded.idade,
+        sexo = excluded.sexo;
+
+    return new;
+end;
+$$;
+
+create trigger on_auth_user_created
+after insert on auth.users
+for each row
+execute procedure public.handle_new_user();
+
+-- =========================================================
+-- 4. DISPOSITIVOS
+-- =========================================================
+
+create table public.dispositivos (
+    id uuid primary key default gen_random_uuid(),
+    codigo text not null unique,
+    perfil_id uuid references public.perfis(id) on delete set null,
+    ativo boolean not null default true,
+    criado_em timestamptz not null default now(),
+    atualizado_em timestamptz not null default now()
+);
+
+alter table public.dispositivos enable row level security;
+
+create policy "usuario_le_proprio_dispositivo"
+on public.dispositivos
+for select
+to authenticated
+using (perfil_id = auth.uid());
+
+-- =========================================================
+-- 5. BPM EM TEMPO REAL
+-- =========================================================
+
+create table public.bpm_tempo_real (
+    perfil_id uuid primary key references public.perfis(id) on delete cascade,
+    dispositivo_id uuid references public.dispositivos(id) on delete set null,
+    valor_bpm integer not null check (valor_bpm between 0 and 220),
+    recebido_em timestamptz not null default now(),
+    atualizado_em timestamptz not null default now()
+);
+
+alter table public.bpm_tempo_real enable row level security;
+
+create policy "usuario_le_proprio_bpm_tempo_real"
+on public.bpm_tempo_real
+for select
+to authenticated
+using (perfil_id = auth.uid());
+
+-- =========================================================
+-- 6. HISTÓRICO
+-- =========================================================
+
+create table public.historico_bpm (
+    id bigint generated by default as identity primary key,
+    perfil_id uuid not null references public.perfis(id) on delete cascade,
+    dispositivo_id uuid references public.dispositivos(id) on delete set null,
+    valor_bpm integer not null check (valor_bpm between 0 and 220),
+    registrado_em timestamptz not null default now()
+);
+
+create index historico_bpm_perfil_data_idx
+on public.historico_bpm (
+    perfil_id,
+    registrado_em desc
+);
+
+alter table public.historico_bpm enable row level security;
+
+create policy "usuario_le_proprio_historico"
+on public.historico_bpm
+for select
+to authenticated
+using (perfil_id = auth.uid());
+
+-- =========================================================
+-- 7. VINCULAR O DISPOSITIVO AO USUÁRIO LOGADO
+-- =========================================================
+
+create or replace function public.vincular_dispositivo_ao_usuario(
+    p_codigo_dispositivo text
+)
+returns public.dispositivos
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    v_usuario uuid;
+    v_dispositivo public.dispositivos;
+begin
+    v_usuario := auth.uid();
+
+    if v_usuario is null then
+        raise exception 'Usuário não autenticado';
+    end if;
+
+    if not exists (
+        select 1
+        from public.perfis
+        where id = v_usuario
+    ) then
+        raise exception 'Perfil do usuário não encontrado';
+    end if;
+
+    insert into public.dispositivos (
+        codigo,
+        perfil_id,
+        ativo,
+        atualizado_em
+    )
+    values (
+        p_codigo_dispositivo,
+        v_usuario,
+        true,
+        now()
+    )
+    on conflict (codigo) do update
+    set
+        perfil_id = excluded.perfil_id,
+        ativo = true,
+        atualizado_em = now()
+    returning * into v_dispositivo;
+
+    return v_dispositivo;
+end;
+$$;
+
+grant execute
+on function public.vincular_dispositivo_ao_usuario(text)
+to authenticated;
+
+-- =========================================================
+-- 8. FUNÇÃO RPC CHAMADA PELO ESP32
+-- =========================================================
+
+create or replace function public.registrar_bpm_dispositivo(
+    p_codigo_dispositivo text,
+    p_valor_bpm integer,
+    p_salvar_historico boolean default false
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    v_dispositivo_id uuid;
+    v_perfil_id uuid;
+begin
+    if p_codigo_dispositivo is null
+       or trim(p_codigo_dispositivo) = '' then
+        raise exception 'Código do dispositivo inválido';
+    end if;
+
+    if p_valor_bpm < 0 or p_valor_bpm > 220 then
+        raise exception 'BPM fora da faixa permitida';
+    end if;
+
+    select
+        id,
+        perfil_id
+    into
+        v_dispositivo_id,
+        v_perfil_id
+    from public.dispositivos
+    where codigo = p_codigo_dispositivo
+      and ativo = true
+    limit 1;
+
+    if v_dispositivo_id is null then
+        raise exception 'Dispositivo não cadastrado';
+    end if;
+
+    if v_perfil_id is null then
+        raise exception 'Dispositivo sem usuário vinculado';
+    end if;
+
+    insert into public.bpm_tempo_real (
+        perfil_id,
+        dispositivo_id,
+        valor_bpm,
+        recebido_em,
+        atualizado_em
+    )
+    values (
+        v_perfil_id,
+        v_dispositivo_id,
+        p_valor_bpm,
+        now(),
+        now()
+    )
+    on conflict (perfil_id) do update
+    set
+        dispositivo_id = excluded.dispositivo_id,
+        valor_bpm = excluded.valor_bpm,
+        recebido_em = excluded.recebido_em,
+        atualizado_em = excluded.atualizado_em;
+
+    if p_salvar_historico and p_valor_bpm > 0 then
+        insert into public.historico_bpm (
+            perfil_id,
+            dispositivo_id,
+            valor_bpm,
+            registrado_em
+        )
+        values (
+            v_perfil_id,
+            v_dispositivo_id,
+            p_valor_bpm,
+            now()
+        );
+    end if;
+end;
+$$;
+
+grant execute
+on function public.registrar_bpm_dispositivo(text, integer, boolean)
+to anon, authenticated;
+
+-- =========================================================
+-- 9. VIEW DO HISTÓRICO AGRUPADO POR MINUTO
+-- =========================================================
+
+create or replace view public.vw_bpm_historico_minuto
+with (security_invoker = true)
+as
+select
+    perfil_id,
+    date_trunc('minute', registrado_em) as minuto,
+    round(avg(valor_bpm)::numeric, 2) as bpm_medio,
+    min(valor_bpm) as bpm_minimo,
+    max(valor_bpm) as bpm_maximo,
+    count(*) as quantidade_leituras
+from public.historico_bpm
+where valor_bpm > 0
+group by
+    perfil_id,
+    date_trunc('minute', registrado_em);
+
+grant select
+on public.vw_bpm_historico_minuto
+to authenticated;
+
+-- =========================================================
+-- 10. PERMISSÕES
+-- =========================================================
+
+grant usage on schema public to anon, authenticated;
+
+grant select, update
+on public.perfis
+to authenticated;
+
+grant select
+on public.dispositivos,
+   public.bpm_tempo_real,
+   public.historico_bpm
+to authenticated;
+
+-- =========================================================
+-- 11. DISPOSITIVO INICIAL
+-- =========================================================
+
+insert into public.dispositivos (
+    codigo,
+    ativo
+)
+values (
+    'ESP32_PRINCIPAL',
+    true
+)
+on conflict (codigo) do nothing;

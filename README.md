@@ -1,55 +1,99 @@
-﻿# Monitor BPM - ESP32 + Supabase + React
+# Monitor BPM
 
-Sistema web para acompanhamento de batimentos cardíacos em BPM, utilizando ESP32 com sensor AD8232, banco de dados Supabase e frontend em React com Vite.
+Aplicação acadêmica para acompanhamento de batimentos cardíacos usando **ESP32**, sensor **AD8232**, **Supabase** e um frontend responsivo desenvolvido com **React + Vite**.
 
-## Link do projeto
+> Este projeto é um protótipo acadêmico. As leituras não substituem equipamentos médicos, diagnóstico ou acompanhamento profissional.
 
-Repositório:
+## Acesso
+
+- **Site:** [Monitor BPM](https://bpm-monitor-frontend-y6k8.vercel.app)
+- **Repositório:** [Jonhmartines/bpm-monitor-frontend](https://github.com/Jonhmartines/bpm-monitor-frontend)
+
+## Visão geral
+
+O sistema recebe o sinal analógico do AD8232, calcula uma estimativa de BPM no ESP32 e envia os resultados ao Supabase por HTTPS. O frontend consulta esses dados e apresenta o acompanhamento do usuário autenticado.
+
+Fluxo principal:
 
 ```text
-https://github.com/Jonhmartines/bpm-monitor-frontend
+Eletrodos
+   ↓
+AD8232
+   ↓
+ESP32
+   ↓ HTTPS
+Supabase
+   ↓
+Frontend React
+   ↓
+Usuário
 ```
 
-Site publicado:
+## Funcionalidades
 
-```text
-https://bpm-monitor-frontend-y6k8.vercel.app
-```
+### Frontend
 
-## Objetivo do projeto
+- Cadastro de usuário com nome, idade, sexo, e-mail e senha;
+- Login com Supabase Auth;
+- Sessão persistente;
+- Dashboard com BPM atual;
+- Média calculada com todas as leituras do dia;
+- Quantidade de registros do dia;
+- Gráfico de variação diária;
+- Lista das últimas leituras;
+- Histórico organizado por data;
+- Média, mínimo e máximo por período;
+- Perfil com os dados reais do usuário;
+- Tema claro e escuro;
+- Visualização desktop e mobile;
+- Atualização automática dos dados;
+- Reinício diário do Dashboard: ao abrir o sistema, são mostradas apenas as leituras do dia atual.
 
-O objetivo do projeto é permitir o acompanhamento de BPM de um paciente a partir de leituras enviadas por um ESP32.
+### ESP32
 
-O sistema permite:
+- Leitura do AD8232 pelo ADC do GPIO34;
+- Verificação de eletrodos por LO+ e LO-;
+- Suporte a mais de uma rede Wi-Fi;
+- Permanência na primeira rede disponível;
+- Reconexão automática quando a rede cai;
+- Calibração inicial do sinal;
+- Filtro mediano do ADC;
+- Remoção da linha de base;
+- Limiar dinâmico;
+- Rejeição de pulsos secundários e intervalos inválidos;
+- Cálculo do BPM pela mediana dos intervalos RR;
+- Envio HTTP executado em tarefa separada da leitura do sensor;
+- Atualização do BPM em tempo real;
+- Gravação periódica no histórico.
 
-- Cadastro de usuários;
-- Login com e-mail e senha;
-- Vinculação das leituras ao paciente logado;
-- Visualização do BPM em tempo real;
-- Consulta de histórico diário;
-- Interface responsiva para computador e celular;
-- Integração com Supabase para autenticação, banco de dados e API;
-- Publicação do frontend na Vercel.
-
-Este projeto possui finalidade acadêmica e de prototipagem.
-
-## Tecnologias utilizadas
+## Tecnologias
 
 ### Hardware
 
 - ESP32;
 - Sensor AD8232;
-- Eletrodos para captação do sinal cardíaco;
+- Eletrodos;
 - Cabo USB;
 - Rede Wi-Fi.
+
+### Firmware
+
+- C;
+- ESP-IDF;
+- PlatformIO;
+- FreeRTOS;
+- ADC1;
+- GPIO;
+- HTTPS;
+- JSON.
 
 ### Backend
 
 - Supabase Auth;
-- Supabase Database;
 - PostgreSQL;
 - Supabase REST API;
 - Row Level Security;
+- Funções PostgreSQL;
 - Triggers;
 - Views.
 
@@ -59,161 +103,196 @@ Este projeto possui finalidade acadêmica e de prototipagem.
 - Vite;
 - Tailwind CSS;
 - Supabase JS;
+- Lucide React;
 - Vercel.
 
-## Arquitetura geral do sistema
+## Ligações do AD8232
+
+| AD8232 | ESP32 |
+|---|---|
+| `3.3V` | `3V3` |
+| `GND` | `GND` |
+| `OUT` | `GPIO34` |
+| `LO+` | `GPIO19` |
+| `LO-` | `GPIO18` |
+
+No firmware:
+
+```c
+#define APP_ADC_CHANNEL ADC1_CHANNEL_6
+#define APP_LO_PLUS_GPIO GPIO_NUM_19
+#define APP_LO_MINUS_GPIO GPIO_NUM_18
+```
+
+No ESP32, `ADC1_CHANNEL_6` corresponde ao `GPIO34`.
+
+## Organização dos dados no Supabase
+
+O projeto utiliza os seguintes recursos principais:
+
+### `perfis`
+
+Armazena os dados do usuário autenticado.
+
+Campos principais:
 
 ```text
-Sensor AD8232
-      |
-      v
-ESP32 lê o sinal analógico
-      |
-      v
-Código processa o sinal
-      |
-      v
-BPM é calculado ou estimado
-      |
-      v
-ESP32 envia JSON via HTTPS
-      |
-      v
-Supabase REST API recebe os dados
-      |
-      v
-Banco PostgreSQL armazena as leituras
-      |
-      v
-Frontend React consulta os dados
-      |
-      v
-Usuário visualiza BPM, histórico e perfil
+id
+nome
+idade
+sexo
+criado_em
 ```
 
-## Estrutura do projeto frontend
+### `dispositivos`
+
+Relaciona o código do ESP32 ao perfil que deve receber as leituras.
+
+O firmware utiliza:
 
 ```text
-bpm-monitor-frontend/
-│
-├── src/
-│   ├── components/
-│   │   ├── BottomNav.jsx
-│   │   ├── CardResumo.jsx
-│   │   ├── GraficoBarras.jsx
-│   │   ├── Header.jsx
-│   │   └── InfoLinha.jsx
-│   │
-│   ├── pages/
-│   │   ├── Dashboard.jsx
-│   │   ├── Historico.jsx
-│   │   ├── Login.jsx
-│   │   └── Perfil.jsx
-│   │
-│   ├── lib/
-│   │   └── supabaseClient.js
-│   │
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
-│
-├── .env.example
-├── .gitignore
-├── index.html
-├── package.json
-├── package-lock.json
-├── vite.config.js
-└── README.md
+ESP32_PRINCIPAL
 ```
 
-## Como rodar o frontend localmente
+### `bpm_tempo_real`
 
-Clone o repositório:
+Mantém o valor mais recente de cada perfil.
 
-```bash
-git clone https://github.com/Jonhmartines/bpm-monitor-frontend.git
-```
-
-Entre na pasta:
-
-```bash
-cd bpm-monitor-frontend
-```
-
-Instale as dependências:
-
-```bash
-npm install
-```
-
-Crie o arquivo `.env.local`:
-
-```bash
-copy .env.example .env.local
-```
-
-Configure as variáveis de ambiente:
+Campos principais:
 
 ```text
-VITE_SUPABASE_URL=SUA_URL_DO_SUPABASE
-VITE_SUPABASE_ANON_KEY=SUA_CHAVE_ANON_PUBLICA
+perfil_id
+dispositivo_id
+valor_bpm
+recebido_em
+atualizado_em
 ```
 
-Inicie o projeto:
+### `historico_bpm`
 
-```bash
-npm run dev
-```
+Armazena as leituras ao longo do tempo.
 
-Acesse no navegador:
+Campos principais:
 
 ```text
-http://localhost:5173
+id
+perfil_id
+dispositivo_id
+valor_bpm
+registrado_em
 ```
 
-## Variáveis de ambiente do frontend
+### `vw_bpm_historico_minuto`
 
-O frontend usa duas variáveis principais:
+Agrupa as leituras por minuto e fornece:
 
 ```text
-VITE_SUPABASE_URL
-VITE_SUPABASE_ANON_KEY
+bpm_medio
+bpm_minimo
+bpm_maximo
+quantidade_leituras
 ```
 
-Exemplo do arquivo `.env.example`:
+### `registrar_bpm_dispositivo`
+
+Função RPC chamada pelo ESP32.
+
+O firmware envia:
+
+```json
+{
+  "p_codigo_dispositivo": "ESP32_PRINCIPAL",
+  "p_valor_bpm": 80,
+  "p_salvar_historico": true
+}
+```
+
+A função localiza o perfil vinculado ao dispositivo, atualiza `bpm_tempo_real` e, quando solicitado, grava em `historico_bpm`.
+
+
+## Configuração completa do Supabase
+
+Esta seção apresenta a criação do backend do zero. Ela substitui qualquer estrutura anterior do banco.
+
+> O primeiro bloco do script remove tabelas, funções, gatilhos e views existentes. Use-o apenas em um projeto novo ou quando desejar reconstruir completamente o banco.
+
+### 1. Criar o projeto
+
+1. Acesse o Supabase e crie um projeto;
+2. Aguarde a preparação do banco PostgreSQL;
+3. Abra **Project Settings → API**;
+4. Copie:
+   - `Project URL`;
+   - chave `anon/public`;
+5. Não utilize a chave `service_role` no frontend.
+
+### 2. Abrir o SQL Editor
+
+No painel do projeto:
 
 ```text
-VITE_SUPABASE_URL=https://seu-projeto.supabase.co
-VITE_SUPABASE_ANON_KEY=sua-chave-anon-publica
+SQL Editor → New query
 ```
 
-A chave `service_role` não deve ser colocada no frontend, no GitHub ou na Vercel.
-
-Apenas a chave `anon/public` deve ser usada no frontend.
-
-## Configuração do Supabase
-
-### 1. Criar tabela de perfis
-
-A tabela `perfis` armazena os dados principais do usuário cadastrado.
+Cole e execute o script completo abaixo.
 
 ```sql
-create table if not exists public.perfis (
-  id uuid primary key references auth.users(id) on delete cascade,
-  nome text not null,
-  idade integer not null check (idade >= 0 and idade <= 130),
-  sexo text not null check (sexo in ('masculino', 'feminino', 'outro')),
-  criado_em timestamp with time zone not null default now()
+-- =========================================================
+-- MONITOR BPM - CONFIGURAÇÃO COMPLETA DO SUPABASE
+-- Execute no SQL Editor de um projeto novo.
+-- O bloco de limpeza apaga as estruturas antigas.
+-- =========================================================
+
+create extension if not exists pgcrypto;
+
+-- =========================================================
+-- 1. LIMPEZA OPCIONAL
+-- =========================================================
+
+drop trigger if exists on_auth_user_created on auth.users;
+
+drop function if exists public.handle_new_user();
+drop function if exists public.registrar_bpm_dispositivo(text, integer, boolean);
+drop function if exists public.vincular_dispositivo_ao_usuario(text);
+
+drop view if exists public.vw_bpm_historico_minuto;
+
+drop table if exists public.historico_bpm cascade;
+drop table if exists public.bpm_tempo_real cascade;
+drop table if exists public.dispositivos cascade;
+drop table if exists public.perfis cascade;
+
+-- =========================================================
+-- 2. PERFIS
+-- =========================================================
+
+create table public.perfis (
+    id uuid primary key references auth.users(id) on delete cascade,
+    nome text not null,
+    idade integer not null check (idade between 0 and 130),
+    sexo text not null check (sexo in ('masculino', 'feminino', 'outro')),
+    criado_em timestamptz not null default now()
 );
-```
 
-### 2. Criar função para gerar perfil automaticamente
+alter table public.perfis enable row level security;
 
-Essa função é executada quando um novo usuário é criado no Supabase Auth.
+create policy "usuario_le_proprio_perfil"
+on public.perfis
+for select
+to authenticated
+using (id = auth.uid());
 
-Ela pega os dados enviados no cadastro e insere automaticamente na tabela `perfis`.
+create policy "usuario_atualiza_proprio_perfil"
+on public.perfis
+for update
+to authenticated
+using (id = auth.uid())
+with check (id = auth.uid());
 
-```sql
+-- =========================================================
+-- 3. CRIAÇÃO AUTOMÁTICA DO PERFIL APÓS O CADASTRO
+-- =========================================================
+
 create or replace function public.handle_new_user()
 returns trigger
 language plpgsql
@@ -221,1112 +300,770 @@ security definer
 set search_path = public
 as $$
 declare
-  v_nome text;
-  v_idade integer;
-  v_sexo text;
+    v_nome text;
+    v_idade integer;
+    v_sexo text;
+    v_idade_texto text;
 begin
-  v_nome := coalesce(
-    new.raw_user_meta_data ->> 'nome',
-    new.raw_user_meta_data ->> 'full_name',
-    'Usuário'
-  );
+    v_nome := coalesce(
+        nullif(trim(new.raw_user_meta_data ->> 'nome'), ''),
+        nullif(trim(new.raw_user_meta_data ->> 'full_name'), ''),
+        split_part(new.email, '@', 1),
+        'Usuário'
+    );
 
-  v_idade := coalesce(
-    nullif(new.raw_user_meta_data ->> 'idade', '')::integer,
-    0
-  );
+    v_idade_texto := new.raw_user_meta_data ->> 'idade';
 
-  v_sexo := lower(coalesce(
-    new.raw_user_meta_data ->> 'sexo',
-    'outro'
-  ));
+    if v_idade_texto ~ '^[0-9]{1,3}$' then
+        v_idade := v_idade_texto::integer;
+    else
+        v_idade := 0;
+    end if;
 
-  if v_sexo not in ('masculino', 'feminino', 'outro') then
-    v_sexo := 'outro';
-  end if;
+    if v_idade < 0 or v_idade > 130 then
+        v_idade := 0;
+    end if;
 
-  insert into public.perfis (id, nome, idade, sexo)
-  values (new.id, v_nome, v_idade, v_sexo);
+    v_sexo := lower(
+        coalesce(
+            nullif(trim(new.raw_user_meta_data ->> 'sexo'), ''),
+            'outro'
+        )
+    );
 
-  return new;
+    if v_sexo not in ('masculino', 'feminino', 'outro') then
+        v_sexo := 'outro';
+    end if;
+
+    insert into public.perfis (
+        id,
+        nome,
+        idade,
+        sexo
+    )
+    values (
+        new.id,
+        v_nome,
+        v_idade,
+        v_sexo
+    )
+    on conflict (id) do update
+    set
+        nome = excluded.nome,
+        idade = excluded.idade,
+        sexo = excluded.sexo;
+
+    return new;
 end;
 $$;
-```
-
-### 3. Criar trigger para cadastro automático
-
-O trigger chama a função `handle_new_user()` após a criação de um usuário em `auth.users`.
-
-```sql
-drop trigger if exists on_auth_user_created on auth.users;
 
 create trigger on_auth_user_created
 after insert on auth.users
 for each row
-execute function public.handle_new_user();
-```
+execute procedure public.handle_new_user();
 
-### 4. Criar tabela de BPM em tempo real
+-- =========================================================
+-- 4. DISPOSITIVOS
+-- =========================================================
 
-A tabela `bpm_tempo_real` guarda o valor mais recente de BPM de cada usuário.
-
-O campo `perfil_id` é a chave principal para garantir que cada usuário tenha apenas um registro atual.
-
-```sql
-create table if not exists public.bpm_tempo_real (
-  perfil_id uuid primary key references public.perfis(id) on delete cascade,
-  dispositivo_id uuid,
-  valor_bpm integer not null check (valor_bpm >= 30 and valor_bpm <= 220),
-  recebido_em timestamp with time zone not null default now(),
-  atualizado_em timestamp with time zone not null default now()
+create table public.dispositivos (
+    id uuid primary key default gen_random_uuid(),
+    codigo text not null unique,
+    perfil_id uuid references public.perfis(id) on delete set null,
+    ativo boolean not null default true,
+    criado_em timestamptz not null default now(),
+    atualizado_em timestamptz not null default now()
 );
-```
 
-### 5. Criar tabela de histórico de BPM
+alter table public.dispositivos enable row level security;
 
-A tabela `historico_bpm` guarda várias leituras ao longo do tempo.
+create policy "usuario_le_proprio_dispositivo"
+on public.dispositivos
+for select
+to authenticated
+using (perfil_id = auth.uid());
 
-Ela é usada para montar o histórico diário do paciente.
+-- =========================================================
+-- 5. BPM EM TEMPO REAL
+-- =========================================================
 
-```sql
-create table if not exists public.historico_bpm (
-  id bigint generated by default as identity primary key,
-  perfil_id uuid not null references public.perfis(id) on delete cascade,
-  dispositivo_id uuid,
-  valor_bpm integer not null check (valor_bpm >= 30 and valor_bpm <= 220),
-  registrado_em timestamp with time zone not null default now()
+create table public.bpm_tempo_real (
+    perfil_id uuid primary key references public.perfis(id) on delete cascade,
+    dispositivo_id uuid references public.dispositivos(id) on delete set null,
+    valor_bpm integer not null check (valor_bpm between 0 and 220),
+    recebido_em timestamptz not null default now(),
+    atualizado_em timestamptz not null default now()
 );
-```
 
-### 6. Criar view de histórico por minuto
-
-A view `vw_bpm_historico_minuto` agrupa as leituras por minuto.
-
-Ela calcula:
-
-- BPM médio;
-- BPM mínimo;
-- BPM máximo;
-- Quantidade de leituras no minuto.
-
-```sql
-create or replace view public.vw_bpm_historico_minuto as
-select
-  perfil_id,
-  date_trunc('minute', registrado_em) as minuto,
-  round(avg(valor_bpm), 2) as bpm_medio,
-  min(valor_bpm) as bpm_minimo,
-  max(valor_bpm) as bpm_maximo,
-  count(*) as quantidade_leituras
-from public.historico_bpm
-group by
-  perfil_id,
-  date_trunc('minute', registrado_em)
-order by minuto desc;
-```
-
-### 7. Ativar Row Level Security
-
-O RLS é usado para proteger os dados.
-
-Com ele ativado, cada usuário só consegue visualizar os próprios dados.
-
-```sql
-alter table public.perfis enable row level security;
 alter table public.bpm_tempo_real enable row level security;
+
+create policy "usuario_le_proprio_bpm_tempo_real"
+on public.bpm_tempo_real
+for select
+to authenticated
+using (perfil_id = auth.uid());
+
+-- =========================================================
+-- 6. HISTÓRICO
+-- =========================================================
+
+create table public.historico_bpm (
+    id bigint generated by default as identity primary key,
+    perfil_id uuid not null references public.perfis(id) on delete cascade,
+    dispositivo_id uuid references public.dispositivos(id) on delete set null,
+    valor_bpm integer not null check (valor_bpm between 0 and 220),
+    registrado_em timestamptz not null default now()
+);
+
+create index historico_bpm_perfil_data_idx
+on public.historico_bpm (
+    perfil_id,
+    registrado_em desc
+);
+
 alter table public.historico_bpm enable row level security;
-```
 
-### 8. Criar políticas para perfis
-
-Permite que o usuário veja apenas o próprio perfil.
-
-```sql
-drop policy if exists "Usuário vê o próprio perfil" on public.perfis;
-
-create policy "Usuário vê o próprio perfil"
-on public.perfis
-for select
-to authenticated
-using (auth.uid() = id);
-```
-
-Permite que o usuário atualize apenas o próprio perfil.
-
-```sql
-drop policy if exists "Usuário atualiza o próprio perfil" on public.perfis;
-
-create policy "Usuário atualiza o próprio perfil"
-on public.perfis
-for update
-to authenticated
-using (auth.uid() = id)
-with check (auth.uid() = id);
-```
-
-### 9. Criar políticas para leitura de BPM
-
-Permite que o usuário veja apenas o próprio BPM em tempo real.
-
-```sql
-drop policy if exists "Usuário vê o próprio BPM em tempo real" on public.bpm_tempo_real;
-
-create policy "Usuário vê o próprio BPM em tempo real"
-on public.bpm_tempo_real
-for select
-to authenticated
-using (auth.uid() = perfil_id);
-```
-
-Permite que o usuário veja apenas o próprio histórico.
-
-```sql
-drop policy if exists "Usuário vê o próprio histórico" on public.historico_bpm;
-
-create policy "Usuário vê o próprio histórico"
+create policy "usuario_le_proprio_historico"
 on public.historico_bpm
 for select
 to authenticated
-using (auth.uid() = perfil_id);
-```
+using (perfil_id = auth.uid());
 
-### 10. Políticas para envio do ESP32 em protótipo acadêmico
+-- =========================================================
+-- 7. VINCULAR O DISPOSITIVO AO USUÁRIO LOGADO
+-- =========================================================
 
-Para o protótipo, o ESP32 pode enviar dados diretamente para o Supabase usando a anon key.
-
-Permite inserir dados em `bpm_tempo_real`.
-
-```sql
-drop policy if exists "ESP32 insere BPM em tempo real" on public.bpm_tempo_real;
-
-create policy "ESP32 insere BPM em tempo real"
-on public.bpm_tempo_real
-for insert
-to anon
-with check (true);
-```
-
-Permite atualizar dados em `bpm_tempo_real`.
-
-```sql
-drop policy if exists "ESP32 atualiza BPM em tempo real" on public.bpm_tempo_real;
-
-create policy "ESP32 atualiza BPM em tempo real"
-on public.bpm_tempo_real
-for update
-to anon
-using (true)
-with check (true);
-```
-
-Permite inserir leituras no histórico.
-
-```sql
-drop policy if exists "ESP32 insere histórico de BPM" on public.historico_bpm;
-
-create policy "ESP32 insere histórico de BPM"
-on public.historico_bpm
-for insert
-to anon
-with check (true);
-```
-
-Em uma versão final de produção, o recomendado é não deixar o ESP32 escrever diretamente no banco. O ideal seria usar uma API intermediária, uma Edge Function ou outro backend próprio para validar os dados antes de gravar.
-
-## Teste de envio para o Supabase via PowerShell
-
-Antes de usar o ESP32, é possível testar o envio pelo PowerShell.
-
-Defina as variáveis:
-
-```powershell
-$SUPABASE_URL="https://seu-projeto.supabase.co"
-$SUPABASE_ANON_KEY="sua-chave-anon-publica"
-$PERFIL_ID="uuid-do-perfil"
-$DISPOSITIVO_ID="uuid-do-dispositivo"
-```
-
-Enviar ou atualizar BPM em tempo real:
-
-```powershell
-$headers = @{
-  "apikey" = $SUPABASE_ANON_KEY
-  "Authorization" = "Bearer $SUPABASE_ANON_KEY"
-  "Content-Type" = "application/json"
-  "Prefer" = "resolution=merge-duplicates"
-}
-
-$body = @{
-  perfil_id = $PERFIL_ID
-  dispositivo_id = $DISPOSITIVO_ID
-  valor_bpm = 82
-  recebido_em = (Get-Date).ToUniversalTime().ToString("o")
-  atualizado_em = (Get-Date).ToUniversalTime().ToString("o")
-} | ConvertTo-Json
-
-Invoke-RestMethod `
-  -Method Post `
-  -Uri "$SUPABASE_URL/rest/v1/bpm_tempo_real?on_conflict=perfil_id" `
-  -Headers $headers `
-  -Body $body
-```
-
-Inserir leitura no histórico:
-
-```powershell
-$headers = @{
-  "apikey" = $SUPABASE_ANON_KEY
-  "Authorization" = "Bearer $SUPABASE_ANON_KEY"
-  "Content-Type" = "application/json"
-}
-
-$body = @{
-  perfil_id = $PERFIL_ID
-  dispositivo_id = $DISPOSITIVO_ID
-  valor_bpm = 82
-  registrado_em = (Get-Date).ToUniversalTime().ToString("o")
-} | ConvertTo-Json
-
-Invoke-RestMethod `
-  -Method Post `
-  -Uri "$SUPABASE_URL/rest/v1/historico_bpm" `
-  -Headers $headers `
-  -Body $body
-```
-
-## Endpoints usados pelo ESP32
-
-### BPM em tempo real
-
-```text
-POST /rest/v1/bpm_tempo_real?on_conflict=perfil_id
-```
-
-Headers:
-
-```text
-apikey: SUPABASE_ANON_KEY
-Authorization: Bearer SUPABASE_ANON_KEY
-Content-Type: application/json
-Prefer: resolution=merge-duplicates
-```
-
-Body:
-
-```json
-{
-  "perfil_id": "uuid-do-paciente",
-  "dispositivo_id": "uuid-do-dispositivo",
-  "valor_bpm": 82,
-  "recebido_em": "2026-01-01T12:00:00.000Z",
-  "atualizado_em": "2026-01-01T12:00:00.000Z"
-}
-```
-
-### Histórico de BPM
-
-```text
-POST /rest/v1/historico_bpm
-```
-
-Headers:
-
-```text
-apikey: SUPABASE_ANON_KEY
-Authorization: Bearer SUPABASE_ANON_KEY
-Content-Type: application/json
-```
-
-Body:
-
-```json
-{
-  "perfil_id": "uuid-do-paciente",
-  "dispositivo_id": "uuid-do-dispositivo",
-  "valor_bpm": 82,
-  "registrado_em": "2026-01-01T12:00:00.000Z"
-}
-```
-
-## Programação do ESP32
-
-O ESP32 é responsável por ler o sensor AD8232, calcular ou estimar o BPM e enviar os dados para o Supabase.
-
-### Fluxo do ESP32
-
-```text
-Inicia o programa
-      |
-      v
-Conecta no Wi-Fi
-      |
-      v
-Configura o ADC
-      |
-      v
-Lê o sinal analógico do AD8232
-      |
-      v
-Detecta batimentos
-      |
-      v
-Calcula o BPM
-      |
-      v
-Monta um JSON
-      |
-      v
-Envia para bpm_tempo_real
-      |
-      v
-Envia para historico_bpm
-```
-
-### Requisitos para compilar o código
-
-- ESP-IDF instalado;
-- ESP32 configurado;
-- Sensor AD8232 conectado ao pino ADC escolhido;
-- Rede Wi-Fi disponível;
-- URL do Supabase;
-- Chave anon/public do Supabase;
-- UUID do perfil do usuário;
-- UUID do dispositivo.
-
-### Comandos básicos do ESP-IDF
-
-Selecionar o alvo:
-
-```bash
-idf.py set-target esp32
-```
-
-Abrir configurações:
-
-```bash
-idf.py menuconfig
-```
-
-Compilar:
-
-```bash
-idf.py build
-```
-
-Gravar no ESP32:
-
-```bash
-idf.py -p COM3 flash
-```
-
-Abrir monitor serial:
-
-```bash
-idf.py -p COM3 monitor
-```
-
-Compilar, gravar e monitorar:
-
-```bash
-idf.py -p COM3 flash monitor
-```
-
-## Código genérico demonstrativo do ESP32
-
-O código abaixo é uma versão genérica e demonstrativa.
-
-Ele mostra a lógica principal de:
-
-- Conectar no Wi-Fi;
-- Ler o sinal do AD8232 pelo ADC;
-- Detectar batimentos de forma simples;
-- Calcular BPM;
-- Enviar BPM em tempo real para o Supabase;
-- Registrar leituras no histórico.
-
-Antes de usar, é necessário trocar os valores de Wi-Fi, URL do Supabase, anon key, perfil do usuário e dispositivo.
-
-```c
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdlib.h>
-
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-
-#include "esp_wifi.h"
-#include "esp_event.h"
-#include "esp_log.h"
-#include "esp_system.h"
-#include "esp_netif.h"
-#include "esp_http_client.h"
-#include "esp_timer.h"
-#include "nvs_flash.h"
-#include "esp_crt_bundle.h"
-
-#include "driver/adc.h"
-
-#define WIFI_SSID "NOME_DA_REDE_WIFI"
-#define WIFI_PASS "SENHA_DA_REDE_WIFI"
-
-#define SUPABASE_URL "https://seu-projeto.supabase.co"
-#define SUPABASE_ANON_KEY "sua-chave-anon-publica"
-
-#define PERFIL_ID "uuid-do-perfil"
-#define DISPOSITIVO_ID "uuid-do-dispositivo"
-
-#define ADC_CHANNEL ADC1_CHANNEL_6
-#define ADC_WIDTH ADC_WIDTH_BIT_12
-#define ADC_ATTEN ADC_ATTEN_DB_11
-
-#define LIMIAR_BATIMENTO 2300
-#define TEMPO_REFRATARIO_MS 350
-#define INTERVALO_ENVIO_HISTORICO_MS 5000
-
-static const char *TAG = "BPM_MONITOR";
-
-static bool wifi_conectado = false;
-
-static void wifi_event_handler(
-    void *arg,
-    esp_event_base_t event_base,
-    int32_t event_id,
-    void *event_data
-) {
-    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
-        esp_wifi_connect();
-    }
-
-    if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_DISCONNECTED) {
-        wifi_conectado = false;
-        esp_wifi_connect();
-        ESP_LOGI(TAG, "Tentando reconectar ao Wi-Fi...");
-    }
-
-    if (event_base == IP_EVENT && event_id == IP_EVENT_STA_GOT_IP) {
-        wifi_conectado = true;
-        ESP_LOGI(TAG, "Wi-Fi conectado com sucesso.");
-    }
-}
-
-static void iniciar_wifi(void) {
-    nvs_flash_init();
-    esp_netif_init();
-    esp_event_loop_create_default();
-    esp_netif_create_default_wifi_sta();
-
-    wifi_init_config_t cfg = WIFI_INIT_CONFIG_DEFAULT();
-    esp_wifi_init(&cfg);
-
-    esp_event_handler_instance_register(
-        WIFI_EVENT,
-        ESP_EVENT_ANY_ID,
-        &wifi_event_handler,
-        NULL,
-        NULL
-    );
-
-    esp_event_handler_instance_register(
-        IP_EVENT,
-        IP_EVENT_STA_GOT_IP,
-        &wifi_event_handler,
-        NULL,
-        NULL
-    );
-
-    wifi_config_t wifi_config = {
-        .sta = {
-            .ssid = WIFI_SSID,
-            .password = WIFI_PASS
-        }
-    };
-
-    esp_wifi_set_mode(WIFI_MODE_STA);
-    esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
-    esp_wifi_start();
-}
-
-static void configurar_adc(void) {
-    adc1_config_width(ADC_WIDTH);
-    adc1_config_channel_atten(ADC_CHANNEL, ADC_ATTEN);
-}
-
-static int ler_sensor_ad8232(void) {
-    return adc1_get_raw(ADC_CHANNEL);
-}
-
-static esp_err_t enviar_json_supabase(const char *endpoint, const char *json, bool usar_upsert) {
-    char url[300];
-
-    if (usar_upsert) {
-        snprintf(url, sizeof(url), "%s%s?on_conflict=perfil_id", SUPABASE_URL, endpoint);
-    } else {
-        snprintf(url, sizeof(url), "%s%s", SUPABASE_URL, endpoint);
-    }
-
-    esp_http_client_config_t config = {
-        .url = url,
-        .method = HTTP_METHOD_POST,
-        .crt_bundle_attach = esp_crt_bundle_attach
-    };
-
-    esp_http_client_handle_t client = esp_http_client_init(&config);
-
-    esp_http_client_set_header(client, "apikey", SUPABASE_ANON_KEY);
-    esp_http_client_set_header(client, "Authorization", "Bearer " SUPABASE_ANON_KEY);
-    esp_http_client_set_header(client, "Content-Type", "application/json");
-
-    if (usar_upsert) {
-        esp_http_client_set_header(client, "Prefer", "resolution=merge-duplicates");
-    }
-
-    esp_http_client_set_post_field(client, json, strlen(json));
-
-    esp_err_t err = esp_http_client_perform(client);
-
-    if (err == ESP_OK) {
-        int status = esp_http_client_get_status_code(client);
-        ESP_LOGI(TAG, "Resposta HTTP: %d", status);
-    } else {
-        ESP_LOGE(TAG, "Erro HTTP: %s", esp_err_to_name(err));
-    }
-
-    esp_http_client_cleanup(client);
-
-    return err;
-}
-
-static void enviar_bpm_tempo_real(int bpm) {
-    char json[400];
-
-    snprintf(
-        json,
-        sizeof(json),
-        "{"
-        "\"perfil_id\":\"%s\","
-        "\"dispositivo_id\":\"%s\","
-        "\"valor_bpm\":%d"
-        "}",
-        PERFIL_ID,
-        DISPOSITIVO_ID,
-        bpm
-    );
-
-    enviar_json_supabase("/rest/v1/bpm_tempo_real", json, true);
-}
-
-static void enviar_bpm_historico(int bpm) {
-    char json[400];
-
-    snprintf(
-        json,
-        sizeof(json),
-        "{"
-        "\"perfil_id\":\"%s\","
-        "\"dispositivo_id\":\"%s\","
-        "\"valor_bpm\":%d"
-        "}",
-        PERFIL_ID,
-        DISPOSITIVO_ID,
-        bpm
-    );
-
-    enviar_json_supabase("/rest/v1/historico_bpm", json, false);
-}
-
-static int calcular_bpm_por_intervalo(int64_t intervalo_ms) {
-    if (intervalo_ms <= 0) {
-        return 0;
-    }
-
-    int bpm = (int)(60000 / intervalo_ms);
-
-    if (bpm < 30 || bpm > 220) {
-        return 0;
-    }
-
-    return bpm;
-}
-
-void app_main(void) {
-    iniciar_wifi();
-    configurar_adc();
-
-    int64_t ultimo_batimento_ms = 0;
-    int64_t ultimo_envio_historico_ms = 0;
-
-    bool acima_do_limiar = false;
-    int bpm_atual = 0;
-
-    while (true) {
-        int leitura_adc = ler_sensor_ad8232();
-        int64_t agora_ms = esp_timer_get_time() / 1000;
-
-        if (
-            leitura_adc > LIMIAR_BATIMENTO &&
-            !acima_do_limiar &&
-            (agora_ms - ultimo_batimento_ms) > TEMPO_REFRATARIO_MS
-        ) {
-            if (ultimo_batimento_ms > 0) {
-                int64_t intervalo = agora_ms - ultimo_batimento_ms;
-                int bpm_calculado = calcular_bpm_por_intervalo(intervalo);
-
-                if (bpm_calculado > 0) {
-                    bpm_atual = bpm_calculado;
-                    ESP_LOGI(TAG, "BPM: %d", bpm_atual);
-
-                    if (wifi_conectado) {
-                        enviar_bpm_tempo_real(bpm_atual);
-                    }
-                }
-            }
-
-            ultimo_batimento_ms = agora_ms;
-            acima_do_limiar = true;
-        }
-
-        if (leitura_adc < LIMIAR_BATIMENTO - 200) {
-            acima_do_limiar = false;
-        }
-
-        if (
-            bpm_atual > 0 &&
-            wifi_conectado &&
-            (agora_ms - ultimo_envio_historico_ms) > INTERVALO_ENVIO_HISTORICO_MS
-        ) {
-            enviar_bpm_historico(bpm_atual);
-            ultimo_envio_historico_ms = agora_ms;
-        }
-
-        vTaskDelay(pdMS_TO_TICKS(10));
-    }
-}
-```
-
-## Explicação do código do ESP32
-
-### Bibliotecas
-
-O código usa bibliotecas do ESP-IDF para:
-
-- Wi-Fi;
-- Eventos do sistema;
-- Requisições HTTP;
-- Leitura ADC;
-- Temporização;
-- Logs;
-- Certificados TLS.
-
-### Configurações principais
-
-No começo do código ficam os dados que precisam ser alterados para cada projeto:
-
-```c
-#define WIFI_SSID "NOME_DA_REDE_WIFI"
-#define WIFI_PASS "SENHA_DA_REDE_WIFI"
-
-#define SUPABASE_URL "https://seu-projeto.supabase.co"
-#define SUPABASE_ANON_KEY "sua-chave-anon-publica"
-
-#define PERFIL_ID "uuid-do-perfil"
-#define DISPOSITIVO_ID "uuid-do-dispositivo"
-```
-
-Esses campos indicam:
-
-- Nome da rede Wi-Fi;
-- Senha da rede Wi-Fi;
-- URL do Supabase;
-- Chave pública anon;
-- ID do perfil do paciente;
-- ID do dispositivo.
-
-### Configuração do ADC
-
-O sensor AD8232 envia um sinal analógico.
-
-O ESP32 lê esse sinal por meio do ADC.
-
-```c
-#define ADC_CHANNEL ADC1_CHANNEL_6
-#define ADC_WIDTH ADC_WIDTH_BIT_12
-#define ADC_ATTEN ADC_ATTEN_DB_11
-```
-
-O canal ADC precisa ser alterado de acordo com o pino usado no ESP32.
-
-### Limiar de batimento
-
-O valor abaixo define a partir de qual leitura o código considera que pode ter ocorrido um batimento.
-
-```c
-#define LIMIAR_BATIMENTO 2300
-```
-
-Esse valor pode precisar de ajuste dependendo do sensor, da ligação, dos eletrodos e do ruído do sinal.
-
-### Tempo refratário
-
-O tempo refratário evita que o mesmo batimento seja contado várias vezes.
-
-```c
-#define TEMPO_REFRATARIO_MS 350
-```
-
-Depois de detectar um batimento, o código espera um tempo mínimo antes de aceitar outro.
-
-### Conexão Wi-Fi
-
-A função `iniciar_wifi()` inicializa o Wi-Fi do ESP32.
-
-Ela configura o ESP32 no modo estação, conecta na rede informada e acompanha o estado da conexão.
-
-Quando o ESP32 recebe IP, a variável `wifi_conectado` fica verdadeira.
-
-### Leitura do sensor
-
-A função abaixo lê o valor bruto do ADC:
-
-```c
-static int ler_sensor_ad8232(void) {
-    return adc1_get_raw(ADC_CHANNEL);
-}
-```
-
-O valor lido pode variar de acordo com o sinal recebido pelo AD8232.
-
-### Detecção de batimento
-
-O código verifica se a leitura passou do limiar configurado.
-
-```c
-if (
-    leitura_adc > LIMIAR_BATIMENTO &&
-    !acima_do_limiar &&
-    (agora_ms - ultimo_batimento_ms) > TEMPO_REFRATARIO_MS
+create or replace function public.vincular_dispositivo_ao_usuario(
+    p_codigo_dispositivo text
 )
+returns public.dispositivos
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    v_usuario uuid;
+    v_dispositivo public.dispositivos;
+begin
+    v_usuario := auth.uid();
+
+    if v_usuario is null then
+        raise exception 'Usuário não autenticado';
+    end if;
+
+    if not exists (
+        select 1
+        from public.perfis
+        where id = v_usuario
+    ) then
+        raise exception 'Perfil do usuário não encontrado';
+    end if;
+
+    insert into public.dispositivos (
+        codigo,
+        perfil_id,
+        ativo,
+        atualizado_em
+    )
+    values (
+        p_codigo_dispositivo,
+        v_usuario,
+        true,
+        now()
+    )
+    on conflict (codigo) do update
+    set
+        perfil_id = excluded.perfil_id,
+        ativo = true,
+        atualizado_em = now()
+    returning * into v_dispositivo;
+
+    return v_dispositivo;
+end;
+$$;
+
+grant execute
+on function public.vincular_dispositivo_ao_usuario(text)
+to authenticated;
+
+-- =========================================================
+-- 8. FUNÇÃO RPC CHAMADA PELO ESP32
+-- =========================================================
+
+create or replace function public.registrar_bpm_dispositivo(
+    p_codigo_dispositivo text,
+    p_valor_bpm integer,
+    p_salvar_historico boolean default false
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+    v_dispositivo_id uuid;
+    v_perfil_id uuid;
+begin
+    if p_codigo_dispositivo is null
+       or trim(p_codigo_dispositivo) = '' then
+        raise exception 'Código do dispositivo inválido';
+    end if;
+
+    if p_valor_bpm < 0 or p_valor_bpm > 220 then
+        raise exception 'BPM fora da faixa permitida';
+    end if;
+
+    select
+        id,
+        perfil_id
+    into
+        v_dispositivo_id,
+        v_perfil_id
+    from public.dispositivos
+    where codigo = p_codigo_dispositivo
+      and ativo = true
+    limit 1;
+
+    if v_dispositivo_id is null then
+        raise exception 'Dispositivo não cadastrado';
+    end if;
+
+    if v_perfil_id is null then
+        raise exception 'Dispositivo sem usuário vinculado';
+    end if;
+
+    insert into public.bpm_tempo_real (
+        perfil_id,
+        dispositivo_id,
+        valor_bpm,
+        recebido_em,
+        atualizado_em
+    )
+    values (
+        v_perfil_id,
+        v_dispositivo_id,
+        p_valor_bpm,
+        now(),
+        now()
+    )
+    on conflict (perfil_id) do update
+    set
+        dispositivo_id = excluded.dispositivo_id,
+        valor_bpm = excluded.valor_bpm,
+        recebido_em = excluded.recebido_em,
+        atualizado_em = excluded.atualizado_em;
+
+    if p_salvar_historico and p_valor_bpm > 0 then
+        insert into public.historico_bpm (
+            perfil_id,
+            dispositivo_id,
+            valor_bpm,
+            registrado_em
+        )
+        values (
+            v_perfil_id,
+            v_dispositivo_id,
+            p_valor_bpm,
+            now()
+        );
+    end if;
+end;
+$$;
+
+grant execute
+on function public.registrar_bpm_dispositivo(text, integer, boolean)
+to anon, authenticated;
+
+-- =========================================================
+-- 9. VIEW DO HISTÓRICO AGRUPADO POR MINUTO
+-- =========================================================
+
+create or replace view public.vw_bpm_historico_minuto
+with (security_invoker = true)
+as
+select
+    perfil_id,
+    date_trunc('minute', registrado_em) as minuto,
+    round(avg(valor_bpm)::numeric, 2) as bpm_medio,
+    min(valor_bpm) as bpm_minimo,
+    max(valor_bpm) as bpm_maximo,
+    count(*) as quantidade_leituras
+from public.historico_bpm
+where valor_bpm > 0
+group by
+    perfil_id,
+    date_trunc('minute', registrado_em);
+
+grant select
+on public.vw_bpm_historico_minuto
+to authenticated;
+
+-- =========================================================
+-- 10. PERMISSÕES
+-- =========================================================
+
+grant usage on schema public to anon, authenticated;
+
+grant select, update
+on public.perfis
+to authenticated;
+
+grant select
+on public.dispositivos,
+   public.bpm_tempo_real,
+   public.historico_bpm
+to authenticated;
+
+-- =========================================================
+-- 11. DISPOSITIVO INICIAL
+-- =========================================================
+
+insert into public.dispositivos (
+    codigo,
+    ativo
+)
+values (
+    'ESP32_PRINCIPAL',
+    true
+)
+on conflict (codigo) do nothing;
+
 ```
 
-Essa condição evita três problemas:
-
-- Contar ruído como batimento;
-- Contar o mesmo pico várias vezes;
-- Detectar batimentos em intervalos muito curtos.
-
-### Cálculo do BPM
-
-O BPM é calculado a partir do intervalo entre dois batimentos.
+O mesmo script também está disponível separadamente:
 
 ```text
-BPM = 60000 / intervalo_em_milissegundos
+supabase_setup.sql
 ```
 
-Exemplo:
+### 3. Configurar o cadastro no frontend
+
+O cadastro deve enviar os metadados esperados pelo gatilho:
+
+```javascript
+const { data, error } = await supabase.auth.signUp({
+  email,
+  password: senha,
+  options: {
+    data: {
+      nome,
+      full_name: nome,
+      idade: Number(idade),
+      sexo: sexo.toLowerCase(),
+    },
+  },
+});
+```
+
+Os valores aceitos em `sexo` são:
 
 ```text
-Intervalo entre batimentos = 1000 ms
-BPM = 60000 / 1000
-BPM = 60
+masculino
+feminino
+outro
 ```
 
-### Envio para o Supabase
+O gatilho `on_auth_user_created` cria automaticamente o registro correspondente em `public.perfis`.
 
-A função `enviar_json_supabase()` monta a requisição HTTP.
+### 4. Vincular o ESP32 ao usuário que entrou no site
 
-Ela envia:
+Após o login e a recuperação da sessão, execute:
 
-- URL;
-- Headers;
-- JSON;
-- Método POST.
+```javascript
+const { error } = await supabase.rpc(
+  "vincular_dispositivo_ao_usuario",
+  {
+    p_codigo_dispositivo: "ESP32_PRINCIPAL",
+  }
+);
 
-Headers usados:
+if (error) {
+  console.error("Erro ao vincular dispositivo:", error);
+}
+```
+
+Esse procedimento atualiza `public.dispositivos.perfil_id`. Assim, quando outra pessoa entra no site, o dispositivo passa a enviar as novas leituras para o perfil que está autenticado.
+
+### 5. Envio realizado pelo ESP32
+
+O firmware chama:
 
 ```text
-apikey
-Authorization
-Content-Type
-Prefer
+POST /rest/v1/rpc/registrar_bpm_dispositivo
 ```
 
-O header `Prefer` é usado no envio para `bpm_tempo_real`, porque essa tabela usa `perfil_id` como chave primária e deve atualizar o registro existente.
+Corpo enviado:
 
-### Envio para BPM em tempo real
+```json
+{
+  "p_codigo_dispositivo": "ESP32_PRINCIPAL",
+  "p_valor_bpm": 80,
+  "p_salvar_historico": true
+}
+```
 
-A função `enviar_bpm_tempo_real()` envia o BPM atual para:
+Cabeçalhos:
 
 ```text
-/rest/v1/bpm_tempo_real?on_conflict=perfil_id
+apikey: CHAVE_ANON_PUBLICA
+Authorization: Bearer CHAVE_ANON_PUBLICA
+Content-Type: application/json
+Prefer: return=minimal
 ```
 
-Ela faz um upsert, ou seja:
+A função `registrar_bpm_dispositivo`:
 
-- Se ainda não existir registro para aquele `perfil_id`, cria um novo;
-- Se já existir, atualiza o registro existente.
+1. localiza `ESP32_PRINCIPAL`;
+2. identifica o perfil vinculado;
+3. atualiza `bpm_tempo_real`;
+4. grava em `historico_bpm` quando `p_salvar_historico` for `true`;
+5. não adiciona `0 BPM` ao histórico.
 
-### Envio para histórico
+### 6. Consultas utilizadas pelo frontend
 
-A função `enviar_bpm_historico()` envia o BPM para:
+BPM atual:
+
+```javascript
+const { data, error } = await supabase
+  .from("bpm_tempo_real")
+  .select("perfil_id, valor_bpm, recebido_em, atualizado_em")
+  .eq("perfil_id", sessao.user.id)
+  .maybeSingle();
+```
+
+Histórico do dia:
+
+```javascript
+const inicioHoje = new Date();
+inicioHoje.setHours(0, 0, 0, 0);
+
+const fimHoje = new Date(inicioHoje);
+fimHoje.setDate(fimHoje.getDate() + 1);
+
+const { data, error } = await supabase
+  .from("historico_bpm")
+  .select("id, perfil_id, valor_bpm, registrado_em")
+  .eq("perfil_id", sessao.user.id)
+  .gte("registrado_em", inicioHoje.toISOString())
+  .lt("registrado_em", fimHoje.toISOString())
+  .order("registrado_em", { ascending: false });
+```
+
+Histórico agrupado por minuto:
+
+```javascript
+const { data, error } = await supabase
+  .from("vw_bpm_historico_minuto")
+  .select(
+    "perfil_id, minuto, bpm_medio, bpm_minimo, bpm_maximo, quantidade_leituras"
+  )
+  .eq("perfil_id", sessao.user.id)
+  .order("minuto", { ascending: false });
+```
+
+Perfil autenticado:
+
+```javascript
+const { data, error } = await supabase
+  .from("perfis")
+  .select("id, nome, idade, sexo, criado_em")
+  .eq("id", sessao.user.id)
+  .single();
+```
+
+### 7. Testar o vínculo do dispositivo
+
+Depois de entrar no site, execute no SQL Editor:
+
+```sql
+select
+    codigo,
+    perfil_id,
+    ativo,
+    atualizado_em
+from public.dispositivos
+where codigo = 'ESP32_PRINCIPAL';
+```
+
+O campo `perfil_id` deve conter o UUID do usuário autenticado.
+
+### 8. Testar as leituras
+
+Tempo real:
+
+```sql
+select *
+from public.bpm_tempo_real
+order by atualizado_em desc;
+```
+
+Histórico:
+
+```sql
+select *
+from public.historico_bpm
+order by registrado_em desc
+limit 100;
+```
+
+Agrupamento por minuto:
+
+```sql
+select *
+from public.vw_bpm_historico_minuto
+order by minuto desc
+limit 100;
+```
+
+### 9. Erros comuns
+
+`Dispositivo não cadastrado`:
+
+```sql
+insert into public.dispositivos (codigo, ativo)
+values ('ESP32_PRINCIPAL', true)
+on conflict (codigo) do nothing;
+```
+
+`Dispositivo sem usuário vinculado`:
+
+- entre no site;
+- aguarde a chamada de `vincular_dispositivo_ao_usuario`;
+- confirme o `perfil_id` na tabela `dispositivos`.
+
+`Database error saving new user`:
+
+- recrie `handle_new_user`;
+- recrie o gatilho `on_auth_user_created`;
+- confirme que `sexo` está em minúsculo;
+- confirme que `idade` está entre 0 e 130.
+
+Erro de RLS ao consultar:
+
+- confirme que o usuário está autenticado;
+- confirme que `perfil_id` é igual a `auth.uid()`;
+- recrie as políticas descritas no script.
+
+
+## Configuração do frontend
+
+### 1. Clonar o repositório
+
+```powershell
+git clone https://github.com/Jonhmartines/bpm-monitor-frontend.git
+cd "bpm-monitor-frontend"
+```
+
+No computador usado no desenvolvimento:
+
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+```
+
+### 2. Instalar as dependências
+
+```powershell
+npm install
+```
+
+### 3. Criar o arquivo de ambiente
+
+```powershell
+Copy-Item ".env.example" ".env.local"
+```
+
+Conteúdo de `.env.local`:
+
+```env
+VITE_SUPABASE_URL=https://SEU-PROJETO.supabase.co
+VITE_SUPABASE_ANON_KEY=SUA_CHAVE_ANON_PUBLICA
+```
+
+Nunca coloque a chave `service_role` no frontend.
+
+### 4. Executar em desenvolvimento
+
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+npm run dev -- --host
+```
+
+Acesso local:
 
 ```text
-/rest/v1/historico_bpm
+http://localhost:5173
 ```
 
-Nesse caso, o objetivo é criar várias leituras ao longo do tempo.
+### 5. Executar o build local sem o servidor do Vite
 
-Por isso, o histórico não substitui o registro anterior.
-
-### TLS e HTTPS
-
-O Supabase usa HTTPS.
-
-Por isso, o ESP32 precisa validar o certificado da conexão.
-
-No código, isso é feito com:
-
-```c
-.crt_bundle_attach = esp_crt_bundle_attach
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+npm run build
+cd dist
+python -m http.server 8080
 ```
 
-Esse recurso usa o bundle de certificados do ESP-IDF.
-
-## Explicação do frontend
-
-O frontend é feito em React com Vite.
-
-Ele possui:
-
-- Tela de login;
-- Tela de cadastro;
-- Dashboard;
-- Histórico;
-- Perfil;
-- Layout responsivo.
-
-### Login e cadastro
-
-O login usa:
-
-```js
-supabase.auth.signInWithPassword()
-```
-
-O cadastro usa:
-
-```js
-supabase.auth.signUp()
-```
-
-No cadastro, são enviados os metadados:
-
-```js
-nome
-full_name
-idade
-sexo
-```
-
-Esses dados são usados pela trigger do Supabase para criar automaticamente um registro em `perfis`.
-
-### Controle de sessão
-
-O `App.jsx` controla a sessão do usuário com:
-
-```js
-supabase.auth.getSession()
-```
-
-e também acompanha mudanças de login/logout com:
-
-```js
-supabase.auth.onAuthStateChange()
-```
-
-Quando existe uma sessão ativa, o sistema busca o perfil do usuário na tabela `perfis`.
-
-### Dashboard
-
-O Dashboard consulta a tabela:
+Acesso:
 
 ```text
-bpm_tempo_real
+http://localhost:8080
 ```
 
-Ele busca o registro do usuário logado usando:
+## Configuração do firmware
+
+O projeto PlatformIO utilizado no ESP32 está em:
 
 ```text
-perfil_id = sessao.user.id
+C:\Users\joao-\OneDrive\Documentos\PlatformIO\Projects\Batimento
 ```
 
-O painel atualiza a consulta periodicamente para exibir o BPM mais recente.
-
-### Histórico
-
-A tela de histórico consulta os dados salvos no banco e organiza os registros por data.
-
-Ela pode buscar dados em:
+Estrutura principal:
 
 ```text
-vw_bpm_historico_minuto
-historico_bpm
-bpm_tempo_real
+Batimento/
+├── platformio.ini
+└── src/
+    └── main.c
 ```
 
-O objetivo é mostrar os valores de BPM registrados em cada dia.
+Exemplo de `platformio.ini`:
 
-### Perfil
+```ini
+[env:esp32dev]
+platform = espressif32@6.7.0
+board = esp32dev
+framework = espidf
+monitor_speed = 115200
+upload_port = COM3
+monitor_port = COM3
+```
 
-A tela de perfil mostra os dados reais do usuário logado:
+Para compilar, gravar e abrir o monitor:
 
-- Nome;
-- E-mail;
-- Idade;
-- Sexo;
-- Data de criação.
+```powershell
+cd "C:\Users\joao-\OneDrive\Documentos\PlatformIO\Projects\Batimento"
 
-## Explicação do backend
+& "$env:USERPROFILE\.platformio\penv\Scripts\platformio.exe" run --target clean
+& "$env:USERPROFILE\.platformio\penv\Scripts\platformio.exe" run --target upload --upload-port COM3
+& "$env:USERPROFILE\.platformio\penv\Scripts\platformio.exe" device monitor --port COM3 --baud 115200
+```
 
-O backend do projeto é baseado no Supabase.
+## Funcionamento da leitura
 
-Ele é responsável por:
+1. O ESP32 conecta-se a uma das redes configuradas;
+2. O AD8232 fornece o sinal analógico ao GPIO34;
+3. O firmware calibra o sinal;
+4. O ADC é suavizado;
+5. O algoritmo identifica pulsos válidos;
+6. Intervalos muito curtos, longos ou inconsistentes são rejeitados;
+7. O BPM é calculado usando intervalos RR;
+8. A leitura é colocada em uma fila;
+9. Uma tarefa separada realiza o envio HTTPS;
+10. O Supabase atualiza o registro em tempo real;
+11. Leituras periódicas são adicionadas ao histórico;
+12. O frontend consulta e apresenta os dados do usuário logado.
 
-- Autenticar usuários;
-- Criar perfis automaticamente;
-- Armazenar o BPM em tempo real;
-- Armazenar o histórico de BPM;
-- Proteger os dados com RLS;
-- Fornecer uma API REST para o ESP32 e para o frontend.
+## Funcionamento do Dashboard
 
-Principais tabelas:
+O Dashboard consulta somente registros pertencentes ao dia atual, considerando o horário local do navegador.
+
+Ao iniciar um novo dia:
+
+- o gráfico começa sem as leituras do dia anterior;
+- a média diária é recalculada;
+- o total de registros volta a considerar somente o novo dia;
+- as leituras anteriores permanecem disponíveis na página de Histórico.
+
+A média do dia utiliza todas as leituras encontradas no período atual. O gráfico pode limitar a quantidade visualizada para manter a interface leve.
+
+## Segurança
+
+- Não envie `.env.local` ao GitHub;
+- Não use a chave `service_role` no frontend;
+- Use somente a chave `anon/public` no navegador;
+- Mantenha o Row Level Security ativo;
+- Não publique senhas reais de Wi-Fi no repositório;
+- Não publique chaves privadas;
+- O ESP32 usa a identificação do dispositivo para associar as leituras ao perfil correto;
+- Para uma versão de produção, recomenda-se uma API intermediária e autenticação específica por dispositivo.
+
+## Build de produção
+
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+Remove-Item -Recurse -Force ".\dist" -ErrorAction SilentlyContinue
+npm install
+npm run build
+```
+
+O resultado será criado em:
 
 ```text
-perfis
-bpm_tempo_real
-historico_bpm
+dist/
 ```
 
-Principais recursos usados:
+## Deploy na Vercel
 
-```text
-Supabase Auth
-PostgreSQL
-REST API
-Row Level Security
-Triggers
-Views
-```
-
-## Deploy no Vercel
-
-O projeto foi publicado no Vercel.
-
-Configuração usada:
+Configuração do projeto:
 
 ```text
 Framework Preset: Vite
 Root Directory: ./
+Install Command: npm install
 Build Command: npm run build
 Output Directory: dist
-Install Command: npm install
 ```
 
-Variáveis configuradas no Vercel:
+Variáveis de ambiente:
 
 ```text
 VITE_SUPABASE_URL
 VITE_SUPABASE_ANON_KEY
 ```
 
-Depois de cada alteração no projeto, basta enviar para o GitHub:
+Depois que o repositório estiver conectado à Vercel, novos commits enviados à branch `main` geram um novo deploy automaticamente.
 
-```bash
+## Atualização do GitHub
+
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
+
+git status
 git add .
-git commit -m "Atualiza frontend"
-git push
+git commit -m "Publica nova versão do Monitor BPM"
+git push origin main
 ```
 
-O Vercel detecta o push e faz o deploy automaticamente.
+## Atualização manual na Vercel
 
-## Comandos Git usados no projeto
+```powershell
+cd "C:\Users\joao-\bpm-monitor-frontend"
 
-Inicializar o repositório:
-
-```bash
-git init
+npm install -g vercel
+vercel login
+vercel --prod
 ```
 
-Adicionar arquivos:
+Ao final, a Vercel informa o endereço de produção.
 
-```bash
-git add .
-```
+## Estado atual
 
-Criar commit:
-
-```bash
-git commit -m "Primeira versão do frontend BPM"
-```
-
-Renomear branch principal:
-
-```bash
-git branch -M main
-```
-
-Adicionar repositório remoto:
-
-```bash
-git remote add origin https://github.com/Jonhmartines/bpm-monitor-frontend.git
-```
-
-Enviar para o GitHub:
-
-```bash
-git push -u origin main
-```
-
-Atualizar o projeto depois de alterações:
-
-```bash
-git add .
-git commit -m "Atualiza frontend"
-git push
-```
-
-## Cuidados importantes
-
-- Não enviar `.env.local` para o GitHub;
-- Não colocar `service_role` no frontend;
-- Não colocar chaves privadas no repositório;
-- Usar apenas a anon key no frontend;
-- Configurar as variáveis de ambiente no Vercel;
-- Manter o Supabase com RLS ativo;
-- Usar uma API intermediária em uma versão final de produção;
-- Ajustar o limiar do sensor conforme o sinal real do AD8232;
-- Validar as leituras antes de usar em um cenário real.
-
-## Status do projeto
-
-- Frontend criado;
-- Login funcionando;
+- Autenticação funcionando;
 - Cadastro funcionando;
-- Integração com Supabase configurada;
-- Dashboard consultando BPM real;
-- Histórico organizado por datas;
-- Perfil exibindo dados reais;
-- Deploy publicado no Vercel;
-- Repositório disponível no GitHub.
+- Perfil criado automaticamente;
+- Dashboard exibindo somente os dados do dia;
+- Média diária calculada;
+- Histórico por data;
+- Interface web e mobile;
+- Tema claro e escuro;
+- ESP32 conectado ao Wi-Fi;
+- Leitura do AD8232 funcionando;
+- Envio ao Supabase por HTTPS;
+- Troca do perfil por vínculo do dispositivo;
+- Deploy preparado para Vercel.
 
-## Correção do fundo da versão web
+## Aviso
 
-A versão web da tela inicial foi ajustada para usar as imagens como fundo da página inteira.
+O sistema foi desenvolvido para estudo, demonstração e prototipagem. Os valores apresentados podem sofrer interferência de movimento, contato dos eletrodos, ruído elétrico e limitações do algoritmo.
 
-Antes, a imagem podia parecer limitada a uma caixa lateral. Agora:
-
-- a imagem web fica aplicada no fundo completo da tela;
-- a área esquerda não possui mais uma caixa própria segurando a imagem;
-- o texto principal aparece sobre o fundo;
-- a caixa de login fica separada sobre o fundo;
-- as miniaturas abaixo permitem alternar as imagens web;
-- a versão mobile continua usando imagens verticais próprias.
+Não utilize o projeto para diagnóstico ou tomada de decisão médica.
