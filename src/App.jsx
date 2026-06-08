@@ -1,4 +1,4 @@
-﻿import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import { supabase } from "./supabaseClient";
 
 import anatomiaCardiaca from "./assets/mobile/anatomia-cardiaca.jpg";
@@ -38,8 +38,7 @@ const MEDICAL_SLIDES = [
     alt: "Paciente em consulta médica",
   },
   {
-    desktop:
-      "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
+    desktop: "https://h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg",
     mobile: anatomiaCardiaca,
     mobileClass: "scale-100 object-[center_42%]",
     alt: "Imagem complementar de frequência cardíaca",
@@ -117,47 +116,48 @@ function calcularMaior(lista) {
 
 function obterClasses(temaEscuro) {
   return {
-    pagina: temaEscuro
-      ? "min-h-screen bg-slate-950 text-white"
-      : "min-h-screen bg-slate-100 text-slate-950",
+    pagina: temaEscuro ? "min-h-screen bg-slate-950 text-white" : "min-h-screen bg-slate-100 text-slate-950",
     painel: temaEscuro
       ? "border border-white/10 bg-slate-900/90 shadow-xl shadow-black/20"
       : "border border-slate-200 bg-white shadow-xl shadow-slate-200/70",
-    painelForte: temaEscuro
-      ? "border border-white/10 bg-slate-950/80"
-      : "border border-slate-200 bg-slate-50",
+    painelForte: temaEscuro ? "border border-white/10 bg-slate-950/80" : "border border-slate-200 bg-slate-50",
     textoSuave: temaEscuro ? "text-slate-300" : "text-slate-600",
     textoMuitoSuave: temaEscuro ? "text-slate-400" : "text-slate-500",
     inputWeb: temaEscuro
       ? "w-full rounded-2xl border border-white/10 bg-slate-950/90 px-4 py-3 text-white outline-none transition placeholder:text-slate-500 focus:border-rose-400"
-      : "w-full rounded-2xl border border-slate-200 bg-white/96 px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-rose-500",
+      : "w-full rounded-2xl border border-slate-200 bg-white/95 px-4 py-3 text-slate-950 outline-none transition placeholder:text-slate-400 focus:border-rose-500",
     inputMobile: temaEscuro
       ? "w-full rounded-xl border border-white/10 bg-slate-950/48 px-3 py-2 text-sm text-white outline-none transition placeholder:text-slate-500 focus:border-rose-400"
       : "w-full rounded-xl border border-white/50 bg-white/60 px-3 py-2 text-sm text-slate-950 outline-none transition placeholder:text-slate-500 focus:border-rose-500",
     botaoSecundario: temaEscuro
       ? "rounded-2xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/20"
       : "rounded-2xl border border-slate-300/70 bg-white/75 px-4 py-2 text-sm font-semibold text-slate-950 backdrop-blur-md transition hover:bg-white",
+    botaoPrimario:
+      "rounded-2xl bg-rose-600 px-5 py-3 text-base font-black text-white shadow-lg shadow-rose-950/30 transition hover:bg-rose-500",
     menuAtivo: "bg-rose-600 text-white shadow-lg shadow-rose-950/30",
-    menuInativo: temaEscuro
-      ? "text-slate-300 hover:bg-white/5"
-      : "text-slate-600 hover:bg-slate-100",
+    menuInativo: temaEscuro ? "text-slate-300 hover:bg-white/5" : "text-slate-600 hover:bg-slate-100",
   };
+}
+
+function EstilosGlobais() {
+  return (
+    <style>{`
+      .scrollbar-none {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      .scrollbar-none::-webkit-scrollbar {
+        display: none;
+      }
+    `}</style>
+  );
 }
 
 function IconeLogo() {
   return (
-    <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-rose-600 shadow-lg shadow-rose-900/25">
-      <svg
-        viewBox="0 0 24 24"
-        className="h-5 w-5 text-white"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      >
-        <path d="M3 12h4l2-4 3 8 2-4h7" />
-      </svg>
+    <div className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-rose-600 shadow-lg shadow-rose-950/30">
+      <span className="text-2xl font-black text-white">♥</span>
     </div>
   );
 }
@@ -168,24 +168,25 @@ function LogoBpm({ compacto = false, temaEscuro = true, sobreImagem = false }) {
       ? "text-white"
       : "text-slate-950"
     : temaEscuro
-    ? "text-white"
-    : "text-slate-950";
+      ? "text-white"
+      : "text-slate-950";
 
   const subtituloClasse = sobreImagem
     ? temaEscuro
       ? "text-white/80"
       : "text-slate-950/70"
     : temaEscuro
-    ? "text-slate-400"
-    : "text-slate-600";
+      ? "text-slate-400"
+      : "text-slate-600";
 
   return (
     <div className="flex items-center gap-3">
       <IconeLogo />
+
       {!compacto && (
         <div>
-          <p className={`text-lg font-bold leading-none ${tituloClasse}`}>Monitor BPM</p>
-          <p className={`text-xs ${subtituloClasse}`}>Painel de acompanhamento</p>
+          <h1 className={`text-xl font-black tracking-tight ${tituloClasse}`}>Monitor BPM</h1>
+          <p className={`text-sm ${subtituloClasse}`}>Painel de acompanhamento</p>
         </div>
       )}
     </div>
@@ -203,12 +204,10 @@ function BotaoTema({ temaEscuro, alternarTema }) {
 }
 
 function BotaoVisualizacao({ visualizacao, alternarVisualizacao, temaEscuro }) {
-  const classe = temaEscuro
-    ? "text-sm font-semibold text-white/90 transition hover:text-white"
-    : "text-sm font-semibold text-slate-950/80 transition hover:text-slate-950";
+  const ui = obterClasses(temaEscuro);
 
   return (
-    <button onClick={alternarVisualizacao} className={classe}>
+    <button onClick={alternarVisualizacao} className={ui.botaoSecundario}>
       {visualizacao === "web" ? "Versão mobile" : "Versão web"}
     </button>
   );
@@ -221,49 +220,122 @@ function BadgeStatus({ valor }) {
     status === "Normal"
       ? "border-emerald-400/30 bg-emerald-500/15 text-emerald-300"
       : status === "Baixo"
-      ? "border-sky-400/30 bg-sky-500/15 text-sky-300"
-      : status === "Elevado"
-      ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
-      : "border-slate-400/30 bg-slate-500/15 text-slate-300";
+        ? "border-sky-400/30 bg-sky-500/15 text-sky-300"
+        : status === "Elevado"
+          ? "border-amber-400/30 bg-amber-500/15 text-amber-300"
+          : "border-slate-400/30 bg-slate-500/15 text-slate-300";
 
-  return (
-    <span className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold ${classe}`}>
-      {status}
-    </span>
-  );
+  return <span className={`rounded-full border px-3 py-1 text-xs font-bold ${classe}`}>{status}</span>;
 }
 
 function PageHeader({ titulo, subtitulo, temaEscuro, children }) {
   const ui = obterClasses(temaEscuro);
 
   return (
-    <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+    <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
       <div>
-        <h1 className="text-2xl font-bold md:text-3xl">{titulo}</h1>
-        {subtitulo && <p className={`mt-2 text-sm ${ui.textoSuave}`}>{subtitulo}</p>}
+        <h1 className="text-2xl font-black tracking-tight sm:text-3xl">{titulo}</h1>
+        {subtitulo && <p className={`mt-2 max-w-3xl text-sm sm:text-base ${ui.textoSuave}`}>{subtitulo}</p>}
       </div>
-      {children && <div className="flex items-center gap-2">{children}</div>}
+
+      {children && <div className="flex flex-wrap items-center gap-3">{children}</div>}
     </div>
   );
 }
 
-function Card({ titulo, valor, subtitulo, temaEscuro }) {
+function CardResumo({ titulo, valor, subtitulo, temaEscuro }) {
   const ui = obterClasses(temaEscuro);
 
   return (
-    <div className={`rounded-3xl p-5 ${ui.painel}`}>
-      <p className={`text-sm ${ui.textoSuave}`}>{titulo}</p>
-      <h3 className="mt-2 text-2xl font-bold">{valor}</h3>
+    <div className={`min-w-0 rounded-[1.7rem] p-5 ${ui.painel}`}>
+      <p className={`text-sm font-semibold ${ui.textoMuitoSuave}`}>{titulo}</p>
+      <h3 className="mt-2 truncate text-3xl font-black">{valor}</h3>
       {subtitulo && <p className={`mt-2 text-sm ${ui.textoSuave}`}>{subtitulo}</p>}
     </div>
   );
 }
 
-function GraficoBpm({ dados, temaEscuro, titulo = "Variação recente", altura = 300 }) {
-  const [hover, setHover] = useState(null);
+function SliderArea({ children, temaEscuro, className = "", alturaSlider = "h-56" }) {
+  const ref = useRef(null);
+  const [valor, setValor] = useState(0);
+  const [maximo, setMaximo] = useState(0);
 
-  const dadosOrdenados = [...dados].reverse();
-  const pontosOriginais = dadosOrdenados
+  function atualizarMaximo() {
+    const el = ref.current;
+
+    if (!el) return;
+
+    const novoMaximo = Math.max(el.scrollWidth - el.clientWidth, 0);
+
+    setMaximo(novoMaximo);
+    setValor(Math.min(el.scrollLeft, novoMaximo));
+  }
+
+  useEffect(() => {
+    atualizarMaximo();
+
+    const el = ref.current;
+
+    if (!el) return;
+
+    const aoScroll = () => {
+      setValor(el.scrollLeft);
+    };
+
+    el.addEventListener("scroll", aoScroll);
+    window.addEventListener("resize", atualizarMaximo);
+
+    return () => {
+      el.removeEventListener("scroll", aoScroll);
+      window.removeEventListener("resize", atualizarMaximo);
+    };
+  }, [children]);
+
+  function mover(e) {
+    const novoValor = Number(e.target.value);
+    const el = ref.current;
+
+    setValor(novoValor);
+
+    if (el) {
+      el.scrollLeft = novoValor;
+    }
+  }
+
+  return (
+    <div className="min-w-0">
+      <div className="flex min-w-0 items-center gap-3">
+        <div
+          ref={ref}
+          className={`scrollbar-none max-w-full flex-1 overflow-x-auto overflow-y-hidden ${className}`}
+        >
+          {children}
+        </div>
+
+        {maximo > 0 && (
+          <div className={`flex w-12 shrink-0 items-center justify-center ${alturaSlider}`}>
+            <input
+              type="range"
+              min="0"
+              max={maximo}
+              value={valor}
+              onChange={mover}
+              className={`h-2 w-44 cursor-pointer accent-rose-500 ${temaEscuro ? "bg-slate-800" : "bg-slate-200"}`}
+              style={{ transform: "rotate(90deg)" }}
+            />
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function GraficoBpm({ dados, temaEscuro, titulo = "Variação recente", altura = 280, mostrarHora = true }) {
+  const [hover, setHover] = useState(null);
+  const ui = obterClasses(temaEscuro);
+
+  const pontosOriginais = [...dados]
+    .reverse()
     .map((item) => ({
       id: item.id,
       valor: Number(item.valor_bpm || 0),
@@ -273,12 +345,9 @@ function GraficoBpm({ dados, temaEscuro, titulo = "Variação recente", altura =
 
   if (!pontosOriginais.length) {
     return (
-      <div
-        className={`flex items-center justify-center rounded-3xl p-6 text-sm ${
-          temaEscuro ? "bg-white/5 text-slate-300" : "bg-slate-100 text-slate-600"
-        }`}
-      >
-        Sem dados para o gráfico
+      <div className={`rounded-[1.7rem] p-5 ${ui.painel}`}>
+        <h3 className="text-lg font-black">{titulo}</h3>
+        <div className={`mt-4 rounded-2xl p-8 text-center ${ui.painelForte}`}>Sem dados para o gráfico.</div>
       </div>
     );
   }
@@ -293,9 +362,9 @@ function GraficoBpm({ dados, temaEscuro, titulo = "Variação recente", altura =
   const dominioMin = Math.max(0, p05 - margem);
   const dominioMax = p95 + margem;
   const faixa = Math.max(dominioMax - dominioMin, 1);
-  const largura = Math.max(1200, pontosOriginais.length * 55);
+  const largura = Math.max(760, pontosOriginais.length * 58);
   const paddingX = 52;
-  const paddingY = 42;
+  const paddingY = 40;
 
   const pontos = pontosOriginais.map((item, index) => {
     const x =
@@ -318,75 +387,60 @@ function GraficoBpm({ dados, temaEscuro, titulo = "Variação recente", altura =
   const textoTooltip = temaEscuro ? "#ffffff" : "#0f172a";
 
   return (
-    <div className="relative">
+    <div className={`relative min-w-0 rounded-[1.7rem] p-5 ${ui.painel}`}>
       {hover && (
         <div
-          className="pointer-events-none fixed z-50 rounded-2xl border px-3 py-2 text-xs shadow-2xl"
+          className="pointer-events-none fixed z-50 rounded-2xl border px-4 py-3 text-sm shadow-2xl"
           style={{
-            top: hover.clientY - 62,
-            left: hover.clientX + 14,
+            left: Math.min(hover.clientX + 16, window.innerWidth - 180),
+            top: Math.max(hover.clientY - 78, 16),
             background: fundoTooltip,
             borderColor: bordaTooltip,
             color: textoTooltip,
           }}
         >
-          <div className="font-semibold">{hover.valor} BPM</div>
-          <div>{formatarHora(hover.data)}</div>
+          <p className="font-black">{hover.valor} BPM</p>
+          <p className="opacity-80">{mostrarHora ? formatarHora(hover.data) : formatarData(hover.data)}</p>
         </div>
       )}
 
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold">{titulo}</h3>
-          <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
-            {pontosOriginais.length} leituras
-          </p>
+          <h3 className="text-lg font-black">{titulo}</h3>
+          <p className={`text-sm ${ui.textoMuitoSuave}`}>{pontosOriginais.length} leituras</p>
         </div>
-        <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
+
+        <div className={`rounded-full px-3 py-1 text-sm font-bold ${ui.painelForte}`}>
           {realMin} - {realMax} BPM
-        </p>
+        </div>
       </div>
 
-      <div className="overflow-x-auto pb-2">
-        <svg width={largura} height={altura} className="block min-w-full">
+      <SliderArea temaEscuro={temaEscuro}>
+        <svg width={largura} height={altura} role="img" className="block">
           {[0, 1, 2, 3, 4].map((linhaGrade) => {
             const y = paddingY + (linhaGrade * (altura - paddingY * 2)) / 4;
-            const valor =
-              Math.round((dominioMax - (linhaGrade * (dominioMax - dominioMin)) / 4) * 10) / 10;
+            const valor = Math.round((dominioMax - (linhaGrade * (dominioMax - dominioMin)) / 4) * 10) / 10;
 
             return (
               <g key={linhaGrade}>
-                <line
-                  x1={paddingX}
-                  y1={y}
-                  x2={largura - paddingX}
-                  y2={y}
-                  stroke={corGrade}
-                  strokeDasharray="4 6"
-                />
-                <text x={12} y={y + 4} fill={corTexto} fontSize="12">
+                <line x1={paddingX} x2={largura - paddingX} y1={y} y2={y} stroke={corGrade} strokeWidth="1" />
+                <text x="10" y={y + 4} fill={corTexto} fontSize="12">
                   {valor}
                 </text>
               </g>
             );
           })}
 
-          <polyline
-            fill="none"
-            stroke={corLinha}
-            strokeWidth="4"
-            strokeLinejoin="round"
-            strokeLinecap="round"
-            points={linha}
-          />
+          <polyline fill="none" stroke={corLinha} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" points={linha} />
 
           {pontos.map((ponto) => (
-            <g key={ponto.id}>
+            <g key={`${ponto.id}-${ponto.recebido_em}`}>
+              <circle cx={ponto.x} cy={ponto.y} r="6" fill={corLinha} />
               <circle
                 cx={ponto.x}
                 cy={ponto.y}
-                r="6"
-                fill={corLinha}
+                r="18"
+                fill="transparent"
                 onMouseMove={(e) =>
                   setHover({
                     valor: ponto.valor,
@@ -397,30 +451,51 @@ function GraficoBpm({ dados, temaEscuro, titulo = "Variação recente", altura =
                 }
                 onMouseLeave={() => setHover(null)}
               >
-                <title>{`${ponto.valor} BPM - ${formatarHora(ponto.recebido_em)}`}</title>
+                <title>{`${ponto.valor} BPM - ${mostrarHora ? formatarHora(ponto.recebido_em) : formatarData(ponto.recebido_em)}`}</title>
               </circle>
             </g>
           ))}
         </svg>
-      </div>
+      </SliderArea>
     </div>
   );
 }
 
+function obterEstiloBarra(valor, temaEscuro) {
+  if (valor < 60) {
+    return {
+      classeBarra: "bg-sky-500",
+      classeTexto: temaEscuro ? "text-sky-300" : "text-sky-700",
+      elevado: false,
+    };
+  }
+
+  if (valor > 100) {
+    return {
+      classeBarra: "bg-amber-500",
+      classeTexto: temaEscuro ? "text-amber-300" : "text-amber-700",
+      elevado: true,
+    };
+  }
+
+  return {
+    classeBarra: "bg-emerald-500",
+    classeTexto: temaEscuro ? "text-emerald-300" : "text-emerald-700",
+    elevado: false,
+  };
+}
+
 function GraficoBarrasBpm({ dados, temaEscuro }) {
+  const ui = obterClasses(temaEscuro);
+
   const dadosOrdenados = [...dados].reverse();
-  const valores = dadosOrdenados
-    .map((item) => Number(item.valor_bpm || 0))
-    .filter((valor) => valor > 0);
+  const valores = dadosOrdenados.map((item) => Number(item.valor_bpm || 0)).filter((valor) => valor > 0);
 
   if (!valores.length) {
     return (
-      <div
-        className={`flex items-center justify-center rounded-3xl p-6 text-sm ${
-          temaEscuro ? "bg-white/5 text-slate-300" : "bg-slate-100 text-slate-600"
-        }`}
-      >
-        Sem dados para o gráfico deste dia.
+      <div className={`rounded-[1.7rem] p-5 ${ui.painel}`}>
+        <h3 className="text-lg font-black">Gráfico de barras do dia</h3>
+        <div className={`mt-4 rounded-2xl p-8 text-center ${ui.painelForte}`}>Sem dados para o gráfico deste dia.</div>
       </div>
     );
   }
@@ -429,132 +504,128 @@ function GraficoBarrasBpm({ dados, temaEscuro }) {
   const min = Math.min(...valores);
 
   return (
-    <div>
+    <div className={`min-w-0 rounded-[1.7rem] p-5 ${ui.painel}`}>
       <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="text-lg font-semibold">Gráfico do dia</h3>
-          <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
-            {valores.length} leituras
-          </p>
+          <h3 className="text-lg font-black">Gráfico de barras do dia</h3>
+          <p className={`text-sm ${ui.textoMuitoSuave}`}>Azul = baixo | Verde = normal | Laranja = elevado</p>
         </div>
-        <p className={`text-sm ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
+
+        <div className={`rounded-full px-3 py-1 text-sm font-bold ${ui.painelForte}`}>
           {min} - {max} BPM
-        </p>
+        </div>
       </div>
 
-      <div className="overflow-x-auto pb-2">
-        <div className="flex min-w-max items-end gap-3">
+      <SliderArea temaEscuro={temaEscuro}>
+        <div className="flex min-w-max items-end gap-3 px-1 pt-6">
           {dadosOrdenados.map((item) => {
             const valor = Number(item.valor_bpm || 0);
-            const altura = Math.max((valor / Math.max(max, 1)) * 180, 18);
+            const altura = Math.max((valor / Math.max(max, 1)) * 190, 18);
+            const estilo = obterEstiloBarra(valor, temaEscuro);
 
             return (
-              <div key={item.id} className="flex w-12 flex-col items-center gap-2">
-                <div className="text-xs font-semibold">{valor}</div>
+              <div key={`${item.id}-${item.recebido_em}`} className="flex w-14 flex-col items-center gap-2">
+                <div className={`text-xs font-bold ${estilo.classeTexto}`}>{valor}</div>
+
+                {estilo.elevado ? (
+                  <div className="grid h-5 w-5 place-items-center rounded-full bg-amber-500 text-[11px] font-black text-slate-950">
+                    !
+                  </div>
+                ) : (
+                  <div className="h-5" />
+                )}
+
                 <div
-                  className="w-full rounded-t-2xl bg-rose-600"
+                  className={`w-8 rounded-t-2xl ${estilo.classeBarra} shadow-lg`}
                   style={{ height: `${altura}px` }}
                 />
-                <div className={`text-[11px] ${temaEscuro ? "text-slate-400" : "text-slate-500"}`}>
-                  {formatarHora(item.recebido_em).slice(0, 5)}
-                </div>
+
+                <div className={`text-[11px] ${ui.textoMuitoSuave}`}>{formatarHora(item.recebido_em).slice(0, 5)}</div>
               </div>
             );
           })}
         </div>
+      </SliderArea>
+    </div>
+  );
+}
+
+function ListaLeiturasHorizontal({ leituras, temaEscuro }) {
+  const ui = obterClasses(temaEscuro);
+
+  if (!leituras.length) {
+    return <div className={`rounded-[1.7rem] p-6 text-center ${ui.painel}`}>Nenhuma leitura encontrada para este usuário.</div>;
+  }
+
+  return (
+    <div className={`min-w-0 rounded-[1.7rem] p-5 ${ui.painel}`}>
+      <div className="mb-4 flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 className="text-xl font-black">Últimas leituras</h2>
+          <p className={`text-sm ${ui.textoSuave}`}>Dados recentes enviados pelo ESP32.</p>
+        </div>
+
+        <span className={`text-sm font-semibold ${ui.textoMuitoSuave}`}>{leituras.length} registros</span>
       </div>
+
+      <SliderArea temaEscuro={temaEscuro} alturaSlider="h-48">
+        <div className="flex min-w-max gap-4 pr-2">
+          {leituras.map((item) => (
+            <div key={`${item.id}-${item.recebido_em}`} className={`w-64 shrink-0 rounded-[1.4rem] p-5 ${ui.painelForte}`}>
+              <div className="flex items-start justify-between gap-3">
+                <h3 className="text-2xl font-black">{item.valor_bpm} BPM</h3>
+                <BadgeStatus valor={item.valor_bpm} />
+              </div>
+
+              <p className={`mt-4 text-sm ${ui.textoSuave}`}>{formatarDataHora(item.recebido_em)}</p>
+            </div>
+          ))}
+        </div>
+      </SliderArea>
     </div>
   );
 }
 
 function IconeCardiograma({ temaEscuro }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={`h-6 w-6 ${temaEscuro ? "text-rose-400" : "text-rose-700"}`}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 12h4l2-4 3 8 2-4h7" />
-    </svg>
+    <div className={`grid h-12 w-12 place-items-center rounded-2xl ${temaEscuro ? "bg-rose-500/15 text-rose-300" : "bg-rose-100 text-rose-700"}`}>
+      <span className="text-2xl font-black">⌁</span>
+    </div>
   );
 }
 
 function IconeHistorico({ temaEscuro }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={`h-6 w-6 ${temaEscuro ? "text-sky-400" : "text-sky-700"}`}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M3 3v18h18" />
-      <path d="M7 14l3-3 3 2 4-5" />
-    </svg>
+    <div className={`grid h-12 w-12 place-items-center rounded-2xl ${temaEscuro ? "bg-sky-500/15 text-sky-300" : "bg-sky-100 text-sky-700"}`}>
+      <span className="text-2xl font-black">↺</span>
+    </div>
   );
 }
 
 function IconePerfil({ temaEscuro }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={`h-6 w-6 ${temaEscuro ? "text-emerald-400" : "text-emerald-700"}`}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 21a8 8 0 0 0-16 0" />
-      <circle cx="12" cy="7" r="4" />
-    </svg>
+    <div className={`grid h-12 w-12 place-items-center rounded-2xl ${temaEscuro ? "bg-emerald-500/15 text-emerald-300" : "bg-emerald-100 text-emerald-700"}`}>
+      <span className="text-xl font-black">ID</span>
+    </div>
   );
 }
 
 function IconeNuvem({ temaEscuro }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
-      className={`h-6 w-6 ${temaEscuro ? "text-amber-400" : "text-amber-700"}`}
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20 17.5A4.5 4.5 0 0 0 18 9h-1A7 7 0 0 0 4 11.5" />
-      <path d="M8 17h8" />
-      <path d="M12 13v8" />
-    </svg>
+    <div className={`grid h-12 w-12 place-items-center rounded-2xl ${temaEscuro ? "bg-violet-500/15 text-violet-300" : "bg-violet-100 text-violet-700"}`}>
+      <span className="text-2xl font-black">☁</span>
+    </div>
   );
 }
 
 function CardSimbolo({ icone, titulo, texto, temaEscuro }) {
+  const ui = obterClasses(temaEscuro);
+
   return (
-    <div
-      className={`rounded-3xl border p-4 backdrop-blur-md ${
-        temaEscuro
-          ? "border-white/10 bg-slate-950/42 text-white"
-          : "border-white/70 bg-white/55 text-slate-950"
-      }`}
-    >
-      <div
-        className={`mb-3 flex h-12 w-12 items-center justify-center rounded-2xl ${
-          temaEscuro ? "bg-white/5" : "bg-white/65"
-        }`}
-      >
-        {icone}
-      </div>
-      <p className="text-sm font-semibold uppercase tracking-wide">{titulo}</p>
-      <p className={`mt-2 text-sm leading-6 ${temaEscuro ? "text-slate-300" : "text-slate-700"}`}>
-        {texto}
-      </p>
+    <div className={`rounded-[1.5rem] p-4 ${ui.painel}`}>
+      {icone}
+      <h3 className="mt-4 font-black">{titulo}</h3>
+      <p className={`mt-2 text-sm ${ui.textoSuave}`}>{texto}</p>
     </div>
   );
 }
@@ -565,22 +636,23 @@ function FundoLogin({ slideAtual, visualizacao, temaEscuro = true }) {
   if (visualizacao === "web") {
     return (
       <>
-        <img
-          src={slide.desktop}
-          alt={slide.alt}
-          className="absolute inset-0 h-full w-full object-cover object-center transition-all duration-700"
+        <img src={slide.desktop} alt={slide.alt} className="absolute inset-0 h-full w-full object-cover transition-all duration-700" />
+
+        <div
+          className={`absolute inset-0 ${
+            temaEscuro
+              ? "bg-gradient-to-r from-slate-950 via-slate-950/78 to-slate-950/28"
+              : "bg-gradient-to-r from-white via-white/76 to-white/24"
+          }`}
         />
-        {temaEscuro ? (
-          <>
-            <div className="absolute inset-0 bg-gradient-to-br from-slate-950/82 via-slate-950/52 to-rose-950/58" />
-            <div className="absolute inset-0 bg-gradient-to-t from-slate-950/48 via-transparent to-slate-900/28" />
-          </>
-        ) : (
-          <>
-            <div className="absolute inset-0 bg-gradient-to-br from-white/78 via-sky-100/42 to-rose-100/45" />
-            <div className="absolute inset-0 bg-gradient-to-t from-white/34 via-transparent to-white/22" />
-          </>
-        )}
+
+        <div
+          className={`absolute inset-0 ${
+            temaEscuro
+              ? "bg-gradient-to-t from-slate-950/86 via-transparent to-slate-950/35"
+              : "bg-gradient-to-t from-slate-100/80 via-transparent to-white/30"
+          }`}
+        />
       </>
     );
   }
@@ -592,27 +664,28 @@ function FundoLogin({ slideAtual, visualizacao, temaEscuro = true }) {
         alt={slide.alt}
         className={`absolute inset-0 h-full w-full object-cover transition-all duration-700 ${slide.mobileClass}`}
       />
-      {temaEscuro ? (
-        <>
-          <div className="absolute inset-0 bg-blue-950/42" />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-950/25 via-blue-950/18 to-slate-950/42" />
-        </>
-      ) : (
-        <>
-          <div className="absolute inset-0 bg-white/24" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/24 via-sky-100/18 to-rose-100/18" />
-        </>
-      )}
+
+      <div
+        className={`absolute inset-0 ${
+          temaEscuro
+            ? "bg-gradient-to-b from-slate-950/48 via-slate-950/20 to-slate-950/72"
+            : "bg-gradient-to-b from-white/34 via-white/14 to-white/62"
+        }`}
+      />
+
+      <div className={temaEscuro ? "absolute inset-0 bg-blue-950/20" : "absolute inset-0 bg-blue-100/15"} />
     </>
   );
 }
 
 function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizacao }) {
   const ui = obterClasses(temaEscuro);
+
   const [modoCadastro, setModoCadastro] = useState(false);
   const [carregando, setCarregando] = useState(false);
   const [mensagem, setMensagem] = useState("");
   const [slideAtual, setSlideAtual] = useState(0);
+
   const [form, setForm] = useState({
     nome: "",
     idade: "",
@@ -639,6 +712,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
 
   async function entrar(e) {
     e.preventDefault();
+
     setMensagem("");
     setCarregando(true);
 
@@ -656,6 +730,7 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
 
   async function cadastrar(e) {
     e.preventDefault();
+
     setMensagem("");
 
     if (!form.nome || !form.idade || !form.email || !form.senha) {
@@ -717,349 +792,92 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
         ? "border border-white/10 bg-slate-950/76 text-white shadow-2xl shadow-black/35 backdrop-blur-xl"
         : "border border-white/70 bg-white/84 text-slate-950 shadow-2xl shadow-slate-300/40 backdrop-blur-xl"
       : temaEscuro
-      ? "border border-white/5 bg-slate-950/16 text-white shadow-lg shadow-black/10 backdrop-blur-0"
-      : "border border-white/40 bg-white/34 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
+        ? "border border-white/5 bg-slate-950/16 text-white shadow-lg shadow-black/10 backdrop-blur-0"
+        : "border border-white/40 bg-white/34 text-slate-950 shadow-lg shadow-slate-300/20 backdrop-blur-0";
 
   if (visualizacao === "mobile") {
     return (
-      <div className={`min-h-screen overflow-x-auto ${temaEscuro ? "bg-slate-950" : "bg-slate-100"}`}>
-        <div className={`mx-auto min-h-screen max-w-[430px] ${temaEscuro ? "bg-slate-950" : "bg-slate-100"}`}>
-          <div className="relative min-h-screen overflow-hidden">
-            <FundoLogin slideAtual={slideAtual} visualizacao="mobile" temaEscuro={temaEscuro} />
+      <main className="relative min-h-screen overflow-hidden">
+        <FundoLogin slideAtual={slideAtual} visualizacao={visualizacao} temaEscuro={temaEscuro} />
+        <EstilosGlobais />
 
-            <div className="relative z-10 flex min-h-screen flex-col px-4 py-4">
-              <div className="flex items-center justify-between gap-2">
-                <LogoBpm temaEscuro={temaEscuro} sobreImagem />
-                <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-              </div>
-
-              <div className="mt-7">
-                <span
-                  className={`inline-flex rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-md ${
-                    temaEscuro
-                      ? "border-white/10 bg-slate-950/20 text-white"
-                      : "border-white/60 bg-white/55 text-slate-950"
-                  }`}
-                >
-                  Dispositivo: {CODIGO_DISPOSITIVO}
-                </span>
-
-                <h1 className={`mt-4 text-4xl font-black leading-tight drop-shadow-lg ${temaEscuro ? "text-white" : "text-slate-950"}`}>
-                  Painel de BPM
-                </h1>
-
-                <p className={`mt-2 max-w-[300px] text-sm leading-6 drop-shadow ${temaEscuro ? "text-white" : "text-slate-950"}`}>
-                  Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico diário do paciente.
-                </p>
-              </div>
-
-              <div className="mt-5 text-left">
-                <BotaoVisualizacao
-                  visualizacao={visualizacao}
-                  alternarVisualizacao={alternarVisualizacao}
-                  temaEscuro={temaEscuro}
-                />
-              </div>
-
-              <div className="mt-5 pb-4">
-                <div className={`mx-auto w-full max-w-[230px] rounded-[0.9rem] p-2 ${cardAcesso}`}>
-                  <div className="mb-2 flex flex-col items-center text-center">
-                    <div className="scale-[0.55]">
-                      <IconeLogo />
-                    </div>
-                    <p className={`mt-1 text-[9px] font-bold uppercase tracking-[0.24em] ${ui.textoMuitoSuave}`}>
-                      Acesso
-                    </p>
-                    <h2 className="mt-1 text-xl font-black">
-                      {modoCadastro ? "Cadastro" : "Entrar"}
-                    </h2>
-                    <p className={`mt-1 max-w-[200px] text-[11px] leading-4 ${ui.textoSuave}`}>
-                      {modoCadastro
-                        ? "Cadastre os dados do paciente."
-                        : "Entre com seu e-mail para acessar."}
-                    </p>
-                  </div>
-
-                  <div className={`mb-3 grid grid-cols-2 rounded-xl p-1 ${temaEscuro ? "bg-slate-950/35" : "bg-white/40"}`}>
-                    <button
-                      onClick={() => {
-                        setMensagem("");
-                        setModoCadastro(false);
-                      }}
-                      className={`rounded-lg px-2 py-2 text-xs font-bold transition ${
-                        !modoCadastro
-                          ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
-                          : temaEscuro
-                          ? "text-slate-400"
-                          : "text-slate-700"
-                      }`}
-                    >
-                      Login
-                    </button>
-                    <button
-                      onClick={() => {
-                        setMensagem("");
-                        setModoCadastro(true);
-                      }}
-                      className={`rounded-lg px-2 py-2 text-xs font-bold transition ${
-                        modoCadastro
-                          ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
-                          : temaEscuro
-                          ? "text-slate-400"
-                          : "text-slate-700"
-                      }`}
-                    >
-                      Cadastro
-                    </button>
-                  </div>
-
-                  <form onSubmit={modoCadastro ? cadastrar : entrar} className="space-y-2">
-                    {modoCadastro && (
-                      <>
-                        <input
-                          type="text"
-                          placeholder="Nome completo"
-                          value={form.nome}
-                          onChange={(e) => atualizarCampo("nome", e.target.value)}
-                          className={inputClasse}
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Idade"
-                          value={form.idade}
-                          onChange={(e) => atualizarCampo("idade", e.target.value)}
-                          className={inputClasse}
-                        />
-
-                        <select
-                          value={form.sexo}
-                          onChange={(e) => atualizarCampo("sexo", e.target.value)}
-                          className={inputClasse}
-                        >
-                          <option value="masculino">Masculino</option>
-                          <option value="feminino">Feminino</option>
-                          <option value="outro">Outro</option>
-                        </select>
-                      </>
-                    )}
-
-                    <input
-                      type="email"
-                      placeholder="E-mail"
-                      value={form.email}
-                      onChange={(e) => atualizarCampo("email", e.target.value)}
-                      className={inputClasse}
-                    />
-
-                    <input
-                      type="password"
-                      placeholder="Senha"
-                      value={form.senha}
-                      onChange={(e) => atualizarCampo("senha", e.target.value)}
-                      className={inputClasse}
-                    />
-
-                    {modoCadastro && (
-                      <input
-                        type="password"
-                        placeholder="Confirmar senha"
-                        value={form.confirmarSenha}
-                        onChange={(e) => atualizarCampo("confirmarSenha", e.target.value)}
-                        className={inputClasse}
-                      />
-                    )}
-
-                    {mensagem && (
-                      <div
-                        className={`rounded-xl border px-3 py-2 text-xs ${
-                          mensagem.toLowerCase().includes("erro")
-                            ? temaEscuro
-                              ? "border-red-400/20 bg-red-500/10 text-red-200"
-                              : "border-red-200 bg-red-50 text-red-700"
-                            : temaEscuro
-                            ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
-                            : "border-emerald-200 bg-emerald-50 text-emerald-700"
-                        }`}
-                      >
-                        {mensagem}
-                      </div>
-                    )}
-
-                    <button
-                      type="submit"
-                      disabled={carregando}
-                      className="w-full rounded-xl bg-rose-600 px-3 py-2 text-sm font-bold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
-                    >
-                      {carregando
-                        ? "Aguarde..."
-                        : modoCadastro
-                        ? "Criar cadastro"
-                        : "Entrar"}
-                    </button>
-                  </form>
-                </div>
-              </div>
+        <div className="relative z-10 flex min-h-screen flex-col justify-between px-5 py-5">
+          <div className="flex items-center justify-between gap-3">
+            <LogoBpm temaEscuro={temaEscuro} sobreImagem compacto />
+            <div className="flex items-center gap-3">
+              <BotaoVisualizacao visualizacao={visualizacao} alternarVisualizacao={alternarVisualizacao} temaEscuro={temaEscuro} />
+              <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
             </div>
           </div>
-        </div>
-      </div>
-    );
-  }
 
-  return (
-    <div className={`relative min-h-screen overflow-x-auto ${temaEscuro ? "bg-slate-950" : "bg-slate-100"}`}>
-      <div className="fixed inset-0 z-0">
-        <FundoLogin slideAtual={slideAtual} visualizacao="web" temaEscuro={temaEscuro} />
-      </div>
-
-      <div className="relative z-10 min-h-screen min-w-[1080px] px-10 py-8">
-        <div className="flex items-start justify-between">
-          <LogoBpm temaEscuro={temaEscuro} sobreImagem />
-          <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-        </div>
-
-        <div className="mx-auto grid min-h-[calc(100vh-7rem)] max-w-7xl grid-cols-[1.08fr_0.92fr] gap-10">
-          <div className="flex flex-col justify-between pb-8 pt-12">
-            <div className="max-w-3xl">
-              <span
-                className={`inline-flex rounded-full border px-4 py-2 text-sm font-semibold backdrop-blur-md ${
-                  temaEscuro
-                    ? "border-white/10 bg-slate-950/35 text-white"
-                    : "border-white/70 bg-white/60 text-slate-950"
-                }`}
-              >
-                Dispositivo: {CODIGO_DISPOSITIVO}
-              </span>
-
-              <h1 className={`mt-6 text-7xl font-black leading-tight drop-shadow-2xl ${temaEscuro ? "text-white" : "text-slate-950"}`}>
-                Painel de BPM
-              </h1>
-
-              <p className={`mt-5 max-w-3xl text-2xl leading-10 drop-shadow-xl ${temaEscuro ? "text-white" : "text-slate-950"}`}>
-                Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico
-                diário do paciente.
+          <section className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-5">
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.25em] text-rose-300">Dispositivo: {CODIGO_DISPOSITIVO}</p>
+              <h1 className={temaEscuro ? "text-4xl font-black text-white" : "text-4xl font-black text-slate-950"}>Painel de BPM</h1>
+              <p className={temaEscuro ? "mt-3 text-sm text-white/80" : "mt-3 text-sm text-slate-950/75"}>
+                Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico diário do paciente.
               </p>
             </div>
 
-            <div>
-              <div className="grid gap-4 sm:grid-cols-4">
-                <CardSimbolo
-                  temaEscuro={temaEscuro}
-                  icone={<IconeCardiograma temaEscuro={temaEscuro} />}
-                  titulo="Tempo real"
-                  texto="Consulta periódica do BPM atual com leitura visível no painel."
-                />
-                <CardSimbolo
-                  temaEscuro={temaEscuro}
-                  icone={<IconeHistorico temaEscuro={temaEscuro} />}
-                  titulo="Histórico diário"
-                  texto="Registros por data, horário, média, mínimo e máximo."
-                />
-                <CardSimbolo
-                  temaEscuro={temaEscuro}
-                  icone={<IconePerfil temaEscuro={temaEscuro} />}
-                  titulo="Perfil"
-                  texto="Dados reais do paciente vinculados à autenticação."
-                />
-                <CardSimbolo
-                  temaEscuro={temaEscuro}
-                  icone={<IconeNuvem temaEscuro={temaEscuro} />}
-                  titulo="Integração"
-                  texto="ESP32, Supabase Auth, banco de dados e atualização contínua."
-                />
-              </div>
+            <form onSubmit={modoCadastro ? cadastrar : entrar} className={`rounded-[1.7rem] p-4 ${cardAcesso}`}>
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-rose-300">Acesso</p>
+              <h2 className="mt-2 text-2xl font-black">{modoCadastro ? "Cadastro" : "Entrar"}</h2>
+              <p className={temaEscuro ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>
+                {modoCadastro ? "Cadastre os dados do paciente." : "Entre com seu e-mail para acessar."}
+              </p>
 
-              <div className="mt-5">
-                <BotaoVisualizacao
-                  visualizacao={visualizacao}
-                  alternarVisualizacao={alternarVisualizacao}
-                  temaEscuro={temaEscuro}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="flex items-center justify-center">
-            <div className={`w-full max-w-[500px] rounded-[2rem] p-8 ${cardAcesso}`}>
-              <div className="mb-6 flex flex-col items-center text-center">
-                <IconeLogo />
-                <p className={`mt-4 text-xs font-bold uppercase tracking-[0.35em] ${ui.textoMuitoSuave}`}>
-                  Acesso
-                </p>
-                <h2 className="mt-3 text-3xl font-black">
-                  {modoCadastro ? "Cadastro" : "Entrar"}
-                </h2>
-                <p className={`mt-2 max-w-sm text-sm ${ui.textoSuave}`}>
-                  {modoCadastro
-                    ? "Cadastre os dados do paciente."
-                    : "Entre com seu e-mail para acessar o painel."}
-                </p>
-              </div>
-
-              <div className={`mb-6 grid grid-cols-2 rounded-2xl p-1 ${temaEscuro ? "bg-white/5" : "bg-slate-100/80"}`}>
+              <div className="mt-4 grid grid-cols-2 rounded-xl bg-black/10 p-1">
                 <button
+                  type="button"
                   onClick={() => {
                     setMensagem("");
                     setModoCadastro(false);
                   }}
-                  className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
-                    !modoCadastro
-                      ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
-                      : temaEscuro
-                      ? "text-slate-400"
-                      : "text-slate-700"
+                  className={`rounded-lg px-2 py-2 text-xs font-bold transition ${
+                    !modoCadastro ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20" : temaEscuro ? "text-slate-400" : "text-slate-700"
                   }`}
                 >
                   Login
                 </button>
+
                 <button
+                  type="button"
                   onClick={() => {
                     setMensagem("");
                     setModoCadastro(true);
                   }}
-                  className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
-                    modoCadastro
-                      ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20"
-                      : temaEscuro
-                      ? "text-slate-400"
-                      : "text-slate-700"
+                  className={`rounded-lg px-2 py-2 text-xs font-bold transition ${
+                    modoCadastro ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20" : temaEscuro ? "text-slate-400" : "text-slate-700"
                   }`}
                 >
                   Cadastro
                 </button>
               </div>
 
-              <form onSubmit={modoCadastro ? cadastrar : entrar} className="space-y-4">
+              <div className="mt-4 space-y-3">
                 {modoCadastro && (
                   <>
                     <input
                       type="text"
-                      placeholder="Nome completo"
+                      placeholder="Nome"
                       value={form.nome}
                       onChange={(e) => atualizarCampo("nome", e.target.value)}
                       className={inputClasse}
                     />
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      <input
-                        type="number"
-                        placeholder="Idade"
-                        value={form.idade}
-                        onChange={(e) => atualizarCampo("idade", e.target.value)}
-                        className={inputClasse}
-                      />
+                    <input
+                      type="number"
+                      placeholder="Idade"
+                      value={form.idade}
+                      onChange={(e) => atualizarCampo("idade", e.target.value)}
+                      className={inputClasse}
+                    />
 
-                      <select
-                        value={form.sexo}
-                        onChange={(e) => atualizarCampo("sexo", e.target.value)}
-                        className={inputClasse}
-                      >
-                        <option value="masculino">Masculino</option>
-                        <option value="feminino">Feminino</option>
-                        <option value="outro">Outro</option>
-                      </select>
-                    </div>
+                    <select value={form.sexo} onChange={(e) => atualizarCampo("sexo", e.target.value)} className={inputClasse}>
+                      <option value="masculino">Masculino</option>
+                      <option value="feminino">Feminino</option>
+                      <option value="outro">Outro</option>
+                    </select>
                   </>
                 )}
 
@@ -1088,63 +906,248 @@ function TelaLogin({ temaEscuro, alternarTema, visualizacao, alternarVisualizaca
                     className={inputClasse}
                   />
                 )}
-
-                {mensagem && (
-                  <div
-                    className={`rounded-2xl border px-4 py-3 text-sm ${
-                      mensagem.toLowerCase().includes("erro")
-                        ? temaEscuro
-                          ? "border-red-400/20 bg-red-500/10 text-red-200"
-                          : "border-red-200 bg-red-50 text-red-700"
-                        : temaEscuro
-                        ? "border-emerald-400/20 bg-emerald-500/10 text-emerald-200"
-                        : "border-emerald-200 bg-emerald-50 text-emerald-700"
-                    }`}
-                  >
-                    {mensagem}
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  disabled={carregando}
-                  className="w-full rounded-2xl bg-rose-600 px-4 py-3 font-bold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  {carregando
-                    ? "Aguarde..."
-                    : modoCadastro
-                    ? "Criar cadastro"
-                    : "Entrar no painel"}
-                </button>
-              </form>
-
-              <div className={`mt-6 grid grid-cols-3 gap-2 ${temaEscuro ? "text-slate-400" : "text-slate-700"}`}>
-                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100/80"}`}>
-                  <p className="text-[11px]">Tempo real</p>
-                  <p className="mt-1 text-xs font-semibold">BPM</p>
-                </div>
-                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100/80"}`}>
-                  <p className="text-[11px]">Histórico</p>
-                  <p className="mt-1 text-xs font-semibold">Diário</p>
-                </div>
-                <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-slate-100/80"}`}>
-                  <p className="text-[11px]">Vínculo</p>
-                  <p className="mt-1 text-xs font-semibold">Auto</p>
-                </div>
               </div>
+
+              {mensagem && <p className="mt-4 rounded-xl bg-rose-500/15 p-3 text-sm text-rose-200">{mensagem}</p>}
+
+              <button
+                disabled={carregando}
+                className="mt-4 w-full rounded-xl bg-rose-600 px-4 py-3 text-sm font-black text-white shadow-xl shadow-rose-950/20 transition hover:bg-rose-500 disabled:opacity-60"
+              >
+                {carregando ? "Aguarde..." : modoCadastro ? "Criar cadastro" : "Entrar"}
+              </button>
+            </form>
+          </section>
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <main className="relative min-h-screen overflow-hidden">
+      <FundoLogin slideAtual={slideAtual} visualizacao={visualizacao} temaEscuro={temaEscuro} />
+      <EstilosGlobais />
+
+      <div className="relative z-10 grid min-h-screen grid-cols-[minmax(0,1fr)_minmax(360px,460px)] gap-8 px-10 py-8">
+        <section className="flex min-w-0 flex-col justify-between">
+          <div className="flex items-center justify-between">
+            <LogoBpm temaEscuro={temaEscuro} sobreImagem />
+            <div className="flex items-center gap-4">
+              <BotaoVisualizacao visualizacao={visualizacao} alternarVisualizacao={alternarVisualizacao} temaEscuro={temaEscuro} />
+              <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
             </div>
           </div>
-        </div>
+
+          <div className="max-w-3xl">
+            <p className="mb-3 text-sm font-bold uppercase tracking-[0.28em] text-rose-300">Dispositivo: {CODIGO_DISPOSITIVO}</p>
+            <h1 className={temaEscuro ? "text-6xl font-black tracking-tight text-white" : "text-6xl font-black tracking-tight text-slate-950"}>
+              Painel de BPM
+            </h1>
+            <p className={temaEscuro ? "mt-5 text-xl leading-8 text-white/80" : "mt-5 text-xl leading-8 text-slate-950/75"}>
+              Acompanhe as leituras do ESP32, visualize o BPM atual e consulte o histórico diário do paciente.
+            </p>
+          </div>
+
+          <div className="grid max-w-5xl grid-cols-4 gap-4">
+            <CardSimbolo
+              temaEscuro={temaEscuro}
+              icone={<IconeCardiograma temaEscuro={temaEscuro} />}
+              titulo="Tempo real"
+              texto="Consulta periódica do BPM atual."
+            />
+            <CardSimbolo
+              temaEscuro={temaEscuro}
+              icone={<IconeHistorico temaEscuro={temaEscuro} />}
+              titulo="Histórico"
+              texto="Registros por data e horário."
+            />
+            <CardSimbolo
+              temaEscuro={temaEscuro}
+              icone={<IconePerfil temaEscuro={temaEscuro} />}
+              titulo="Perfil"
+              texto="Usuário vinculado ao login."
+            />
+            <CardSimbolo
+              temaEscuro={temaEscuro}
+              icone={<IconeNuvem temaEscuro={temaEscuro} />}
+              titulo="Integração"
+              texto="ESP32, Supabase e site."
+            />
+          </div>
+        </section>
+
+        <section className="flex min-w-0 items-center">
+          <form onSubmit={modoCadastro ? cadastrar : entrar} className={`w-full rounded-[2rem] p-7 ${cardAcesso}`}>
+            <p className="text-xs font-bold uppercase tracking-[0.25em] text-rose-300">Acesso</p>
+            <h2 className="mt-2 text-3xl font-black">{modoCadastro ? "Cadastro" : "Entrar"}</h2>
+            <p className={temaEscuro ? "mt-1 text-sm text-slate-300" : "mt-1 text-sm text-slate-700"}>
+              {modoCadastro ? "Cadastre os dados do paciente." : "Entre com seu e-mail para acessar o painel."}
+            </p>
+
+            <div className="mt-6 grid grid-cols-2 rounded-2xl bg-black/10 p-1">
+              <button
+                type="button"
+                onClick={() => {
+                  setMensagem("");
+                  setModoCadastro(false);
+                }}
+                className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                  !modoCadastro ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20" : temaEscuro ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                Login
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setMensagem("");
+                  setModoCadastro(true);
+                }}
+                className={`rounded-xl px-4 py-3 text-sm font-bold transition ${
+                  modoCadastro ? "bg-rose-600 text-white shadow-lg shadow-rose-900/20" : temaEscuro ? "text-slate-400" : "text-slate-700"
+                }`}
+              >
+                Cadastro
+              </button>
+            </div>
+
+            <div className="mt-6 space-y-4">
+              {modoCadastro && (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Nome"
+                    value={form.nome}
+                    onChange={(e) => atualizarCampo("nome", e.target.value)}
+                    className={inputClasse}
+                  />
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <input
+                      type="number"
+                      placeholder="Idade"
+                      value={form.idade}
+                      onChange={(e) => atualizarCampo("idade", e.target.value)}
+                      className={inputClasse}
+                    />
+
+                    <select value={form.sexo} onChange={(e) => atualizarCampo("sexo", e.target.value)} className={inputClasse}>
+                      <option value="masculino">Masculino</option>
+                      <option value="feminino">Feminino</option>
+                      <option value="outro">Outro</option>
+                    </select>
+                  </div>
+                </>
+              )}
+
+              <input
+                type="email"
+                placeholder="E-mail"
+                value={form.email}
+                onChange={(e) => atualizarCampo("email", e.target.value)}
+                className={inputClasse}
+              />
+
+              <input
+                type="password"
+                placeholder="Senha"
+                value={form.senha}
+                onChange={(e) => atualizarCampo("senha", e.target.value)}
+                className={inputClasse}
+              />
+
+              {modoCadastro && (
+                <input
+                  type="password"
+                  placeholder="Confirmar senha"
+                  value={form.confirmarSenha}
+                  onChange={(e) => atualizarCampo("confirmarSenha", e.target.value)}
+                  className={inputClasse}
+                />
+              )}
+            </div>
+
+            {mensagem && <p className="mt-5 rounded-2xl bg-rose-500/15 p-4 text-sm text-rose-200">{mensagem}</p>}
+
+            <button
+              disabled={carregando}
+              className="mt-6 w-full rounded-2xl bg-rose-600 px-5 py-4 text-sm font-black text-white shadow-xl shadow-rose-950/20 transition hover:bg-rose-500 disabled:opacity-60"
+            >
+              {carregando ? "Aguarde..." : modoCadastro ? "Criar cadastro" : "Entrar no painel"}
+            </button>
+
+            <div className="mt-6 grid grid-cols-3 gap-3">
+              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-white/60"}`}>
+                <p className="text-sm font-black">Tempo real</p>
+                <p className={`text-xs ${ui.textoMuitoSuave}`}>BPM</p>
+              </div>
+
+              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-white/60"}`}>
+                <p className="text-sm font-black">Histórico</p>
+                <p className={`text-xs ${ui.textoMuitoSuave}`}>Diário</p>
+              </div>
+
+              <div className={`rounded-2xl p-3 text-center ${temaEscuro ? "bg-white/5" : "bg-white/60"}`}>
+                <p className="text-sm font-black">Vínculo</p>
+                <p className={`text-xs ${ui.textoMuitoSuave}`}>Auto</p>
+              </div>
+            </div>
+          </form>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 
-function Dashboard({ sessao, temaEscuro }) {
+async function buscarTodasLeiturasDoDia(perfilId, inicioHojeISO, fimHojeISO) {
+  const tamanhoPagina = 1000;
+  const todasLeituras = [];
+  let inicio = 0;
+
+  while (true) {
+    const fim = inicio + tamanhoPagina - 1;
+
+    const { data, error } = await supabase
+      .from("historico_bpm")
+      .select("id, perfil_id, valor_bpm, registrado_em")
+      .eq("perfil_id", perfilId)
+      .gte("registrado_em", inicioHojeISO)
+      .lt("registrado_em", fimHojeISO)
+      .order("registrado_em", { ascending: false })
+      .range(inicio, fim);
+
+    if (error) {
+      return {
+        data: [],
+        error,
+      };
+    }
+
+    const pagina = data || [];
+    todasLeituras.push(...pagina);
+
+    if (pagina.length < tamanhoPagina) {
+      break;
+    }
+
+    inicio += tamanhoPagina;
+  }
+
+  return {
+    data: todasLeituras,
+    error: null,
+  };
+}
+
+function Dashboard({ sessao, temaEscuro, alternarTema, visualizacao, alternarVisualizacao }) {
   const ui = obterClasses(temaEscuro);
+
   const [bpmAtual, setBpmAtual] = useState(null);
   const [ultima, setUltima] = useState(null);
   const [leiturasUsuario, setLeiturasUsuario] = useState([]);
+  const [mediaDia, setMediaDia] = useState(null);
+  const [totalLeiturasDia, setTotalLeiturasDia] = useState(0);
   const [leiturasGerais, setLeiturasGerais] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -1154,22 +1157,35 @@ function Dashboard({ sessao, temaEscuro }) {
 
     setCarregando(true);
 
+    const inicioHoje = new Date();
+    inicioHoje.setHours(0, 0, 0, 0);
+
+    const fimHoje = new Date(inicioHoje);
+    fimHoje.setDate(fimHoje.getDate() + 1);
+
+    const inicioHojeISO = inicioHoje.toISOString();
+    const fimHojeISO = fimHoje.toISOString();
+
     const { data: atual, error: erroAtual } = await supabase
       .from("bpm_tempo_real")
       .select("perfil_id, valor_bpm, recebido_em, atualizado_em")
       .eq("perfil_id", sessao.user.id)
+      .gte("atualizado_em", inicioHojeISO)
+      .lt("atualizado_em", fimHojeISO)
       .maybeSingle();
 
-    const { data: historico, error: erroHistorico } = await supabase
-      .from("historico_bpm")
-      .select("id, perfil_id, valor_bpm, registrado_em")
-      .eq("perfil_id", sessao.user.id)
-      .order("registrado_em", { ascending: false })
-      .limit(40);
+    const { data: historicoCompleto, error: erroHistorico } =
+      await buscarTodasLeiturasDoDia(
+        sessao.user.id,
+        inicioHojeISO,
+        fimHojeISO
+      );
 
     const { data: geral } = await supabase
       .from("bpm_tempo_real")
       .select("perfil_id, valor_bpm, recebido_em, atualizado_em")
+      .gte("atualizado_em", inicioHojeISO)
+      .lt("atualizado_em", fimHojeISO)
       .order("atualizado_em", { ascending: false })
       .limit(1);
 
@@ -1178,131 +1194,113 @@ function Dashboard({ sessao, temaEscuro }) {
       setBpmAtual(null);
       setUltima(null);
       setLeiturasUsuario([]);
+      setMediaDia(null);
+      setTotalLeiturasDia(0);
       setLeiturasGerais([]);
       setCarregando(false);
       return;
     }
 
-    const historicoNormalizado = (historico || []).map((item) => ({
+    const historicoNormalizadoCompleto = (historicoCompleto || []).map((item) => ({
       id: item.id,
       valor_bpm: item.valor_bpm,
       recebido_em: item.registrado_em,
       perfil_id: item.perfil_id,
     }));
 
+    const leiturasParaPainel = historicoNormalizadoCompleto.slice(0, 80);
+    const mediaCalculadaDia = calcularMedia(historicoNormalizadoCompleto);
+
     setErro("");
-    setBpmAtual(atual?.valor_bpm ?? historicoNormalizado[0]?.valor_bpm ?? null);
+    setBpmAtual(
+      atual?.valor_bpm ??
+        historicoNormalizadoCompleto[0]?.valor_bpm ??
+        null
+    );
     setUltima({
       recebido_em:
         atual?.atualizado_em ||
         atual?.recebido_em ||
-        historicoNormalizado[0]?.recebido_em,
+        historicoNormalizadoCompleto[0]?.recebido_em,
     });
-    setLeiturasUsuario(historicoNormalizado);
+    setLeiturasUsuario(leiturasParaPainel);
+    setMediaDia(mediaCalculadaDia);
+    setTotalLeiturasDia(historicoNormalizadoCompleto.length);
     setLeiturasGerais(geral || []);
     setCarregando(false);
   }
 
   useEffect(() => {
     carregarDashboard();
+
     const intervalo = setInterval(carregarDashboard, 5000);
 
     return () => clearInterval(intervalo);
   }, [sessao?.user?.id]);
 
   const espEnviaParaOutroPerfil =
-    !bpmAtual &&
-    leiturasGerais.length > 0 &&
-    leiturasGerais[0]?.perfil_id &&
-    leiturasGerais[0]?.perfil_id !== sessao?.user?.id;
+    !bpmAtual && leiturasGerais.length > 0 && leiturasGerais[0]?.perfil_id && leiturasGerais[0]?.perfil_id !== sessao?.user?.id;
 
   return (
-    <div>
+    <div className="mx-auto flex h-full max-w-[1500px] flex-col overflow-hidden">
       <PageHeader
-        titulo="Início"
-        subtitulo="Acompanhamento em tempo real. O painel consulta os dados salvos no banco a cada 5 segundos."
         temaEscuro={temaEscuro}
-      />
+        titulo="Início"
+        subtitulo="Acompanhamento em tempo real com dados registrados somente no dia atual."
+      >
+        <button onClick={carregarDashboard} className={ui.botaoPrimario}>
+          Atualizar
+        </button>
+        <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+        <BotaoVisualizacao visualizacao={visualizacao} alternarVisualizacao={alternarVisualizacao} temaEscuro={temaEscuro} />
+      </PageHeader>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card
-          titulo="BPM atual"
-          valor={carregando ? "..." : bpmAtual ? `${bpmAtual} BPM` : "Sem dados"}
-          subtitulo={`Última leitura recebida em ${formatarDataHora(ultima?.recebido_em)}.`}
-          temaEscuro={temaEscuro}
-        />
-
-        <Card
-          titulo="Classificação"
-          valor={classificarBpm(bpmAtual)}
-          subtitulo="Resultado com base no valor mais recente."
-          temaEscuro={temaEscuro}
-        />
-
-        <Card
-          titulo="Leituras recentes"
-          valor={leiturasUsuario.length}
-          subtitulo="Registros usados no gráfico e na lista abaixo."
-          temaEscuro={temaEscuro}
-        />
-      </div>
-
-      {erro && (
-        <div className="mt-4 rounded-3xl border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-200">
-          {erro}
-        </div>
-      )}
+      {erro && <div className="mb-4 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-4 text-sm text-rose-200">{erro}</div>}
 
       {espEnviaParaOutroPerfil && (
-        <div className="mt-4 rounded-3xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-200">
-          O ESP32 está enviando leituras, mas elas parecem estar vinculadas a outro perfil_id.
-          <br />
-          ID do usuário logado: {sessao.user.id}
-          <br />
-          Último perfil_id recebido: {leiturasGerais[0]?.perfil_id}
+        <div className="mb-4 rounded-2xl border border-amber-400/20 bg-amber-500/10 p-4 text-sm text-amber-100">
+          O ESP32 está enviando leituras, mas elas parecem estar vinculadas a outro perfil.
         </div>
       )}
 
-      <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
-        <GraficoBpm dados={leiturasUsuario} temaEscuro={temaEscuro} />
+      <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-4">
+        <CardResumo
+          temaEscuro={temaEscuro}
+          titulo="BPM atual"
+          valor={carregando ? "..." : bpmAtual ? `${bpmAtual} BPM` : "Sem dados"}
+          subtitulo={ultima?.recebido_em ? formatarDataHora(ultima.recebido_em) : "Aguardando leitura do ESP32"}
+        />
+
+        <CardResumo
+          temaEscuro={temaEscuro}
+          titulo="Status"
+          valor={classificarBpm(bpmAtual)}
+          subtitulo="Classificação automática pela faixa do BPM"
+        />
+
+        <CardResumo
+          temaEscuro={temaEscuro}
+          titulo="Média do dia"
+          valor={mediaDia ? `${mediaDia} BPM` : "--"}
+          subtitulo="Baseada em todas as leituras registradas hoje"
+        />
+
+        <CardResumo
+          temaEscuro={temaEscuro}
+          titulo="Registros de hoje"
+          valor={totalLeiturasDia}
+          subtitulo="Total de leituras registradas no dia"
+        />
       </div>
 
-      <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
-        <div className="mb-4">
-          <h2 className="text-xl font-bold">Últimas leituras</h2>
-          <p className={`mt-1 text-sm ${ui.textoSuave}`}>
-            Dados recentes enviados pelo ESP32.
-          </p>
+      <div className="mt-4 grid min-h-0 min-w-0 flex-1 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.2fr)_minmax(360px,0.8fr)]">
+        <div className="min-w-0">
+          <GraficoBpm dados={leiturasUsuario} temaEscuro={temaEscuro} titulo="Variação de hoje" altura={280} />
         </div>
 
-        {leiturasUsuario.length === 0 ? (
-          <div
-            className={`rounded-3xl p-5 text-sm ${
-              temaEscuro ? "bg-white/5 text-slate-300" : "bg-slate-100 text-slate-600"
-            }`}
-          >
-            Nenhuma leitura encontrada para este usuário.
-          </div>
-        ) : (
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {leiturasUsuario.slice(0, 8).map((item) => (
-              <div
-                key={item.id}
-                className={`rounded-3xl p-4 ${
-                  temaEscuro ? "bg-white/5" : "bg-slate-50 border border-slate-200"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xl font-bold">{item.valor_bpm} BPM</p>
-                  <BadgeStatus valor={item.valor_bpm} />
-                </div>
-                <p className={`mt-3 text-sm ${ui.textoSuave}`}>
-                  {formatarDataHora(item.recebido_em)}
-                </p>
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="min-w-0">
+          <ListaLeiturasHorizontal leituras={leiturasUsuario.slice(0, 20)} temaEscuro={temaEscuro} />
+        </div>
       </div>
     </div>
   );
@@ -1320,15 +1318,7 @@ function normalizarRegistroHistorico(item, index) {
     item.dia ||
     null;
 
-  const valor =
-    item.valor_bpm ??
-    item.bpm ??
-    item.bpm_atual ??
-    item.bpm_medio ??
-    item.media_bpm ??
-    item.bpm_media ??
-    null;
-
+  const valor = item.valor_bpm ?? item.bpm ?? item.bpm_atual ?? item.bpm_medio ?? item.media_bpm ?? item.bpm_media ?? null;
   const minimo = item.bpm_minimo ?? item.minimo ?? item.bpm_min ?? null;
   const maximo = item.bpm_maximo ?? item.maximo ?? item.bpm_max ?? null;
 
@@ -1346,20 +1336,10 @@ function normalizarRegistroHistorico(item, index) {
 }
 
 async function buscarHistoricoPorFonte(sessao) {
-  const fontes = [
-    "vw_bpm_historico_minuto",
-    "v_bpm_historico_minuto",
-    "bpm_historico_minuto",
-    "historico_bpm",
-    "bpm_tempo_real",
-  ];
+  const fontes = ["vw_bpm_historico_minuto", "v_bpm_historico_minuto", "bpm_historico_minuto", "historico_bpm", "bpm_tempo_real"];
 
   for (const fonte of fontes) {
-    const { data, error } = await supabase
-      .from(fonte)
-      .select("*")
-      .eq("perfil_id", sessao.user.id)
-      .limit(500);
+    const { data, error } = await supabase.from(fonte).select("*").eq("perfil_id", sessao.user.id).limit(500);
 
     if (error || !data || data.length === 0) {
       continue;
@@ -1378,8 +1358,9 @@ async function buscarHistoricoPorFonte(sessao) {
   return [];
 }
 
-function Historico({ sessao, temaEscuro }) {
+function Historico({ sessao, temaEscuro, alternarTema, visualizacao, alternarVisualizacao }) {
   const ui = obterClasses(temaEscuro);
+
   const [leituras, setLeituras] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState("");
@@ -1406,6 +1387,7 @@ function Historico({ sessao, temaEscuro }) {
 
   useEffect(() => {
     carregarHistorico();
+
     const intervalo = setInterval(carregarHistorico, 10000);
 
     return () => clearInterval(intervalo);
@@ -1430,6 +1412,7 @@ function Historico({ sessao, temaEscuro }) {
       media: calcularMedia(itens),
       menor: calcularMenor(itens),
       maior: calcularMaior(itens),
+      recebido_em: itens[0]?.recebido_em,
     }));
   }, [leituras]);
 
@@ -1437,183 +1420,157 @@ function Historico({ sessao, temaEscuro }) {
 
   if (grupoSelecionado) {
     return (
-      <div>
+      <div className="mx-auto flex h-full max-w-[1500px] flex-col overflow-hidden">
         <PageHeader
-          titulo={grupoSelecionado.data}
-          subtitulo={`${grupoSelecionado.itens.length} leituras registradas`}
           temaEscuro={temaEscuro}
+          titulo={grupoSelecionado.data}
+          subtitulo="Leituras registradas dentro da data selecionada."
         >
-          <button onClick={() => setDataAberta(null)} className={ui.botaoSecundario}>
-            Voltar para histórico
+          <button onClick={() => setDataAberta(null)} className={ui.botaoPrimario}>
+            Voltar
           </button>
+          <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+          <BotaoVisualizacao visualizacao={visualizacao} alternarVisualizacao={alternarVisualizacao} temaEscuro={temaEscuro} />
         </PageHeader>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card
-            titulo="Média"
-            valor={grupoSelecionado.media ?? "--"}
-            subtitulo="BPM médio do dia selecionado."
-            temaEscuro={temaEscuro}
-          />
-          <Card
-            titulo="Mín"
-            valor={grupoSelecionado.menor ?? "--"}
-            subtitulo="Menor valor de BPM."
-            temaEscuro={temaEscuro}
-          />
-          <Card
-            titulo="Máx"
-            valor={grupoSelecionado.maior ?? "--"}
-            subtitulo="Maior valor de BPM."
-            temaEscuro={temaEscuro}
-          />
-        </div>
-
-        <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
+        <div className="grid min-w-0 grid-cols-1 gap-4 2xl:grid-cols-2">
+          <GraficoBpm dados={grupoSelecionado.itens} temaEscuro={temaEscuro} titulo="Curva do dia" altura={260} />
           <GraficoBarrasBpm dados={grupoSelecionado.itens} temaEscuro={temaEscuro} />
         </div>
 
-        <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
-          <h2 className="text-xl font-bold">Leituras do dia</h2>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-            {grupoSelecionado.itens.map((item) => (
-              <div
-                key={item.id}
-                className={`rounded-3xl p-4 ${
-                  temaEscuro ? "bg-white/5" : "bg-slate-50 border border-slate-200"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xl font-bold">{item.valor_bpm} BPM</p>
-                  <BadgeStatus valor={item.valor_bpm} />
-                </div>
-                <p className={`mt-3 text-sm ${ui.textoSuave}`}>
-                  {formatarHora(item.recebido_em)}
-                </p>
-              </div>
-            ))}
-          </div>
+        <div className="mt-4">
+          <ListaLeiturasHorizontal leituras={grupoSelecionado.itens} temaEscuro={temaEscuro} />
         </div>
       </div>
     );
   }
 
+  const gruposParaGrafico = grupos.map((grupo, index) => ({
+    id: index + 1,
+    valor_bpm: grupo.media || 0,
+    recebido_em: grupo.recebido_em || new Date().toISOString(),
+  }));
+
   return (
-    <div>
+    <div className="mx-auto flex h-full max-w-[1500px] flex-col overflow-hidden">
       <PageHeader
-        titulo="Histórico"
-        subtitulo="Selecione uma data para visualizar os valores registrados e o gráfico do dia."
         temaEscuro={temaEscuro}
+        titulo="Histórico"
+        subtitulo="Datas com leituras registradas. Abra um dia para ver os valores e os gráficos."
       >
-        <button onClick={carregarHistorico} className={ui.botaoSecundario}>
+        <button onClick={carregarHistorico} className={ui.botaoPrimario}>
           Atualizar
         </button>
+        <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+        <BotaoVisualizacao visualizacao={visualizacao} alternarVisualizacao={alternarVisualizacao} temaEscuro={temaEscuro} />
       </PageHeader>
 
-      {erro && (
-        <div className="mb-4 rounded-3xl border border-red-400/20 bg-red-500/10 p-4 text-sm text-red-200">
-          {erro}
-        </div>
-      )}
+      {erro && <div className="mb-4 rounded-2xl border border-rose-400/20 bg-rose-500/10 p-4 text-sm text-rose-200">{erro}</div>}
 
       {carregando ? (
-        <div className={`rounded-[2rem] p-6 ${ui.painel}`}>Carregando histórico...</div>
+        <div className={`rounded-[1.7rem] p-8 text-center ${ui.painel}`}>Carregando histórico...</div>
       ) : grupos.length === 0 ? (
-        <div className={`rounded-[2rem] p-6 ${ui.painel}`}>
-          Nenhuma leitura encontrada no histórico.
-        </div>
+        <div className={`rounded-[1.7rem] p-8 text-center ${ui.painel}`}>Nenhuma leitura encontrada no histórico.</div>
       ) : (
-        <div className="grid gap-4">
-          {grupos.map((grupo) => (
-            <button
-              key={grupo.data}
-              onClick={() => setDataAberta(grupo.data)}
-              className={`rounded-[2rem] p-5 text-left transition hover:scale-[1.01] ${ui.painel}`}
-            >
-              <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-                <div>
-                  <h2 className="text-xl font-bold">{grupo.data}</h2>
-                  <p className={`mt-1 text-sm ${ui.textoSuave}`}>
-                    {grupo.itens.length} leituras registradas
-                  </p>
-                </div>
+        <>
+          <div className="mb-4 min-w-0">
+            <GraficoBpm dados={gruposParaGrafico} temaEscuro={temaEscuro} titulo="Média por dia" altura={240} mostrarHora={false} />
+          </div>
 
-                <div className="grid grid-cols-3 gap-3 sm:w-auto">
-                  <div className={`rounded-2xl px-4 py-3 ${ui.painelForte}`}>
-                    <p className={`text-xs ${ui.textoSuave}`}>Média</p>
-                    <p className="mt-1 text-lg font-bold">{grupo.media ?? "--"}</p>
+          <div className="min-h-0 flex-1 overflow-y-auto pr-1">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 2xl:grid-cols-3">
+              {grupos.map((grupo) => (
+                <button
+                  key={grupo.data}
+                  onClick={() => setDataAberta(grupo.data)}
+                  className={`rounded-[1.7rem] p-5 text-left transition hover:scale-[1.01] ${ui.painel}`}
+                >
+                  <h2 className="text-xl font-black">{grupo.data}</h2>
+                  <p className={`mt-1 text-sm ${ui.textoSuave}`}>{grupo.itens.length} leituras registradas</p>
+
+                  <div className="mt-4 grid grid-cols-3 gap-3">
+                    <div className={`rounded-2xl p-3 text-center ${ui.painelForte}`}>
+                      <p className={`text-xs ${ui.textoMuitoSuave}`}>Média</p>
+                      <p className="text-lg font-black">{grupo.media ?? "--"}</p>
+                    </div>
+
+                    <div className={`rounded-2xl p-3 text-center ${ui.painelForte}`}>
+                      <p className={`text-xs ${ui.textoMuitoSuave}`}>Mín</p>
+                      <p className="text-lg font-black">{grupo.menor ?? "--"}</p>
+                    </div>
+
+                    <div className={`rounded-2xl p-3 text-center ${ui.painelForte}`}>
+                      <p className={`text-xs ${ui.textoMuitoSuave}`}>Máx</p>
+                      <p className="text-lg font-black">{grupo.maior ?? "--"}</p>
+                    </div>
                   </div>
-                  <div className={`rounded-2xl px-4 py-3 ${ui.painelForte}`}>
-                    <p className={`text-xs ${ui.textoSuave}`}>Mín</p>
-                    <p className="mt-1 text-lg font-bold">{grupo.menor ?? "--"}</p>
-                  </div>
-                  <div className={`rounded-2xl px-4 py-3 ${ui.painelForte}`}>
-                    <p className={`text-xs ${ui.textoSuave}`}>Máx</p>
-                    <p className="mt-1 text-lg font-bold">{grupo.maior ?? "--"}</p>
-                  </div>
-                </div>
-              </div>
-            </button>
-          ))}
-        </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );
 }
 
-function Perfil({ sessao, perfil, temaEscuro }) {
+function Perfil({ sessao, perfil, temaEscuro, alternarTema, visualizacao, alternarVisualizacao }) {
   const ui = obterClasses(temaEscuro);
 
   return (
-    <div>
-      <PageHeader
-        titulo="Perfil"
-        subtitulo="Informações reais do usuário autenticado."
-        temaEscuro={temaEscuro}
-      />
+    <div className="mx-auto max-w-[1500px] overflow-hidden">
+      <PageHeader temaEscuro={temaEscuro} titulo="Perfil" subtitulo="Dados reais do paciente autenticado no Supabase.">
+        <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+        <BotaoVisualizacao visualizacao={visualizacao} alternarVisualizacao={alternarVisualizacao} temaEscuro={temaEscuro} />
+      </PageHeader>
 
-      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        <Card
-          titulo="Nome"
-          valor={perfil?.nome || sessao?.user?.user_metadata?.nome || "Não informado"}
-          subtitulo="Nome cadastrado do paciente."
-          temaEscuro={temaEscuro}
-        />
-        <Card
-          titulo="E-mail"
-          valor={sessao?.user?.email || "Não informado"}
-          subtitulo="Conta utilizada no login."
-          temaEscuro={temaEscuro}
-        />
-        <Card
-          titulo="Idade"
-          valor={perfil?.idade ?? "Não informada"}
-          subtitulo="Idade cadastrada no perfil."
-          temaEscuro={temaEscuro}
-        />
-        <Card
-          titulo="Sexo"
-          valor={perfil?.sexo || "Não informado"}
-          subtitulo="Sexo informado no cadastro."
-          temaEscuro={temaEscuro}
-        />
-        <Card
-          titulo="Criado em"
-          valor={formatarDataHora(perfil?.criado_em)}
-          subtitulo="Data de criação do perfil."
-          temaEscuro={temaEscuro}
-        />
-        <Card
-          titulo="Código do dispositivo"
-          valor={CODIGO_DISPOSITIVO}
-          subtitulo="Identificador exibido no painel."
-          temaEscuro={temaEscuro}
-        />
-      </div>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <div className={`rounded-[1.7rem] p-6 ${ui.painel}`}>
+          <h2 className="text-xl font-black">Dados do paciente</h2>
 
-      <div className={`mt-6 rounded-[2rem] p-5 md:p-6 ${ui.painel}`}>
-        <h2 className="text-xl font-bold">ID do usuário logado</h2>
-        <p className={`mt-3 break-all text-sm ${ui.textoSuave}`}>{sessao?.user?.id}</p>
+          <div className="mt-5 space-y-4">
+            <div>
+              <p className={`text-sm ${ui.textoMuitoSuave}`}>Nome</p>
+              <p className="font-bold">{perfil?.nome || sessao?.user?.user_metadata?.nome || "--"}</p>
+            </div>
+
+            <div>
+              <p className={`text-sm ${ui.textoMuitoSuave}`}>E-mail</p>
+              <p className="break-all font-bold">{sessao?.user?.email}</p>
+            </div>
+
+            <div>
+              <p className={`text-sm ${ui.textoMuitoSuave}`}>Idade</p>
+              <p className="font-bold">{perfil?.idade ?? "--"}</p>
+            </div>
+
+            <div>
+              <p className={`text-sm ${ui.textoMuitoSuave}`}>Sexo</p>
+              <p className="font-bold">{perfil?.sexo || "--"}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className={`rounded-[1.7rem] p-6 ${ui.painel}`}>
+          <h2 className="text-xl font-black">Vínculo do dispositivo</h2>
+
+          <div className="mt-5 space-y-4">
+            <div>
+              <p className={`text-sm ${ui.textoMuitoSuave}`}>Dispositivo</p>
+              <p className="font-bold">{CODIGO_DISPOSITIVO}</p>
+            </div>
+
+            <div>
+              <p className={`text-sm ${ui.textoMuitoSuave}`}>ID do usuário logado</p>
+              <p className="break-all font-mono text-sm">{sessao?.user?.id}</p>
+            </div>
+
+            <div>
+              <p className={`text-sm ${ui.textoMuitoSuave}`}>Criação do perfil</p>
+              <p className="font-bold">{perfil?.criado_em ? formatarDataHora(perfil.criado_em) : "--"}</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -1668,11 +1625,7 @@ function App() {
       console.error("Não foi possível vincular o dispositivo automaticamente.");
     }
 
-    const { data, error } = await supabase
-      .from("perfis")
-      .select("*")
-      .eq("id", sessaoAtual.user.id)
-      .maybeSingle();
+    const { data, error } = await supabase.from("perfis").select("*").eq("id", sessaoAtual.user.id).maybeSingle();
 
     if (error) {
       setPerfil(null);
@@ -1709,177 +1662,196 @@ function App() {
 
   if (carregandoSessao) {
     return (
-      <div className={`flex min-h-screen items-center justify-center ${ui.pagina}`}>
-        Carregando...
-      </div>
+      <>
+        <EstilosGlobais />
+        <div className={`grid min-h-screen place-items-center ${ui.pagina}`}>
+          <div className="text-lg font-black">Carregando...</div>
+        </div>
+      </>
     );
   }
 
   if (!sessao) {
     return (
-      <TelaLogin
-        temaEscuro={temaEscuro}
-        alternarTema={alternarTema}
-        visualizacao={visualizacao}
-        alternarVisualizacao={alternarVisualizacao}
-      />
+      <>
+        <EstilosGlobais />
+        <TelaLogin
+          temaEscuro={temaEscuro}
+          alternarTema={alternarTema}
+          visualizacao={visualizacao}
+          alternarVisualizacao={alternarVisualizacao}
+        />
+      </>
     );
   }
 
-  const nome =
-    perfil?.nome ||
-    sessao?.user?.user_metadata?.nome ||
-    sessao?.user?.email ||
-    "Paciente";
+  const nome = perfil?.nome || sessao?.user?.user_metadata?.nome || sessao?.user?.email || "Paciente";
 
   if (visualizacao === "mobile") {
     return (
-      <div className={`min-h-screen overflow-x-auto ${ui.pagina}`}>
-        <div className="mx-auto min-h-screen max-w-[430px]">
-          <main className="p-4 pb-24">
-            <div className="mb-6 flex items-center justify-between">
-              <LogoBpm temaEscuro={temaEscuro} />
-              <div className="flex gap-2">
-                <BotaoVisualizacao
+      <>
+        <EstilosGlobais />
+
+        <main className={`${ui.pagina} h-screen overflow-hidden`}>
+          <div className="flex h-screen flex-col overflow-hidden">
+            <header className={`shrink-0 border-b px-4 py-4 ${temaEscuro ? "border-white/10 bg-slate-950" : "border-slate-200 bg-white"}`}>
+              <div className="flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className={`text-xs font-bold uppercase tracking-[0.2em] ${ui.textoMuitoSuave}`}>Bem-vindo</p>
+                  <h1 className="truncate text-lg font-black">{nome}</h1>
+                  <p className={`truncate text-xs ${ui.textoMuitoSuave}`}>{sessao.user.email}</p>
+                </div>
+
+                <button onClick={sair} className={ui.botaoSecundario}>
+                  Sair
+                </button>
+              </div>
+            </header>
+
+            <section className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-4">
+              {abaAtiva === "inicio" && (
+                <Dashboard
+                  sessao={sessao}
+                  temaEscuro={temaEscuro}
+                  alternarTema={alternarTema}
                   visualizacao={visualizacao}
                   alternarVisualizacao={alternarVisualizacao}
-                  temaEscuro={temaEscuro}
                 />
-                <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
+              )}
+              {abaAtiva === "historico" && (
+                <Historico
+                  sessao={sessao}
+                  temaEscuro={temaEscuro}
+                  alternarTema={alternarTema}
+                  visualizacao={visualizacao}
+                  alternarVisualizacao={alternarVisualizacao}
+                />
+              )}
+              {abaAtiva === "perfil" && (
+                <Perfil
+                  sessao={sessao}
+                  perfil={perfil}
+                  temaEscuro={temaEscuro}
+                  alternarTema={alternarTema}
+                  visualizacao={visualizacao}
+                  alternarVisualizacao={alternarVisualizacao}
+                />
+              )}
+            </section>
+
+            <nav className={`shrink-0 border-t px-4 py-3 ${temaEscuro ? "border-white/10 bg-slate-950" : "border-slate-200 bg-white"}`}>
+              <div className="grid grid-cols-4 gap-2">
+                <button
+                  onClick={() => setAbaAtiva("inicio")}
+                  className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo}`}
+                >
+                  Início
+                </button>
+
+                <button
+                  onClick={() => setAbaAtiva("historico")}
+                  className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo}`}
+                >
+                  Histórico
+                </button>
+
+                <button
+                  onClick={() => setAbaAtiva("perfil")}
+                  className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo}`}
+                >
+                  Perfil
+                </button>
+
+                <button onClick={sair} className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${ui.menuInativo}`}>
+                  Sair
+                </button>
               </div>
-            </div>
-
-            <div className="mb-6">
-              <div className={`rounded-[2rem] p-4 ${ui.painel}`}>
-                <p className="text-sm text-slate-400">Bem-vindo</p>
-                <p className="mt-1 text-lg font-bold">{nome}</p>
-                <p className="mt-1 break-all text-sm text-slate-400">{sessao.user.email}</p>
-              </div>
-            </div>
-
-            {abaAtiva === "inicio" && <Dashboard sessao={sessao} temaEscuro={temaEscuro} />}
-            {abaAtiva === "historico" && <Historico sessao={sessao} temaEscuro={temaEscuro} />}
-            {abaAtiva === "perfil" && (
-              <Perfil sessao={sessao} perfil={perfil} temaEscuro={temaEscuro} />
-            )}
-          </main>
-
-          <div
-            className={`fixed inset-x-0 bottom-0 z-40 border-t p-3 ${
-              temaEscuro ? "border-white/10 bg-slate-950/95" : "border-slate-200 bg-white/95"
-            } backdrop-blur-xl`}
-          >
-            <div className="mx-auto grid max-w-[430px] grid-cols-4 gap-2">
-              <button
-                onClick={() => setAbaAtiva("inicio")}
-                className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
-                  abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo
-                }`}
-              >
-                Início
-              </button>
-              <button
-                onClick={() => setAbaAtiva("historico")}
-                className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
-                  abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo
-                }`}
-              >
-                Histórico
-              </button>
-              <button
-                onClick={() => setAbaAtiva("perfil")}
-                className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${
-                  abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo
-                }`}
-              >
-                Perfil
-              </button>
-              <button
-                onClick={sair}
-                className={`rounded-2xl px-3 py-3 text-sm font-semibold transition ${ui.menuInativo}`}
-              >
-                Sair
-              </button>
-            </div>
+            </nav>
           </div>
-        </div>
-      </div>
+        </main>
+      </>
     );
   }
 
   return (
-    <div className={`overflow-x-auto ${ui.pagina}`}>
-      <div className="mx-auto flex min-h-screen min-w-[1080px] max-w-7xl flex-row">
-        <aside
-          className={`flex w-72 shrink-0 flex-col border-r p-6 ${
-            temaEscuro ? "border-white/10 bg-slate-950/70" : "border-slate-200 bg-white"
-          }`}
-        >
-          <LogoBpm temaEscuro={temaEscuro} />
+    <>
+      <EstilosGlobais />
 
-          <div className="mt-4 flex flex-col gap-2">
-            <BotaoVisualizacao
-              visualizacao={visualizacao}
-              alternarVisualizacao={alternarVisualizacao}
-              temaEscuro={temaEscuro}
-            />
-            <BotaoTema temaEscuro={temaEscuro} alternarTema={alternarTema} />
-          </div>
+      <main className={`${ui.pagina} h-screen overflow-hidden`}>
+        <div className="grid h-screen min-w-0 grid-cols-[280px_minmax(0,1fr)] overflow-hidden">
+          <aside className={`flex min-h-0 flex-col border-r p-5 ${temaEscuro ? "border-white/10 bg-slate-950" : "border-slate-200 bg-white"}`}>
+            <LogoBpm temaEscuro={temaEscuro} />
 
-          <div className="mt-8 rounded-[2rem] border border-white/10 bg-rose-600/10 p-5">
-            <p className="text-sm text-slate-400">Bem-vindo</p>
-            <p className="mt-2 text-lg font-bold">{nome}</p>
-            <p className="mt-1 break-all text-sm text-slate-400">{sessao.user.email}</p>
-          </div>
+            <div className={`mt-6 rounded-[1.5rem] p-4 ${ui.painel}`}>
+              <p className={`text-xs font-bold uppercase tracking-[0.2em] ${ui.textoMuitoSuave}`}>Bem-vindo</p>
+              <h2 className="mt-1 break-words text-lg font-black">{nome}</h2>
+              <p className={`mt-1 break-all text-xs ${ui.textoMuitoSuave}`}>{sessao.user.email}</p>
+            </div>
 
-          <nav className="mt-8 flex flex-col gap-2">
-            <button
-              onClick={() => setAbaAtiva("inicio")}
-              className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
-                abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo
-              }`}
-            >
-              Início
-            </button>
-            <button
-              onClick={() => setAbaAtiva("historico")}
-              className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
-                abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo
-              }`}
-            >
-              Histórico
-            </button>
-            <button
-              onClick={() => setAbaAtiva("perfil")}
-              className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${
-                abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo
-              }`}
-            >
-              Perfil
-            </button>
-          </nav>
+            <nav className="mt-6 flex flex-col gap-2">
+              <button
+                onClick={() => setAbaAtiva("inicio")}
+                className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${abaAtiva === "inicio" ? ui.menuAtivo : ui.menuInativo}`}
+              >
+                Início
+              </button>
 
-          <button
-            onClick={sair}
-            className="mt-auto rounded-2xl bg-white/10 px-4 py-3 font-semibold text-white transition hover:bg-white/20"
-          >
-            Sair
-          </button>
-        </aside>
+              <button
+                onClick={() => setAbaAtiva("historico")}
+                className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${abaAtiva === "historico" ? ui.menuAtivo : ui.menuInativo}`}
+              >
+                Histórico
+              </button>
 
-        <main className="flex-1 p-8">
-          {abaAtiva === "inicio" && <Dashboard sessao={sessao} temaEscuro={temaEscuro} />}
-          {abaAtiva === "historico" && <Historico sessao={sessao} temaEscuro={temaEscuro} />}
-          {abaAtiva === "perfil" && (
-            <Perfil sessao={sessao} perfil={perfil} temaEscuro={temaEscuro} />
-          )}
-        </main>
-      </div>
-    </div>
+              <button
+                onClick={() => setAbaAtiva("perfil")}
+                className={`rounded-2xl px-4 py-3 text-left font-semibold transition ${abaAtiva === "perfil" ? ui.menuAtivo : ui.menuInativo}`}
+              >
+                Perfil
+              </button>
+            </nav>
+
+            <div className="mt-auto flex flex-col gap-3">
+              <button onClick={sair} className={ui.botaoSecundario}>
+                Sair
+              </button>
+            </div>
+          </aside>
+
+          <section className="min-h-0 min-w-0 overflow-y-auto overflow-x-hidden p-6">
+            {abaAtiva === "inicio" && (
+              <Dashboard
+                sessao={sessao}
+                temaEscuro={temaEscuro}
+                alternarTema={alternarTema}
+                visualizacao={visualizacao}
+                alternarVisualizacao={alternarVisualizacao}
+              />
+            )}
+            {abaAtiva === "historico" && (
+              <Historico
+                sessao={sessao}
+                temaEscuro={temaEscuro}
+                alternarTema={alternarTema}
+                visualizacao={visualizacao}
+                alternarVisualizacao={alternarVisualizacao}
+              />
+            )}
+            {abaAtiva === "perfil" && (
+              <Perfil
+                sessao={sessao}
+                perfil={perfil}
+                temaEscuro={temaEscuro}
+                alternarTema={alternarTema}
+                visualizacao={visualizacao}
+                alternarVisualizacao={alternarVisualizacao}
+              />
+            )}
+          </section>
+        </div>
+      </main>
+    </>
   );
 }
 
 export default App;
-
-
-

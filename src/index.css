@@ -45,3 +45,46 @@ img[src*="h3med.com.br/wp-content/uploads/2022/04/frequencia-cardiaca.jpg"] {
     transform: scale(1);
   }
 }
+
+/* BPM_SCROLL_FIX */
+html, body, #root {
+  min-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+input[type="range"] {
+  display: none !important;
+  opacity: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  pointer-events: none !important;
+}
+
+.scrollbar-none,
+.scrollbar-padrao {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(244, 63, 94, 0.9) rgba(148, 163, 184, 0.2) !important;
+}
+
+.scrollbar-none::-webkit-scrollbar,
+.scrollbar-padrao::-webkit-scrollbar {
+  display: block !important;
+  height: 12px !important;
+  width: 12px !important;
+}
+
+.scrollbar-none::-webkit-scrollbar-track,
+.scrollbar-padrao::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.2) !important;
+  border-radius: 999px !important;
+}
+
+.scrollbar-none::-webkit-scrollbar-thumb,
+.scrollbar-padrao::-webkit-scrollbar-thumb {
+  background: rgba(244, 63, 94, 0.9) !important;
+  border-radius: 999px !important;
+}
+/* BPM_SCROLL_FIX_END */

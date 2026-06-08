@@ -7,3 +7,6 @@ dist/
 .vercel/
 
 .vercel/
+
+# Backups locais
+src/App.backup*.jsx
